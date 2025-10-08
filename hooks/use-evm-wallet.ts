@@ -1,11 +1,12 @@
 import {
-  type PrivyEmbeddedWalletAccount,
+  PrivyEmbeddedWalletAccount,
   type PrivyUser,
   useEmbeddedEthereumWallet,
   usePrivy,
   usePrivyClient,
 } from "@privy-io/expo";
 import axios from "axios";
+import { fetch } from "expo/fetch";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type EVMBalanceInfo = {
@@ -31,7 +32,7 @@ export type EVMWallet = {
 
 export function useEVMWallet() {
   const { user: privyUser, getAccessToken } = usePrivy();
-  const { wallets, create: createWallet } = useEmbeddedEthereumWallet();
+  const { create: createWallet } = useEmbeddedEthereumWallet();
 
   const client = usePrivyClient();
 
@@ -39,51 +40,73 @@ export function useEVMWallet() {
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [balances, setBalances] = useState<EVMBalanceInfo[]>([]);
   const [user, setUser] = useState<PrivyUser | null>(privyUser);
+  const [wallet, setWallet] = useState<EVMWallet | null>(null);
 
   // Update user when privyUser changes - only if actually different
   useEffect(() => {
     if (privyUser !== user) {
       setUser(privyUser);
     }
-  }, [privyUser?.id, privyUser?.linked_accounts, privyUser, user]); // Include all dependencies
-  const [wallet, setWallet] = useState<EVMWallet | null>(null);
+  }, [privyUser, user]);
 
-  const evmEmbeddedWallets = useMemo<PrivyEmbeddedWalletAccount[]>(
-    () =>
-      (user?.linked_accounts ?? []).filter(
-        (account): account is PrivyEmbeddedWalletAccount =>
-          account.type === "wallet" &&
-          account.wallet_client_type === "privy" &&
-          account.chain_type === "ethereum"
-      ),
-    [user]
-  );
+  const wallets = useMemo(() => {
+    if (!user?.linked_accounts) return [];
+    return user.linked_accounts
+      .filter((account: any) => account.type === "wallet")
+      .map((wallet: any) => ({
+        id: wallet.id,
+        address: wallet.address,
+        chain: wallet.chainType || "ethereum",
+        isConnected: true,
+      }));
+  }, [user?.linked_accounts]);
+
+  const primaryWallet = useMemo(() => {
+    return wallets.length > 0 ? wallets[0] : null;
+  }, [wallets]);
 
   const refreshUser = useCallback(async () => {
     const fetchedUser = await client.user.get();
     if (fetchedUser) {
-      setUser(fetchedUser.user);
+      setUser(fetchedUser.user as PrivyUser);
     }
   }, [client]);
 
-  const handleCreateWallet = useCallback(async () => {
+  const handleCreateWallet = async () => {
+    if (!privyUser) {
+      console.log("No user found");
+      return;
+    }
+
     // Only create wallet if user doesn't have an embedded wallet
-    if (evmEmbeddedWallets.length > 0) {
+    if (wallets.length > 0) {
+      console.log("Wallet already exists");
       return;
     }
 
     setIsCreating(true);
     try {
-      await createWallet({
-        createAdditional: true,
-      });
+      const hasEmbeddedWallet =
+        (user?.linked_accounts ?? []).filter(
+          (account): account is PrivyEmbeddedWalletAccount =>
+            account.type === "wallet" &&
+            account.wallet_client_type === "privy" &&
+            account.chain_type === "ethereum"
+        ).length > 0;
+
+      if (!hasEmbeddedWallet) {
+        await createWallet({
+          createAdditional: true,
+        });
+      }
+
       await refreshUser();
     } catch (error) {
-      console.error("Error creating wallet:", error);
+      throw error;
     } finally {
       setIsCreating(false);
     }
-  }, [createWallet, refreshUser, evmEmbeddedWallets.length]);
+  };
 
   function generateBasicAuthHeader(username: string, password: string): string {
     const credentials = `${username}:${password}`;
@@ -102,7 +125,6 @@ export function useEVMWallet() {
       const response = await axios.get("https://api.privy.io/v1/wallets", {
         params: {
           chain_type: "ethereum",
-          limit: 2,
         },
         headers: {
           "privy-app-id": process.env.EXPO_PUBLIC_PRIVY_APP_ID || "",
@@ -113,8 +135,6 @@ export function useEVMWallet() {
           ),
         },
       });
-
-      console.log("Wallet data fetched", response.data?.data);
 
       if (response.data?.data.length === 1) {
         const walletData = (response.data?.data || []).find(
@@ -138,46 +158,43 @@ export function useEVMWallet() {
 
   const getBalance = async () => {
     try {
-      const walletData = await getWallet();
+      console.log("Wallet data:", primaryWallet);
 
-      if (walletData) {
-        const accessToken = await getAccessToken();
+      console.log("user:", JSON.stringify(user, null, 2));
 
+      if (primaryWallet) {
         const headers = {
           "privy-app-id": process.env.EXPO_PUBLIC_PRIVY_APP_ID || "",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: generateBasicAuthHeader(
+            process.env.EXPO_PUBLIC_PRIVY_APP_ID || "",
+            process.env.EXPO_PUBLIC_PRIVY_APP_SECRET || ""
+          ),
           "Content-Type": "application/json",
         };
 
         // Fetch ETH balance
-        const ethResp = await axios.get(
-          `https://api.privy.io/v1/wallets/${walletData?.id}/balance`,
+        const ethResp = await fetch(
+          `https://api.privy.io/v1/wallets/${primaryWallet.id}/balance?asset=eth&chain=base`,
           {
-            params: {
-              asset: "eth",
-              chain: "base",
-            },
+            method: "GET",
             headers,
           }
         );
 
         // Fetch USDC balance
-        const usdcResp = await axios.get(
-          `https://api.privy.io/v1/wallets/${walletData?.id}/balance`,
+        const usdcResp = await fetch(
+          `https://api.privy.io/v1/wallets/${primaryWallet.id}/balance?asset=usdc&chain=base`,
           {
-            params: {
-              asset: "usdc",
-              chain: "base",
-            },
+            method: "GET",
             headers,
           }
         );
 
-        const ethData = ethResp.data;
-        const usdcData = usdcResp.data;
-        console.log("Wallet :", walletData);
-        console.log("ETH data:", ethData);
-        console.log("USDC data:", usdcData);
+        const ethData = await ethResp.json();
+        const usdcData = await usdcResp.json();
+
+        console.log("ETH data:", JSON.stringify(ethData, null, 2));
+        console.log("USDC data:", JSON.stringify(usdcData, null, 2));
 
         const allBalances = [
           ...(ethData.balances || []),
@@ -188,6 +205,7 @@ export function useEVMWallet() {
         return allBalances;
       }
     } catch (error) {
+      console.error("Error fetching balance:", error);
       throw error;
     } finally {
       setIsBalanceLoading(false);
@@ -209,9 +227,9 @@ export function useEVMWallet() {
   return {
     isCreating,
     isBalanceLoading,
-    hasEvmWallet:
-      evmEmbeddedWallets.length > 0 && !!evmEmbeddedWallets[0].address,
-    wallets: evmEmbeddedWallets,
+    hasEvmWallet: wallets.length > 0 && !!wallets[0].address,
+    wallets: wallets,
+    primaryWallet,
     wallet,
     handleCreateWallet,
     getWallet,

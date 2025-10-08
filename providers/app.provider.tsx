@@ -8,6 +8,7 @@ import { removeItem } from "@/libs/storage";
 import { type Token } from "@/libs/tokens";
 import { showToast } from "@/libs/utils";
 import { type MerchantProfile } from "@/resources/schema/merchant";
+import { usePrivy } from "@privy-io/expo";
 import { AuthProvider, useAuth } from "./auth.provider";
 import { MerchantProvider, useMerchant } from "./merchant.provider";
 import { WalletProvider, useWallet } from "./wallet.provider";
@@ -71,9 +72,13 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
   const auth = useAuth();
   const merchant = useMerchant();
   const wallet = useWallet();
+  const { logout: logoutPrivy } = usePrivy();
 
   const logout = useCallback(async () => {
     try {
+      // Logout Privy
+      await logoutPrivy();
+
       // Clear storage
       removeItem(TOKEN_KEY);
       removeItem(MERCHANT_KEY);

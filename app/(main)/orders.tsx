@@ -1,3 +1,5 @@
+import { Text } from "@/components/ui/text";
+
 export default function OrdersPage() {
-  return "Orders";
+  return <Text>Orders</Text>;
 }

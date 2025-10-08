@@ -1,4 +1,4 @@
-import { usePrivy } from "@privy-io/expo";
+import { PrivyEmbeddedWalletAccount, usePrivy } from "@privy-io/expo";
 import { useLogin } from "@privy-io/expo/ui";
 import { useRouter } from "expo-router";
 import * as React from "react";
@@ -24,7 +24,7 @@ export default function LoginScreen() {
   // Privy
   const { isReady: ready, user } = usePrivy();
   const { login } = useLogin();
-  const { hasEvmWallet, handleCreateWallet, isCreating } = useEVMWallet();
+  const { handleCreateWallet, isCreating } = useEVMWallet();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
 
@@ -42,10 +42,21 @@ export default function LoginScreen() {
         loginMethods: ["email"],
         appearance: { logo: "https://rozo.app/logo.png" },
       });
+
       if (result) {
-        if (!hasEvmWallet) {
+        const hasEmbeddedWallet =
+          (result.user?.linked_accounts ?? []).filter(
+            (account): account is PrivyEmbeddedWalletAccount =>
+              account.type === "wallet" &&
+              account.wallet_client_type === "privy" &&
+              account.chain_type === "ethereum"
+          ).length > 0;
+
+        if (!hasEmbeddedWallet) {
           await handleCreateWallet();
         }
+
+        router.replace("/(main)");
       }
     } catch {
       setIsAuthLoading(false);

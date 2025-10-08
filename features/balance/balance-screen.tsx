@@ -12,29 +12,26 @@ import { VStack } from "@/components/ui/vstack";
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
 import { showToast } from "@/libs/utils";
 
-import { usePrivy } from "@privy-io/expo";
+import { useRef } from "react";
+import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
+import { WithdrawActionSheet } from "../settings/withdraw-sheet";
 import { BalanceInfo } from "./balance-info";
 
 export function BalanceScreen() {
   const { t } = useTranslation();
-  const { logout } = usePrivy();
   const { balance, refetch, isLoading } = useWalletBalance();
 
-  // const depositDialogRef = useRef<DepositDialogRef>(null);
+  const depositDialogRef = useRef<DepositDialogRef>(null);
 
-  // const handleReceivePress = () => {
-  //   depositDialogRef.current?.open();
-  // };
+  const handleReceivePress = () => {
+    depositDialogRef.current?.open();
+  };
 
   const handleTopUpConfirm = (amount: string) => {
     showToast({
       message: t("deposit.topUpInitiated", { amount }),
       type: "success",
     });
-  };
-
-  const handleLogout = () => {
-    logout();
   };
 
   return (
@@ -69,30 +66,25 @@ export function BalanceScreen() {
               className="flex-1 rounded-xl"
               variant="solid"
               action="secondary"
+              onPress={handleReceivePress}
             >
               <ButtonIcon as={ArrowDownIcon}></ButtonIcon>
               <ButtonText>{t("general.receive")}</ButtonText>
             </Button>
-            <Button
-              size="sm"
-              className="flex-1 rounded-xl"
-              variant="solid"
-              action="secondary"
-              onPress={() => handleLogout()}
-            >
-              <ButtonText>Logout</ButtonText>
-            </Button>
 
             {/* Withdraw Button */}
-            {/* <View className="flex-1">
-              <WithdrawActionSheet onSuccess={() => refetch()} balance={balance ?? undefined} />
-            </View> */}
+            <View className="flex-1">
+              <WithdrawActionSheet
+                onSuccess={() => refetch()}
+                balance={balance ?? undefined}
+              />
+            </View>
           </HStack>
         </VStack>
       </VStack>
 
       {/* Receive Sheet */}
-      {/* <TopupSheet ref={depositDialogRef} onConfirm={handleTopUpConfirm} /> */}
+      <TopupSheet ref={depositDialogRef} onConfirm={handleTopUpConfirm} />
     </ScrollView>
   );
 }

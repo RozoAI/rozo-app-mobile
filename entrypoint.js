@@ -21,5 +21,12 @@ if (typeof global.crypto.getRandomValues === 'undefined') {
   global.crypto.getRandomValues = getRandomValues;
 }
 
+import { Buffer } from 'buffer';
+
+// Ensure Buffer is available
+if (typeof global.Buffer === 'undefined') {
+  global.Buffer = Buffer;
+}
+
 // Then import the expo router
 import 'expo-router/entry';

@@ -49,11 +49,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   }, [user?.linked_accounts]);
 
   const primaryWallet = useMemo(() => {
-    return wallets.length > 0
-      ? wallets[0]
-      : wallets.length > 1
-      ? wallets[1]
-      : null;
+    return wallets.length > 0 ? wallets[0] : null;
   }, [wallets]);
 
   // POS Toggle key based on primary wallet
