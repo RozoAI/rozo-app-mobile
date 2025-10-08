@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "Ver y administrar el equilibrio de su billetera",
+    "title": "Balance"
+  },
+  "deposit": {
+    "topUpInitiated": "Recarga de {{amount}} iniciado"
+  },
+  "general": {
+    "addNote": "Agregar nota",
+    "amount": "Monto",
+    "amountPaid": "Monto pagado",
+    "backToHome": "Volver al inicio",
+    "cancel": "Cancelar",
+    "checkConnection": "Por favor, compruebe su conexión e inténtelo de nuevo",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "copiedToClipboard": "Copiado al portapapeles",
+    "copiedWalletAddressDescription": "Solo se puede enviar una base de USDC. \nDe lo contrario, deposite con nuestro enlace de pago.",
+    "createdAt": "Creado a",
+    "deposit": "Depósito",
+    "description": "Descripción",
+    "enterAmount": "Ingresar la cantidad",
+    "information": "Información",
+    "loading": "Cargando",
+    "manualWithdraw": "Retirarse manual",
+    "manualWithdraw1": "La retirada manual transferirá todo su saldo. \nDespués de confirmar, comuníquese con el equipo de Rozo en",
+    "manualWithdraw2": "Para completar el proceso.",
+    "max": "Máximo",
+    "maxCharacters": "Máximo {{count}} caracteres",
+    "merchantId": "ID de comerciante",
+    "noConnection": "Sin conexión a internet",
+    "notFound": "No encontrado",
+    "note": "Nota",
+    "printReceipt": "Imprimir recibo",
+    "privacyPolicy": "Política de privacidad",
+    "processing": "Procesando",
+    "receive": "Recibir",
+    "status": "Estado",
+    "submit": "Entregar",
+    "termsOfService": "Términos del servicio",
+    "topUp": "Completar",
+    "unknown": "Desconocido",
+    "update": "Actualizar",
+    "updating": "Actualizando",
+    "walletAddress": "Dirección de la billetera",
+    "walletBalance": "Saldo de billetera",
+    "withdraw": "Retirar"
+  },
+  "home": {
+    "title": "Inicio"
+  },
+  "login": {
+    "description": "Sistema de punto de venta simple y eficiente",
+    "loading": "Cargando",
+    "signIn": "Iniciar sesión"
+  },
+  "onboarding": {
+    "message": "Bienvenido a Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "Filtrar por estado",
+    "noOrdersYet": "Aún no hay órdenes",
+    "noOrdersYetDesc": "Tus órdenes recientes aparecerán aquí una vez que comiences a realizar transacciones.",
+    "orderDetails": "Detalles del pedido",
+    "recentOrders": "Órdenes recientes",
+    "recentOrdersDesc": "A continuación se muestran sus órdenes más recientes",
+    "status": {
+      "completed": "Completado",
+      "discrepancy": "Discrepancia",
+      "failed": "Fallido",
+      "pending": "Pendiente",
+      "processing": "Procesando"
+    },
+    "title": "Órdenes"
+  },
+  "payment": {
+    "PaymentQRCode": "Código QR de pago",
+    "amountToPay": "Monto a pagar",
+    "continueToPayment": "Continuar al pago",
+    "enterPaymentAmount": "Introducir el monto del pago",
+    "notes": {
+      "enterNote": "Ingrese la nota",
+      "title": "Nota de pago"
+    },
+    "openPaymentLink": "Enlace de pago abierto",
+    "orderNumber": "Número de orden",
+    "paymentSuccessful": "Pago exitoso",
+    "paymentSuccessfulDesc": "Su transacción se ha completado con éxito",
+    "scanToPay": "Escanear para pagar",
+    "verifyPayment": "Verificar pago",
+    "voiceSuccess": "Ha recibido {{amount}} {{currency}} por Rozo"
+  },
+  "pos": {
+    "title": "Pajita"
+  },
+  "profile": {
+    "displayName": "Nombre para mostrar",
+    "email": "Correo electrónico",
+    "placeholder": {
+      "displayName": "Ingrese su nombre para mostrar",
+      "email": "Ingrese su correo electrónico"
+    },
+    "title": "Perfil",
+    "updateError": "Error al actualizar el perfil"
+  },
+  "settings": {
+    "about": "Acerca de",
+    "account": {
+      "title": "Cuenta"
+    },
+    "app_name": "Nombre de la App",
+    "currency": {
+      "title": "Moneda"
+    },
+    "description": "Administre las preferencias de su cuenta y la configuración de la aplicación",
+    "english": "Inglés",
+    "gaslessInfo": "Puede enviar tokens sin tarifas de red utilizando Privy. \n¡Se admiten transferencias sin gas!",
+    "general": "General",
+    "github": "GitHub",
+    "indonesia": "Indonesio",
+    "language": {
+      "title": "Idioma"
+    },
+    "links": "Enlaces",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "more": "Más",
+    "pointOfSales": {
+      "description": "Habilitar la pestaña del hogar para las funciones de punto de venta",
+      "title": "Mostrar punto de venta"
+    },
+    "privacy": "Política de privacidad",
+    "rate": "Calificar",
+    "share": "Compartir",
+    "signUp": "Registrarse",
+    "support": "Soporte",
+    "support_us": "Apóyanos",
+    "terms": "Términos del servicio",
+    "theme": {
+      "dark": "Oscuro",
+      "light": "Claro",
+      "system": "Sistema",
+      "title": "Tema"
+    },
+    "title": "Configuración",
+    "version": "Versión",
+    "website": "Sitio web"
+  },
+  "toast": {
+    "danger": "Error",
+    "info": "Información",
+    "success": "Éxito"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "Entrante",
+      "OUT": "Extrovertido"
+    },
+    "noTransactionsFound": "No se encontraron transacciones",
+    "recentTransactions": "Transacciones recientes",
+    "recentTransactionsDesc": "A continuación se presentan sus transacciones más recientes basadas en Esterscan"
+  },
+  "transactions": {
+    "title": "Actas"
+  },
+  "validation": {
+    "invalidAmount": "Cantidad no válida",
+    "maxAmount": "La cantidad máxima es {{max}}",
+    "minAmount": "La cantidad mínima es {{min}}",
+    "required": "Este campo es obligatorio"
+  },
+  "welcome": "Bienvenido a Rozo POS",
+  "withdraw": {
+    "error": "Error de retirada",
+    "success": "Retirada exitosa",
+    "supportedOnly": "Solo compatible {{currency}}",
+    "walletAddressPlaceholder": "Ingrese su dirección de billetera"
+  }
+}

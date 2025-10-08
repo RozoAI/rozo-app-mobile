@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "Просмотреть и управлять балансом вашего кошелька",
+    "title": "Баланс"
+  },
+  "deposit": {
+    "topUpInitiated": "Пополнение {{amount}} инициировано"
+  },
+  "general": {
+    "addNote": "Добавить примечание",
+    "amount": "Сумма",
+    "amountPaid": "Сумма оплаты",
+    "backToHome": "Вернуться на главную",
+    "cancel": "Отмена",
+    "checkConnection": "Пожалуйста, проверьте ваше соединение и попробуйте еще раз",
+    "close": "Закрыть",
+    "confirm": "Подтверждать",
+    "copiedToClipboard": "Скопировано в буфер обмена",
+    "copiedWalletAddressDescription": "Только база USDC может быть отправлена. \nВ противном случае депозит с нашей платежной ссылкой.",
+    "createdAt": "Создан в",
+    "deposit": "Депозитный",
+    "description": "Описание",
+    "enterAmount": "Введите сумму",
+    "information": "Информация",
+    "loading": "Загрузка",
+    "manualWithdraw": "Ручное уход",
+    "manualWithdraw1": "Ручное снятие передаст весь ваш баланс. \nПосле подтверждения, пожалуйста, свяжитесь с командой Розо в",
+    "manualWithdraw2": "Чтобы завершить процесс.",
+    "max": "Максимум",
+    "maxCharacters": "Максимум {{count}} символов",
+    "merchantId": "Идентификатор продавца",
+    "noConnection": "Нет подключения к интернету",
+    "notFound": "Не найдено",
+    "note": "Примечание",
+    "printReceipt": "Печать чека",
+    "privacyPolicy": "Политика конфиденциальности",
+    "processing": "Обработка",
+    "receive": "Получать",
+    "status": "Статус",
+    "submit": "Отправить",
+    "termsOfService": "Условия использования",
+    "topUp": "Пополнить",
+    "unknown": "Неизвестный",
+    "update": "Обновить",
+    "updating": "Обновление",
+    "walletAddress": "Адрес кошелька",
+    "walletBalance": "Баланс кошелька",
+    "withdraw": "Вывести"
+  },
+  "home": {
+    "title": "Главная"
+  },
+  "login": {
+    "description": "Простая и эффективная система точек продаж",
+    "loading": "Загрузка",
+    "signIn": "Войти"
+  },
+  "onboarding": {
+    "message": "Добро пожаловать в Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "Фильтр по статусу",
+    "noOrdersYet": "Заказов пока нет",
+    "noOrdersYetDesc": "Ваши недавние заказы появятся здесь после начала транзакций.",
+    "orderDetails": "Подробная информация о заказе",
+    "recentOrders": "Недавние заказы",
+    "recentOrdersDesc": "Ниже представлены ваши последние заказы",
+    "status": {
+      "completed": "Завершено",
+      "discrepancy": "Несоответствие",
+      "failed": "Неудачно",
+      "pending": "В ожидании",
+      "processing": "В обработке"
+    },
+    "title": "Заказы"
+  },
+  "payment": {
+    "PaymentQRCode": "QR-код оплаты",
+    "amountToPay": "Сумма к оплате",
+    "continueToPayment": "Продолжить к оплате",
+    "enterPaymentAmount": "Введите сумму оплаты",
+    "notes": {
+      "enterNote": "Введите примечание",
+      "title": "Платежное примечание"
+    },
+    "openPaymentLink": "Открытая ссылка на оплату",
+    "orderNumber": "Номер заказа",
+    "paymentSuccessful": "Оплата прошла успешно",
+    "paymentSuccessfulDesc": "Ваша транзакция успешно завершена",
+    "scanToPay": "Сканировать для оплаты",
+    "verifyPayment": "Проверить оплату",
+    "voiceSuccess": "Вы получили {{amount}} {{currency}} через Rozo"
+  },
+  "pos": {
+    "title": "Поступок"
+  },
+  "profile": {
+    "displayName": "Отображаемое имя",
+    "email": "Электронная почта",
+    "placeholder": {
+      "displayName": "Введите отображаемое имя",
+      "email": "Введите вашу электронную почту"
+    },
+    "title": "Профиль",
+    "updateError": "Не удалось обновить профиль"
+  },
+  "settings": {
+    "about": "О нас",
+    "account": {
+      "title": "Аккаунт"
+    },
+    "app_name": "Название приложения",
+    "currency": {
+      "title": "Валюта"
+    },
+    "description": "Управляйте предпочтениями вашей учетной записи и настройками приложения",
+    "english": "Английский",
+    "gaslessInfo": "Вы можете отправлять токены без сетевых сборов с использованием Teacy. \nПереводы без газа поддерживаются!",
+    "general": "Общие",
+    "github": "GitHub",
+    "indonesia": "Индонезийский",
+    "language": {
+      "title": "Язык"
+    },
+    "links": "Ссылки",
+    "login": "Войти",
+    "logout": "Выйти",
+    "more": "Больше",
+    "pointOfSales": {
+      "description": "Включите вкладку Home для функций продажи.",
+      "title": "Показать точку продаж"
+    },
+    "privacy": "Политика конфиденциальности",
+    "rate": "Оценить",
+    "share": "Поделиться",
+    "signUp": "Зарегистрироваться",
+    "support": "Поддержка",
+    "support_us": "Поддержите нас",
+    "terms": "Условия использования",
+    "theme": {
+      "dark": "Тёмная",
+      "light": "Светлая",
+      "system": "Системная",
+      "title": "Тема"
+    },
+    "title": "Настройки",
+    "version": "Версия",
+    "website": "Веб-сайт"
+  },
+  "toast": {
+    "danger": "Ошибка",
+    "info": "Информация",
+    "success": "Успех"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "Вход",
+      "OUT": "Исходящий"
+    },
+    "noTransactionsFound": "Транзакций не найдено",
+    "recentTransactions": "Недавние транзакции",
+    "recentTransactionsDesc": "Ниже приведены ваши последние транзакции на основе Etherscan"
+  },
+  "transactions": {
+    "title": "Транзакции"
+  },
+  "validation": {
+    "invalidAmount": "Неверная сумма",
+    "maxAmount": "Максимальная сумма {{max}}",
+    "minAmount": "Минимальная сумма {{min}}",
+    "required": "Это поле обязательно к заполнению"
+  },
+  "welcome": "Добро пожаловать в Rozo POS",
+  "withdraw": {
+    "error": "Ошибка вывода",
+    "success": "Успешно выведено",
+    "supportedOnly": "Поддерживается только {{currency}}",
+    "walletAddressPlaceholder": "Введите адрес своего кошелька"
+  }
+}

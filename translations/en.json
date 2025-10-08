@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "View and manage your wallet balance",
+    "title": "Balance"
+  },
+  "deposit": {
+    "topUpInitiated": "Top up of {{amount}} initiated"
+  },
+  "general": {
+    "addNote": "Add note",
+    "amount": "Amount",
+    "amountPaid": "Amount Paid",
+    "backToHome": "Back to Home",
+    "cancel": "Cancel",
+    "checkConnection": "Please check your connection and try again",
+    "close": "Close",
+    "confirm": "Confirm",
+    "copiedToClipboard": "Coppied to Clipboard",
+    "copiedWalletAddressDescription": "Only USDC base can be sent. Otherwise, deposit with our Payment Link.",
+    "createdAt": "Created at",
+    "deposit": "Deposit",
+    "description": "Description",
+    "enterAmount": "Enter amount",
+    "information": "Information",
+    "loading": "Loading",
+    "manualWithdraw": "Manual Withdraw",
+    "manualWithdraw1": "Manual withdraw will transfer your entire balance. After confirming, please contact the Rozo team at",
+    "manualWithdraw2": "to complete the process.",
+    "max": "Maximum",
+    "maxCharacters": "Max {{count}} characters",
+    "merchantId": "Merchant ID",
+    "noConnection": "No internet connection",
+    "notFound": "Not found",
+    "note": "Note",
+    "printReceipt": "Print Receipt",
+    "privacyPolicy": "Privacy Policy",
+    "processing": "Processing",
+    "receive": "Receive",
+    "status": "Status",
+    "submit": "Submit",
+    "termsOfService": "Terms of Service",
+    "topUp": "Top Up",
+    "unknown": "Unknown",
+    "update": "Update",
+    "updating": "Updating",
+    "walletAddress": "Wallet Address",
+    "walletBalance": "Wallet Balance",
+    "withdraw": "Withdraw"
+  },
+  "home": {
+    "title": "Home"
+  },
+  "login": {
+    "description": "Simple and efficient point of sale system",
+    "loading": "Loading",
+    "signIn": "Sign In"
+  },
+  "onboarding": {
+    "message": "Welcome to Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "Filter by Status",
+    "noOrdersYet": "No Orders Yet",
+    "noOrdersYetDesc": "Your recent orders will appear here once you start making transactions.",
+    "orderDetails": "Order Details",
+    "recentOrders": "Recent Orders",
+    "recentOrdersDesc": "Below are your most recent orders",
+    "status": {
+      "completed": "Completed",
+      "discrepancy": "Discrepancy",
+      "failed": "Failed",
+      "pending": "Pending",
+      "processing": "Processing"
+    },
+    "title": "Orders"
+  },
+  "payment": {
+    "PaymentQRCode": "Payment QR Code",
+    "amountToPay": "Amount to Pay",
+    "continueToPayment": "Continue to Payment",
+    "enterPaymentAmount": "Enter Payment Amount",
+    "notes": {
+      "enterNote": "Enter note",
+      "title": "Payment Note"
+    },
+    "openPaymentLink": "Open Payment link",
+    "orderNumber": "Order Number",
+    "paymentSuccessful": "Payment Successful",
+    "paymentSuccessfulDesc": "Your transaction has been completed successfully",
+    "scanToPay": "Scan to Pay",
+    "verifyPayment": "Verify Payment",
+    "voiceSuccess": "You have received {{amount}} {{currency}} by Rozo"
+  },
+  "pos": {
+    "title": "POS"
+  },
+  "profile": {
+    "displayName": "Display Name",
+    "email": "Email",
+    "placeholder": {
+      "displayName": "Enter your display name",
+      "email": "Enter your email"
+    },
+    "title": "Profile",
+    "updateError": "Failed to update profile"
+  },
+  "settings": {
+    "about": "About",
+    "account": {
+      "title": "Account"
+    },
+    "app_name": "App Name",
+    "currency": {
+      "title": "Currency"
+    },
+    "description": "Manage your account preferences and app settings",
+    "english": "English",
+    "gaslessInfo": "You can send tokens without network fees using Privy. Gasless transfers are supported!",
+    "general": "General",
+    "github": "Github",
+    "indonesia": "Indonesia",
+    "language": {
+      "title": "Language"
+    },
+    "links": "Links",
+    "login": "Login",
+    "logout": "Logout",
+    "more": "More",
+    "pointOfSales": {
+      "description": "Enable home tab for point of sale features",
+      "title": "Show Point of Sales"
+    },
+    "privacy": "Privacy Policy",
+    "rate": "Rate",
+    "share": "Share",
+    "signUp": "Sign Up",
+    "support": "Support",
+    "support_us": "Support Us",
+    "terms": "Terms of Service",
+    "theme": {
+      "dark": "Dark",
+      "light": "Light",
+      "system": "System",
+      "title": "Theme"
+    },
+    "title": "Settings",
+    "version": "Version",
+    "website": "Website"
+  },
+  "toast": {
+    "danger": "Error",
+    "info": "Info",
+    "success": "Success"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "Incoming",
+      "OUT": "Outgoing"
+    },
+    "noTransactionsFound": "No transactions found",
+    "recentTransactions": "Recent Transactions",
+    "recentTransactionsDesc": "Below are your most recent transactions based on Etherscan"
+  },
+  "transactions": {
+    "title": "Transactions"
+  },
+  "validation": {
+    "invalidAmount": "Invalid amount",
+    "maxAmount": "Maximum amount is {{max}}",
+    "minAmount": "Minimum amount is {{min}}",
+    "required": "This field is required"
+  },
+  "welcome": "Welcome to Rozo POS",
+  "withdraw": {
+    "error": "An error occurred during withdrawal",
+    "success": "Withdraw successfully",
+    "supportedOnly": "Supported only {{currency}}",
+    "walletAddressPlaceholder": "Input your Wallet Address"
+  }
+}

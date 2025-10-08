@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "Lihat dan Kelola Keseimbangan Dompet Anda",
+    "title": "Keseimbangan"
+  },
+  "deposit": {
+    "topUpInitiated": "Top up {{amount}} dimulai"
+  },
+  "general": {
+    "addNote": "Tambahkan catatan",
+    "amount": "Jumlah",
+    "amountPaid": "Jumlah yang dibayarkan",
+    "backToHome": "Kembali ke Beranda",
+    "cancel": "Batal",
+    "checkConnection": "Silakan periksa koneksi Anda dan coba lagi",
+    "close": "Tutup",
+    "confirm": "Mengonfirmasi",
+    "copiedToClipboard": "Disalin ke clipboard",
+    "copiedWalletAddressDescription": "Hanya pangkalan USDC yang bisa dikirim. \nJika tidak, setor dengan tautan pembayaran kami.",
+    "createdAt": "Dibuat pada",
+    "deposit": "Deposito",
+    "description": "Keterangan",
+    "enterAmount": "Masukkan jumlah",
+    "information": "Informasi",
+    "loading": "Memuat",
+    "manualWithdraw": "Penarikan manual",
+    "manualWithdraw1": "Penarikan manual akan mentransfer seluruh saldo Anda. \nSetelah mengonfirmasi, silakan hubungi tim Rozo di",
+    "manualWithdraw2": "untuk menyelesaikan prosesnya.",
+    "max": "Maksimum",
+    "maxCharacters": "Maksimal {{count}} karakter",
+    "merchantId": "ID Pedagang",
+    "noConnection": "Tidak ada koneksi internet",
+    "notFound": "Tidak ditemukan",
+    "note": "Catatan",
+    "printReceipt": "Cetak Struk",
+    "privacyPolicy": "Kebijakan Privasi",
+    "processing": "Memproses",
+    "receive": "Menerima",
+    "status": "Status",
+    "submit": "Kirim",
+    "termsOfService": "Syarat dan Ketentuan",
+    "topUp": "Top up",
+    "unknown": "Tidak dikenal",
+    "update": "Perbarui",
+    "updating": "Memperbarui",
+    "walletAddress": "Alamat dompet",
+    "walletBalance": "Saldo dompet",
+    "withdraw": "Tarik"
+  },
+  "home": {
+    "title": "Beranda"
+  },
+  "login": {
+    "description": "Sistem point of sale yang sederhana dan efisien",
+    "loading": "Memuat",
+    "signIn": "Masuk"
+  },
+  "onboarding": {
+    "message": "Selamat datang di Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "Filter berdasarkan status",
+    "noOrdersYet": "Belum Ada Pesanan",
+    "noOrdersYetDesc": "Pesanan Anda akan muncul di sini setelah Anda mulai bertransaksi.",
+    "orderDetails": "Detail pesanan",
+    "recentOrders": "Pesanan Terbaru",
+    "recentOrdersDesc": "Berikut adalah pesanan terbaru Anda",
+    "status": {
+      "completed": "Selesai",
+      "discrepancy": "Selisih",
+      "failed": "Gagal",
+      "pending": "Tertunda",
+      "processing": "Diproses"
+    },
+    "title": "Pesanan"
+  },
+  "payment": {
+    "PaymentQRCode": "Kode QR Pembayaran",
+    "amountToPay": "Jumlah yang Harus Dibayar",
+    "continueToPayment": "Lanjutkan ke Pembayaran",
+    "enterPaymentAmount": "Masukkan Jumlah Pembayaran",
+    "notes": {
+      "enterNote": "Masukkan catatan",
+      "title": "Catatan pembayaran"
+    },
+    "openPaymentLink": "Buka tautan pembayaran",
+    "orderNumber": "Nomor Pesanan",
+    "paymentSuccessful": "Pembayaran Berhasil",
+    "paymentSuccessfulDesc": "Transaksi Anda telah berhasil diselesaikan",
+    "scanToPay": "Pindai untuk Membayar",
+    "verifyPayment": "Verifikasi Pembayaran",
+    "voiceSuccess": "Anda telah menerima {{amount}} {{currency}} dari Rozo"
+  },
+  "pos": {
+    "title": "Pos"
+  },
+  "profile": {
+    "displayName": "Nama Tampilan",
+    "email": "Email",
+    "placeholder": {
+      "displayName": "Masukkan nama tampilan Anda",
+      "email": "Masukkan email Anda"
+    },
+    "title": "Profil",
+    "updateError": "Gagal memperbarui profil"
+  },
+  "settings": {
+    "about": "Tentang",
+    "account": {
+      "title": "Akun"
+    },
+    "app_name": "Nama Aplikasi",
+    "currency": {
+      "title": "Mata Uang"
+    },
+    "description": "Kelola Preferensi Akun Anda dan Pengaturan Aplikasi",
+    "english": "Inggris",
+    "gaslessInfo": "Anda dapat mengirim token tanpa biaya jaringan menggunakan Privy. \nTransfer tanpa gas didukung!",
+    "general": "Umum",
+    "github": "GitHub",
+    "indonesia": "Indonesia",
+    "language": {
+      "title": "Bahasa"
+    },
+    "links": "Tautan",
+    "login": "Masuk",
+    "logout": "Keluar",
+    "more": "Lainnya",
+    "pointOfSales": {
+      "description": "Aktifkan Tab Rumah untuk Fitur Point of Sale",
+      "title": "Tunjukkan titik penjualan"
+    },
+    "privacy": "Kebijakan Privasi",
+    "rate": "Beri Nilai",
+    "share": "Bagikan",
+    "signUp": "Daftar",
+    "support": "Dukungan",
+    "support_us": "Dukung Kami",
+    "terms": "Syarat dan Ketentuan",
+    "theme": {
+      "dark": "Gelap",
+      "light": "Terang",
+      "system": "Sistem",
+      "title": "Tema"
+    },
+    "title": "Pengaturan",
+    "version": "Versi",
+    "website": "Situs Web"
+  },
+  "toast": {
+    "danger": "Kesalahan",
+    "info": "Info",
+    "success": "Berhasil"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "Masuk",
+      "OUT": "Outing"
+    },
+    "noTransactionsFound": "Tidak ada transaksi yang ditemukan",
+    "recentTransactions": "Transaksi terbaru",
+    "recentTransactionsDesc": "Di bawah ini adalah transaksi terbaru Anda berdasarkan Etherscan"
+  },
+  "transactions": {
+    "title": "Transaksi"
+  },
+  "validation": {
+    "invalidAmount": "Jumlah tidak valid",
+    "maxAmount": "Jumlah maksimum adalah {{max}}",
+    "minAmount": "Jumlah minimum adalah {{min}}",
+    "required": "Bidang ini diperlukan"
+  },
+  "welcome": "Selamat datang di Rozo POS",
+  "withdraw": {
+    "error": "Kesalahan Penarikan",
+    "success": "Penarikan berhasil",
+    "supportedOnly": "Hanya mendukung {{currency}}",
+    "walletAddressPlaceholder": "Masukkan alamat dompet Anda"
+  }
+}

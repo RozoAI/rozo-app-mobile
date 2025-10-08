@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "अपने बटुए संतुलन को देखें और प्रबंधित करें",
+    "title": "संतुलन"
+  },
+  "deposit": {
+    "topUpInitiated": "ऊपर {{amount}} शुरू किया गया"
+  },
+  "general": {
+    "addNote": "नोट जोड़ें",
+    "amount": "राशि",
+    "amountPaid": "भरी गई राशि",
+    "backToHome": "मुख्य पृष्ठ पर लौटें",
+    "cancel": "रद्द करें",
+    "checkConnection": "कृपया अपने कनेक्शन की जांच करें और पुनः प्रयास करें",
+    "close": "बंद करना",
+    "confirm": "पुष्टि करना",
+    "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया",
+    "copiedWalletAddressDescription": "केवल USDC बेस भेजा जा सकता है। \nअन्यथा, हमारे भुगतान लिंक के साथ जमा करें।",
+    "createdAt": "पर बनाया गया",
+    "deposit": "जमा",
+    "description": "विवरण",
+    "enterAmount": "राशि डालें",
+    "information": "जानकारी",
+    "loading": "लोड हो रहा है",
+    "manualWithdraw": "मैनुअल निकासी",
+    "manualWithdraw1": "मैनुअल वापसी आपके पूरे संतुलन को स्थानांतरित कर देगी। \nपुष्टि करने के बाद, कृपया रोज़ो टीम से संपर्क करें",
+    "manualWithdraw2": "प्रक्रिया को पूरा करने के लिए।",
+    "max": "अधिकतम",
+    "maxCharacters": "अधिकतम {{count}} वर्ण",
+    "merchantId": "व्यापारी आईडी",
+    "noConnection": "कोई इंटरनेट कनेक्शन नहीं",
+    "notFound": "नहीं मिला",
+    "note": "टिप्पणी",
+    "printReceipt": "रसीद प्रिंट करें",
+    "privacyPolicy": "गोपनीयता नीति",
+    "processing": "प्रसंस्करण",
+    "receive": "प्राप्त करें",
+    "status": "स्थिति",
+    "submit": "जमा करें",
+    "termsOfService": "सेवा की शर्तें",
+    "topUp": "लबालब भरना",
+    "unknown": "अज्ञात",
+    "update": "अपडेट करें",
+    "updating": "अपडेट हो रहा है",
+    "walletAddress": "वॉलेट का पता",
+    "walletBalance": "वॉलेट शेष",
+    "withdraw": "निकासी"
+  },
+  "home": {
+    "title": "होम"
+  },
+  "login": {
+    "description": "सरल और कुशल बिक्री बिंदु प्रणाली",
+    "loading": "लोड हो रहा है",
+    "signIn": "साइन इन करें"
+  },
+  "onboarding": {
+    "message": "Rozo POS में आपका स्वागत है"
+  },
+  "order": {
+    "filterByStatus": "स्थिति से फ़िल्टर करें",
+    "noOrdersYet": "अभी तक कोई ऑर्डर नहीं",
+    "noOrdersYetDesc": "जैसे ही आप लेन-देन शुरू करेंगे, आपके हाल के ऑर्डर यहां दिखाई देंगे।",
+    "orderDetails": "ऑर्डर का विवरण",
+    "recentOrders": "हाल के ऑर्डर",
+    "recentOrdersDesc": "नीचे आपके हाल के ऑर्डर हैं",
+    "status": {
+      "completed": "पूर्ण",
+      "discrepancy": "विसंगति",
+      "failed": "विफल",
+      "pending": "लंबित",
+      "processing": "प्रसंस्करण में"
+    },
+    "title": "ऑर्डर"
+  },
+  "payment": {
+    "PaymentQRCode": "भुगतान क्यूआर कोड",
+    "amountToPay": "भुगतान की राशि",
+    "continueToPayment": "भुगतान जारी रखें",
+    "enterPaymentAmount": "भुगतान राशि दर्ज करें",
+    "notes": {
+      "enterNote": "नोट दर्ज करें",
+      "title": "भुगतान नोट"
+    },
+    "openPaymentLink": "खुला भुगतान लिंक",
+    "orderNumber": "ऑर्डर नंबर",
+    "paymentSuccessful": "भुगतान सफल",
+    "paymentSuccessfulDesc": "आपका लेन-देन सफलतापूर्वक पूरा हो गया है",
+    "scanToPay": "भुगतान करने के लिए स्कैन करें",
+    "verifyPayment": "भुगतान सत्यापित करें",
+    "voiceSuccess": "आपको Rozo के माध्यम से {{amount}} {{currency}} प्राप्त हुए हैं"
+  },
+  "pos": {
+    "title": "पीओ"
+  },
+  "profile": {
+    "displayName": "प्रदर्शित नाम",
+    "email": "ईमेल",
+    "placeholder": {
+      "displayName": "अपना प्रदर्शित नाम दर्ज करें",
+      "email": "अपना ईमेल दर्ज करें"
+    },
+    "title": "प्रोफ़ाइल",
+    "updateError": "प्रोफ़ाइल अपडेट करने में विफल"
+  },
+  "settings": {
+    "about": "के बारे में",
+    "account": {
+      "title": "खाता"
+    },
+    "app_name": "ऐप का नाम",
+    "currency": {
+      "title": "मुद्रा"
+    },
+    "description": "अपनी खाता वरीयताएँ और ऐप सेटिंग्स प्रबंधित करें",
+    "english": "अंग्रेज़ी",
+    "gaslessInfo": "आप प्रिवी का उपयोग करके नेटवर्क शुल्क के बिना टोकन भेज सकते हैं। \nगैसलेस ट्रांसफर समर्थित हैं!",
+    "general": "सामान्य",
+    "github": "GitHub",
+    "indonesia": "इंडोनेशियाई",
+    "language": {
+      "title": "भाषा"
+    },
+    "links": "लिंक",
+    "login": "लॉगिन",
+    "logout": "लॉगआउट",
+    "more": "अधिक",
+    "pointOfSales": {
+      "description": "बिक्री सुविधाओं के बिंदु के लिए होम टैब सक्षम करें",
+      "title": "बिक्री का बिंदु"
+    },
+    "privacy": "गोपनीयता नीति",
+    "rate": "रेट करें",
+    "share": "साझा करें",
+    "signUp": "साइन अप करें",
+    "support": "सहायता",
+    "support_us": "हमें समर्थन दें",
+    "terms": "सेवा की शर्तें",
+    "theme": {
+      "dark": "डार्क",
+      "light": "लाइट",
+      "system": "सिस्टम",
+      "title": "थीम"
+    },
+    "title": "सेटिंग्स",
+    "version": "संस्करण",
+    "website": "वेबसाइट"
+  },
+  "toast": {
+    "danger": "त्रुटि",
+    "info": "जानकारी",
+    "success": "सफलता"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "आने वाली",
+      "OUT": "जावक"
+    },
+    "noTransactionsFound": "कोई परिणाम नहीं मिले",
+    "recentTransactions": "हाल ही में लेनदेन",
+    "recentTransactionsDesc": "नीचे इथरस्कैन पर आधारित आपके सबसे हाल के लेनदेन हैं"
+  },
+  "transactions": {
+    "title": "लेनदेन"
+  },
+  "validation": {
+    "invalidAmount": "अमान्य राशि",
+    "maxAmount": "अधिकतम राशि {{max}} है",
+    "minAmount": "न्यूनतम राशि {{min}} है",
+    "required": "यह फ़ील्ड आवश्यक है"
+  },
+  "welcome": "Rozo POS में आपका स्वागत है",
+  "withdraw": {
+    "error": "निकासी में त्रुटि",
+    "success": "सफलतापूर्वक निकासी",
+    "supportedOnly": "केवल {{currency}} समर्थित",
+    "walletAddressPlaceholder": "अपने वॉलेट का पता दर्ज करें"
+  }
+}

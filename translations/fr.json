@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "Afficher et gérer votre équilibre de portefeuille",
+    "title": "Équilibre"
+  },
+  "deposit": {
+    "topUpInitiated": "Gérer {{amount}} initié"
+  },
+  "general": {
+    "addNote": "Ajouter une note",
+    "amount": "Montant",
+    "amountPaid": "Montant payé",
+    "backToHome": "Retour à l'accueil",
+    "cancel": "Annuler",
+    "checkConnection": "Veuillez vérifier votre connexion et réessayer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "copiedToClipboard": "Copié dans le presse-papiers",
+    "copiedWalletAddressDescription": "Seule la base USDC peut être envoyée. \nSinon, déposez avec notre lien de paiement.",
+    "createdAt": "Créé à",
+    "deposit": "Dépôt",
+    "description": "Description",
+    "enterAmount": "Entrer le montant",
+    "information": "Information",
+    "loading": "Chargement",
+    "manualWithdraw": "Retrait manuel",
+    "manualWithdraw1": "Le retrait manuel transférera l'intégralité de votre solde. \nAprès avoir confirmé, veuillez contacter l'équipe Rozo à",
+    "manualWithdraw2": "pour terminer le processus.",
+    "max": "Maximum",
+    "maxCharacters": "Maximum {{count}} caractères",
+    "merchantId": "ID du marchand",
+    "noConnection": "Pas de connexion internet",
+    "notFound": "Pas trouvé",
+    "note": "Note",
+    "printReceipt": "Imprimer le reçu",
+    "privacyPolicy": "Politique de confidentialité",
+    "processing": "Traitement",
+    "receive": "Recevoir",
+    "status": "Statut",
+    "submit": "Soumettre",
+    "termsOfService": "Conditions d'utilisation",
+    "topUp": "Se débarrasser de",
+    "unknown": "Inconnu",
+    "update": "Mettre à jour",
+    "updating": "Mise à jour en cours",
+    "walletAddress": "Adresse du portefeuille",
+    "walletBalance": "Solde du portefeuille",
+    "withdraw": "Retirer"
+  },
+  "home": {
+    "title": "Accueil"
+  },
+  "login": {
+    "description": "Système de point de vente simple et efficace",
+    "loading": "Chargement",
+    "signIn": "Se connecter"
+  },
+  "onboarding": {
+    "message": "Bienvenue sur Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "Filtrer par statut",
+    "noOrdersYet": "Aucune commande pour le moment",
+    "noOrdersYetDesc": "Vos commandes récentes apparaîtront ici dès que vous commencerez à effectuer des transactions.",
+    "orderDetails": "Détails de la commande",
+    "recentOrders": "Commandes récentes",
+    "recentOrdersDesc": "Voici vos commandes récentes",
+    "status": {
+      "completed": "Terminé",
+      "discrepancy": "Divergence",
+      "failed": "Échoué",
+      "pending": "En attente",
+      "processing": "En cours"
+    },
+    "title": "Commandes"
+  },
+  "payment": {
+    "PaymentQRCode": "QR Code de paiement",
+    "amountToPay": "Montant à payer",
+    "continueToPayment": "Continuer vers le paiement",
+    "enterPaymentAmount": "Entrez le montant à payer",
+    "notes": {
+      "enterNote": "Entrez la note",
+      "title": "Note de paiement"
+    },
+    "openPaymentLink": "Lien de paiement ouvert",
+    "orderNumber": "Numéro de commande",
+    "paymentSuccessful": "Paiement réussi",
+    "paymentSuccessfulDesc": "Votre transaction a été complétée avec succès",
+    "scanToPay": "Scanner pour payer",
+    "verifyPayment": "Vérifier le paiement",
+    "voiceSuccess": "Vous avez reçu {{amount}} {{currency}} par Rozo"
+  },
+  "pos": {
+    "title": "Point de point"
+  },
+  "profile": {
+    "displayName": "Nom d'affichage",
+    "email": "Email",
+    "placeholder": {
+      "displayName": "Entrez votre nom d'affichage",
+      "email": "Entrez votre email"
+    },
+    "title": "Profil",
+    "updateError": "Échec de la mise à jour du profil"
+  },
+  "settings": {
+    "about": "À propos",
+    "account": {
+      "title": "Compte"
+    },
+    "app_name": "Nom de l'application",
+    "currency": {
+      "title": "Devise"
+    },
+    "description": "Gérez vos préférences de compte et vos paramètres d'applications",
+    "english": "Anglais",
+    "gaslessInfo": "Vous pouvez envoyer des jetons sans frais de réseau en utilisant le privé. \nLes transferts sans gaz sont pris en charge!",
+    "general": "Général",
+    "github": "GitHub",
+    "indonesia": "Indonésien",
+    "language": {
+      "title": "Langue"
+    },
+    "links": "Liens",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "more": "Plus",
+    "pointOfSales": {
+      "description": "Activer l'onglet Home pour les fonctionnalités de point de vente",
+      "title": "Montrer le point de vente"
+    },
+    "privacy": "Politique de confidentialité",
+    "rate": "Noter",
+    "share": "Partager",
+    "signUp": "S'inscrire",
+    "support": "Support",
+    "support_us": "Soutenez-nous",
+    "terms": "Conditions d'utilisation",
+    "theme": {
+      "dark": "Sombre",
+      "light": "Clair",
+      "system": "Système",
+      "title": "Thème"
+    },
+    "title": "Paramètres",
+    "version": "Version",
+    "website": "Site web"
+  },
+  "toast": {
+    "danger": "Erreur",
+    "info": "Info",
+    "success": "Succès"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "Entrant",
+      "OUT": "Sortant"
+    },
+    "noTransactionsFound": "Aucune transaction trouvée",
+    "recentTransactions": "Transactions récentes",
+    "recentTransactionsDesc": "Vous trouverez ci-dessous vos transactions les plus récentes basées sur Etherscan"
+  },
+  "transactions": {
+    "title": "Transactions"
+  },
+  "validation": {
+    "invalidAmount": "Montant non valide",
+    "maxAmount": "Le montant maximum est {{max}}",
+    "minAmount": "Le montant minimum est {{min}}",
+    "required": "Ce champ est obligatoire"
+  },
+  "welcome": "Bienvenue sur Rozo POS",
+  "withdraw": {
+    "error": "Erreur de retrait",
+    "success": "Retrait effectué avec succès",
+    "supportedOnly": "Pris en charge uniquement {{currency}}",
+    "walletAddressPlaceholder": "Entrez votre adresse de portefeuille"
+  }
+}

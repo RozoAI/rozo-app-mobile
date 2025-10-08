@@ -1,24 +1,146 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { base, PrivyProvider } from "@privy-io/expo";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { ErrorBoundary } from "react-error-boundary";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import "react-native-reanimated";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme } from "@/hooks/use-color-scheme";
+
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import "@/global.css";
+
+import { PrivyReady } from "@/components/privy-ready";
+import { Text } from "@/components/ui/text";
+import { View } from "@/components/ui/view";
+import { AppProvider } from "@/providers/app.provider";
+import { QueryProvider } from "@/providers/query.provider";
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+} from "@expo-google-fonts/inter";
+import { PrivyElements } from "@privy-io/expo/ui";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useCallback } from "react";
+import { StyleSheet } from "react-native";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  initialRouteName: "(main)",
 };
+
+// Set the animation options. This is optional.
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    // We hide the splash screen only when the app is ready AND fonts are loaded
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <GluestackUIProvider mode="system">
+        <GestureHandlerRootView
+          style={styles.container}
+          className={colorScheme ? colorScheme : "light"}
+          onLayout={onLayoutRootView}
+        >
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <QueryProvider>
+              <PrivyProvider
+                appId="cmeyff6cn00ysl50b04g72k5o"
+                clientId="client-WY6PsmwzvcGusMZSKi8hBDr9Q5Bt3hs72PQub4BdGquDz"
+                supportedChains={[base]}
+                config={{
+                  embedded: {
+                    ethereum: {
+                      createOnLogin: "off",
+                    },
+                  },
+                }}
+              >
+                <PrivyReady>
+                  <AppProvider>
+                    <KeyboardProvider>
+                      <Stack>
+                        <Stack.Screen
+                          name="(main)"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="login"
+                          options={{ headerShown: false }}
+                        />
+                      </Stack>
+                    </KeyboardProvider>
+                  </AppProvider>
+
+                  <StatusBar style="auto" />
+                  <PrivyElements
+                    config={{
+                      appearance: {
+                        accentColor: "#0a0a0a",
+                      },
+                    }}
+                  />
+                </PrivyReady>
+              </PrivyProvider>
+            </QueryProvider>
+          </ThemeProvider>
+        </GestureHandlerRootView>
+      </GluestackUIProvider>
+    </ErrorBoundary>
   );
 }
+
+function ErrorFallback({ error }: { error: Error }) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+      }}
+    >
+      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+        Something went wrong:
+      </Text>
+      <Text style={{ color: "red", textAlign: "center" }}>{error.message}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

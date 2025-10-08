@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "عرض وإدارة توازن محفظتك",
+    "title": "توازن"
+  },
+  "deposit": {
+    "topUpInitiated": "تسبق {{{amount}}"
+  },
+  "general": {
+    "addNote": "إضافة ملاحظة",
+    "amount": "المبلغ",
+    "amountPaid": "المبلغ المدفوع",
+    "backToHome": "العودة إلى الرئيسية",
+    "cancel": "إلغاء",
+    "checkConnection": "يرجى التحقق من اتصالك والمحاولة مرة أخرى",
+    "close": "يغلق",
+    "confirm": "يتأكد",
+    "copiedToClipboard": "coppied إلى الحافظة",
+    "copiedWalletAddressDescription": "يمكن إرسال قاعدة USDC فقط. \nخلاف ذلك ، إيداع مع رابط الدفع الخاص بنا.",
+    "createdAt": "تم إنشاؤها في",
+    "deposit": "إيداع",
+    "description": "وصف",
+    "enterAmount": "أدخل المبلغ",
+    "information": "معلومة",
+    "loading": "تحميل",
+    "manualWithdraw": "انسحاب يدوي",
+    "manualWithdraw1": "السحب اليدوي سوف ينقل توازنك بالكامل. \nبعد التأكيد ، يرجى الاتصال بفريق روزو على",
+    "manualWithdraw2": "لإكمال العملية.",
+    "max": "الحد الأقصى",
+    "maxCharacters": "الحد الأقصى {{count}} حرف",
+    "merchantId": "معرف التاجر",
+    "noConnection": "لا يوجد اتصال بالإنترنت",
+    "notFound": "لم يتم العثور عليها",
+    "note": "ملحوظة",
+    "printReceipt": "طباعة الإيصال",
+    "privacyPolicy": "سياسة الخصوصية",
+    "processing": "يعالج",
+    "receive": "يستلم",
+    "status": "حالة",
+    "submit": "يُقدِّم",
+    "termsOfService": "شروط الخدمة",
+    "topUp": "أعلى",
+    "unknown": "مجهول",
+    "update": "Update",
+    "updating": "Updating",
+    "walletAddress": "عنوان محفظة",
+    "walletBalance": "توازن المحفظة",
+    "withdraw": "ينسحب"
+  },
+  "home": {
+    "title": "بيت"
+  },
+  "login": {
+    "description": "نظام نقاط البيع بسيط وفعال",
+    "loading": "تحميل",
+    "signIn": "تسجيل الدخول"
+  },
+  "onboarding": {
+    "message": "مرحبًا بك في Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "تصفية حسب الحالة",
+    "noOrdersYet": "لا توجد طلبات بعد",
+    "noOrdersYetDesc": "ستظهر طلباتك الأخيرة هنا بمجرد بدء المعاملات.",
+    "orderDetails": "طلب تفاصيل",
+    "recentOrders": "الطلبات الأخيرة",
+    "recentOrdersDesc": "فيما يلي طلباتك الأخيرة",
+    "status": {
+      "completed": "مكتمل",
+      "discrepancy": "تفاوت",
+      "failed": "فشل",
+      "pending": "قيد الانتظار",
+      "processing": "قيد المعالجة"
+    },
+    "title": "طلبات"
+  },
+  "payment": {
+    "PaymentQRCode": "رمز الدفع (QR)",
+    "amountToPay": "المبلغ للدفع",
+    "continueToPayment": "المتابعة إلى الدفع",
+    "enterPaymentAmount": "أدخل مبلغ الدفع",
+    "notes": {
+      "enterNote": "أدخل الملاحظة",
+      "title": "مذكرة الدفع"
+    },
+    "openPaymentLink": "رابط الدفع المفتوح",
+    "orderNumber": "رقم الطلب",
+    "paymentSuccessful": "تم الدفع بنجاح",
+    "paymentSuccessfulDesc": "تم إتمام معاملتك بنجاح",
+    "scanToPay": "مسح للدفع",
+    "verifyPayment": "تحقق من الدفع",
+    "voiceSuccess": "تم استلام {{amount}} {{currency}} من Rozo"
+  },
+  "pos": {
+    "title": "نقاط البيع"
+  },
+  "profile": {
+    "displayName": "اسم العرض",
+    "email": "البريد الإلكتروني",
+    "placeholder": {
+      "displayName": "أدخل اسم العرض",
+      "email": "أدخل البريد الإلكتروني"
+    },
+    "title": "الملف الشخصي",
+    "updateError": "فشل تحديث الملف الشخصي"
+  },
+  "settings": {
+    "about": "حول",
+    "account": {
+      "title": "الحساب"
+    },
+    "app_name": "اسم التطبيق",
+    "currency": {
+      "title": "العملة"
+    },
+    "description": "إدارة تفضيلات حسابك وإعدادات التطبيق",
+    "english": "الإنجليزية",
+    "gaslessInfo": "يمكنك إرسال الرموز المميزة دون رسوم الشبكة باستخدام الملكية. \nيتم دعم عمليات نقل الغاز!",
+    "general": "عام",
+    "github": "GitHub",
+    "indonesia": "الإندونيسية",
+    "language": {
+      "title": "اللغة"
+    },
+    "links": "روابط",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "more": "المزيد",
+    "pointOfSales": {
+      "description": "تمكين علامة تبويب المنزل لميزات نقطة البيع",
+      "title": "نقطة المبيعات"
+    },
+    "privacy": "سياسة الخصوصية",
+    "rate": "تقييم",
+    "share": "مشاركة",
+    "signUp": "إنشاء حساب",
+    "support": "الدعم",
+    "support_us": "ادعمنا",
+    "terms": "شروط الخدمة",
+    "theme": {
+      "dark": "داكن",
+      "light": "فاتح",
+      "system": "النظام",
+      "title": "الثيم"
+    },
+    "title": "الإعدادات",
+    "version": "الإصدار",
+    "website": "الموقع الإلكتروني"
+  },
+  "toast": {
+    "danger": "خطأ",
+    "info": "معلومات",
+    "success": "نجاح"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "وارد",
+      "OUT": "المنتهية ولايته"
+    },
+    "noTransactionsFound": "لم يتم العثور على معاملات",
+    "recentTransactions": "المعاملات الأخيرة",
+    "recentTransactionsDesc": "فيما يلي أحدث معاملاتك على أساس Etherscan"
+  },
+  "transactions": {
+    "title": "المعاملات"
+  },
+  "validation": {
+    "invalidAmount": "مبلغ غير صالح",
+    "maxAmount": "الحد الأقصى المبلغ هو {{max}}",
+    "minAmount": "الحد الأدنى هو {{min}}",
+    "required": "هذه الخانة مطلوبه"
+  },
+  "welcome": "مرحبًا بك في Rozo POS",
+  "withdraw": {
+    "error": "سحب الخطأ",
+    "success": "الانسحاب بنجاح",
+    "supportedOnly": "مدعوم فقط {{currency}}",
+    "walletAddressPlaceholder": "أدخل عنوان محفظتك"
+  }
+}

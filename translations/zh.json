@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "查看和管理您的钱包余额",
+    "title": "平衡"
+  },
+  "deposit": {
+    "topUpInitiated": "启动{{amount}}"
+  },
+  "general": {
+    "addNote": "添加备注",
+    "amount": "金额",
+    "amountPaid": "已付金额",
+    "backToHome": "返回主页",
+    "cancel": "取消",
+    "checkConnection": "请检查您的连接并重试",
+    "close": "关闭",
+    "confirm": "确认",
+    "copiedToClipboard": "已复制到剪贴板",
+    "copiedWalletAddressDescription": "只能发送USDC基础。\n否则，使用我们的付款链接存入。",
+    "createdAt": "创建于",
+    "deposit": "订金",
+    "description": "描述",
+    "enterAmount": "输入金额",
+    "information": "信息",
+    "loading": "加载中",
+    "manualWithdraw": "手动提取",
+    "manualWithdraw1": "手动提取将转移您的全部余额。\n确认后，请与Rozo团队联系",
+    "manualWithdraw2": "完成过程。",
+    "max": "最大值",
+    "maxCharacters": "最多 {{count}} 个字符",
+    "merchantId": "商家ID",
+    "noConnection": "无网络连接",
+    "notFound": "未找到",
+    "note": "备注",
+    "printReceipt": "打印收据",
+    "privacyPolicy": "隐私政策",
+    "processing": "处理中",
+    "receive": "收到",
+    "status": "状态",
+    "submit": "提交",
+    "termsOfService": "服务条款",
+    "topUp": "充值",
+    "unknown": "未知",
+    "update": "更新",
+    "updating": "更新中",
+    "walletAddress": "钱包地址",
+    "walletBalance": "钱包余额",
+    "withdraw": "提现"
+  },
+  "home": {
+    "title": "首页"
+  },
+  "login": {
+    "description": "简单高效的销售点系统",
+    "loading": "加载中",
+    "signIn": "登录"
+  },
+  "onboarding": {
+    "message": "欢迎使用 Rozo POS"
+  },
+  "order": {
+    "filterByStatus": "按状态过滤",
+    "noOrdersYet": "暂无订单",
+    "noOrdersYetDesc": "您开始进行交易后，最近订单将显示在此。",
+    "orderDetails": "订单详情",
+    "recentOrders": "最近订单",
+    "recentOrdersDesc": "以下是您最近的订单",
+    "status": {
+      "completed": "已完成",
+      "discrepancy": "不一致",
+      "failed": "失败",
+      "pending": "待处理",
+      "processing": "处理中"
+    },
+    "title": "订单"
+  },
+  "payment": {
+    "PaymentQRCode": "付款二维码",
+    "amountToPay": "应付金额",
+    "continueToPayment": "继续付款",
+    "enterPaymentAmount": "输入付款金额",
+    "notes": {
+      "enterNote": "输入备注",
+      "title": "付款备注"
+    },
+    "openPaymentLink": "打开付款链接",
+    "orderNumber": "订单号",
+    "paymentSuccessful": "支付成功",
+    "paymentSuccessfulDesc": "您的交易已成功完成",
+    "scanToPay": "扫码支付",
+    "verifyPayment": "验证付款",
+    "voiceSuccess": "您已通过 Rozo 收到 {{amount}} {{currency}}"
+  },
+  "pos": {
+    "title": "pos"
+  },
+  "profile": {
+    "displayName": "显示名称",
+    "email": "电子邮箱",
+    "placeholder": {
+      "displayName": "输入您的显示名称",
+      "email": "输入您的电子邮箱"
+    },
+    "title": "个人资料",
+    "updateError": "更新个人资料失败"
+  },
+  "settings": {
+    "about": "关于",
+    "account": {
+      "title": "账户"
+    },
+    "app_name": "应用名称",
+    "currency": {
+      "title": "货币"
+    },
+    "description": "管理您的账户首选项和应用程序设置",
+    "english": "英语",
+    "gaslessInfo": "您可以使用Privy发送无网络费用的令牌。\n支持无气接收！",
+    "general": "常规",
+    "github": "GitHub",
+    "indonesia": "印尼语",
+    "language": {
+      "title": "语言"
+    },
+    "links": "链接",
+    "login": "登录",
+    "logout": "退出登录",
+    "more": "更多",
+    "pointOfSales": {
+      "description": "启用主场销售点功能",
+      "title": "展示销售点"
+    },
+    "privacy": "隐私政策",
+    "rate": "评分",
+    "share": "分享",
+    "signUp": "注册",
+    "support": "支持",
+    "support_us": "支持我们",
+    "terms": "服务条款",
+    "theme": {
+      "dark": "深色",
+      "light": "浅色",
+      "system": "系统",
+      "title": "主题"
+    },
+    "title": "设置",
+    "version": "版本",
+    "website": "网站"
+  },
+  "toast": {
+    "danger": "错误",
+    "info": "信息",
+    "success": "成功"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "传入",
+      "OUT": "向外"
+    },
+    "noTransactionsFound": "找不到交易",
+    "recentTransactions": "最近的交易",
+    "recentTransactionsDesc": "以下是您基于Etherscan的最新交易"
+  },
+  "transactions": {
+    "title": "交易"
+  },
+  "validation": {
+    "invalidAmount": "无效的金额",
+    "maxAmount": "最大金额为{{max}}",
+    "minAmount": "最低金额为{{min}}",
+    "required": "此字段为必填项"
+  },
+  "welcome": "欢迎使用 Rozo POS",
+  "withdraw": {
+    "error": "提现错误",
+    "success": "提现成功",
+    "supportedOnly": "仅支持{{currency}}",
+    "walletAddressPlaceholder": "输入您的钱包地址"
+  }
+}

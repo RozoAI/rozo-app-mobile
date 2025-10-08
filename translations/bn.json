@@ -1,0 +1,180 @@
+{
+  "balance": {
+    "description": "আপনার ওয়ালেট ভারসাম্য দেখুন এবং পরিচালনা করুন",
+    "title": "ভারসাম্য"
+  },
+  "deposit": {
+    "topUpInitiated": "{{amount}} এর টপ আপ শুরু হয়েছে"
+  },
+  "general": {
+    "addNote": "নোট যোগ করুন",
+    "amount": "পরিমাণ",
+    "amountPaid": "পরিশোধিত পরিমাণ",
+    "backToHome": "বাড়িতে ফিরে যাও",
+    "cancel": "বাতিল",
+    "checkConnection": "অনুগ্রহ করে আপনার সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন",
+    "close": "বন্ধ করুন",
+    "confirm": "নিশ্চিত করুন",
+    "copiedToClipboard": "ক্লিপবোর্ডে কপ্পড",
+    "copiedWalletAddressDescription": "শুধুমাত্র ইউএসডিসি বেস পাঠানো যেতে পারে। \nঅন্যথায়, আমাদের অর্থ প্রদানের লিঙ্কটি জমা দিন।",
+    "createdAt": "এটি তৈরি",
+    "deposit": "আমানত",
+    "description": "বর্ণনা",
+    "enterAmount": "পরিমাণ প্রবেশ করান",
+    "information": "তথ্য",
+    "loading": "লোড হচ্ছে",
+    "manualWithdraw": "ম্যানুয়াল প্রত্যাহার",
+    "manualWithdraw1": "ম্যানুয়াল প্রত্যাহার আপনার পুরো ভারসাম্য স্থানান্তর করবে। \nনিশ্চিত করার পরে, দয়া করে রোজো দলের সাথে যোগাযোগ করুন",
+    "manualWithdraw2": "প্রক্রিয়া সম্পূর্ণ করতে।",
+    "max": "সর্বাধিক",
+    "maxCharacters": "সর্বাধিক {{count}} অক্ষর",
+    "merchantId": "বণিক আইডি",
+    "noConnection": "ইন্টারনেট সংযোগ নেই",
+    "notFound": "পাওয়া যায় নি",
+    "note": "দ্রষ্টব্য",
+    "printReceipt": "রশিদ মুদ্রণ করুন",
+    "privacyPolicy": "গোপনীয়তা নীতি",
+    "processing": "প্রক্রিয়াজাতকরণ",
+    "receive": "গ্রহণ",
+    "status": "স্থিতি",
+    "submit": "জমা দিন",
+    "termsOfService": "পরিষেবার শর্তাবলী",
+    "topUp": "শীর্ষে",
+    "unknown": "অজানা",
+    "update": "Update",
+    "updating": "Updating",
+    "walletAddress": "মানিব্যাগের ঠিকানা",
+    "walletBalance": "মানিব্যাগ ভারসাম্য",
+    "withdraw": "প্রত্যাহার"
+  },
+  "home": {
+    "title": "বাড়ি"
+  },
+  "login": {
+    "description": "সহজ এবং দক্ষ পয়েন্ট অফ সেল সিস্টেম",
+    "loading": "লোড হচ্ছে",
+    "signIn": "সাইন ইন"
+  },
+  "onboarding": {
+    "message": "Rozo POS-এ আপনাকে স্বাগতম"
+  },
+  "order": {
+    "filterByStatus": "স্থিতি দ্বারা ফিল্টার",
+    "noOrdersYet": "এখনও কোনো অর্ডার নেই",
+    "noOrdersYetDesc": "লেনদেন শুরু হলে আপনার সাম্প্রতিক অর্ডারগুলো এখানে প্রদর্শিত হবে।",
+    "orderDetails": "অর্ডার বিশদ",
+    "recentOrders": "সাম্প্রতিক অর্ডার",
+    "recentOrdersDesc": "নিচে আপনার সাম্প্রতিক অর্ডারগুলো",
+    "status": {
+      "completed": "সম্পন্ন",
+      "discrepancy": "বৈষম্য",
+      "failed": "ব্যর্থ",
+      "pending": "বিচারাধীন",
+      "processing": "প্রক্রিয়াধীন"
+    },
+    "title": "অর্ডার"
+  },
+  "payment": {
+    "PaymentQRCode": "পেমেন্ট QR কোড",
+    "amountToPay": "পরিশোধের পরিমাণ",
+    "continueToPayment": "পেমেন্ট চালিয়ে যান",
+    "enterPaymentAmount": "পেমেন্টের পরিমাণ লিখুন",
+    "notes": {
+      "enterNote": "নোট লিখুন",
+      "title": "পেমেন্ট নোট"
+    },
+    "openPaymentLink": "পেমেন্ট লিঙ্ক খুলুন",
+    "orderNumber": "অর্ডার নম্বর",
+    "paymentSuccessful": "পেমেন্ট সফল হয়েছে",
+    "paymentSuccessfulDesc": "আপনার লেনদেন সফলভাবে সম্পন্ন হয়েছে",
+    "scanToPay": "স্ক্যান করতে স্ক্যান করুন",
+    "verifyPayment": "পেমেন্ট যাচাই করুন",
+    "voiceSuccess": "আপনি Rozo-এর মাধ্যমে {{amount}} {{currency}} পেয়েছেন"
+  },
+  "pos": {
+    "title": "পোস"
+  },
+  "profile": {
+    "displayName": "প্রদর্শন নাম",
+    "email": "ইমেইল",
+    "placeholder": {
+      "displayName": "আপনার প্রদর্শন নাম লিখুন",
+      "email": "আপনার ইমেইল লিখুন"
+    },
+    "title": "প্রোফাইল",
+    "updateError": "প্রোফাইল আপডেট করতে ব্যর্থ হয়েছে"
+  },
+  "settings": {
+    "about": "সম্পর্কে",
+    "account": {
+      "title": "অ্যাকাউন্ট"
+    },
+    "app_name": "অ্যাপ নাম",
+    "currency": {
+      "title": "মুদ্রা"
+    },
+    "description": "আপনার অ্যাকাউন্ট পছন্দ এবং অ্যাপ্লিকেশন সেটিংস পরিচালনা করুন",
+    "english": "ইংরেজি",
+    "gaslessInfo": "আপনি প্রিভিটি ব্যবহার করে নেটওয়ার্ক ফি ছাড়াই টোকেন প্রেরণ করতে পারেন। \nগ্যাসহীন স্থানান্তর সমর্থিত!",
+    "general": "সাধারণ",
+    "github": "GitHub",
+    "indonesia": "ইন্দোনেশিয়া",
+    "language": {
+      "title": "ভাষা"
+    },
+    "links": "লিঙ্ক",
+    "login": "লগইন",
+    "logout": "লগআউট",
+    "more": "আরো",
+    "pointOfSales": {
+      "description": "পয়েন্ট অফ বিক্রয় বৈশিষ্ট্যগুলির জন্য হোম ট্যাব সক্ষম করুন",
+      "title": "বিক্রয় পয়েন্ট প্রদর্শন"
+    },
+    "privacy": "গোপনীয়তা নীতি",
+    "rate": "মূল্যায়ন",
+    "share": "শেয়ার করুন",
+    "signUp": "সাইন আপ",
+    "support": "সহায়তা",
+    "support_us": "আমাদের সমর্থন করুন",
+    "terms": "পরিষেবার শর্তাবলী",
+    "theme": {
+      "dark": "অন্ধকার",
+      "light": "আলো",
+      "system": "সিস্টেম",
+      "title": "থিম"
+    },
+    "title": "সেটিংস",
+    "version": "সংস্করণ",
+    "website": "ওয়েবসাইট"
+  },
+  "toast": {
+    "danger": "ত্রুটি",
+    "info": "তথ্য",
+    "success": "সফল"
+  },
+  "transaction": {
+    "direction": {
+      "IN": "আগত",
+      "OUT": "বহির্গামী"
+    },
+    "noTransactionsFound": "কোনও লেনদেন পাওয়া যায় নি",
+    "recentTransactions": "সাম্প্রতিক লেনদেন",
+    "recentTransactionsDesc": "নীচে আপনার সাম্প্রতিক লেনদেনগুলি ইথারস্ক্যানের উপর ভিত্তি করে"
+  },
+  "transactions": {
+    "title": "লেনদেন"
+  },
+  "validation": {
+    "invalidAmount": "অবৈধ পরিমাণ",
+    "maxAmount": "সর্বাধিক পরিমাণ {{max}}",
+    "minAmount": "সর্বনিম্ন পরিমাণ {{min}}",
+    "required": "এই ক্ষেত্র প্রয়োজন"
+  },
+  "welcome": "Rozo POS-এ আপনাকে স্বাগতম",
+  "withdraw": {
+    "error": "ত্রুটি প্রত্যাহার",
+    "success": "সফলভাবে প্রত্যাহার",
+    "supportedOnly": "কেবল {{currency}} সমর্থিত",
+    "walletAddressPlaceholder": "আপনার ওয়ালেট ঠিকানা ইনপুট"
+  }
+}
