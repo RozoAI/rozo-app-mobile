@@ -13,6 +13,7 @@ import {
   Coins,
   Settings2Icon,
   ShoppingBagIcon,
+  ShoppingCartIcon,
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { useTranslation } from "react-i18next";
@@ -97,22 +98,22 @@ export default function TabLayout() {
               }}
             />
 
-            {/* <Tabs.Screen
-            name="pos"
-            options={
-              showPOS
-                ? {
-                    title: t("pos.title"),
-                    tabBarIcon: ({ color }: any) => (
-                      <Icon as={ShoppingCartIcon} size="md" color={color} />
-                    ),
-                    tabBarButtonTestID: "pos-tab",
-                  }
-                : {
-                    href: null,
-                  }
-            }
-          /> */}
+            <Tabs.Screen
+              name="pos"
+              options={
+                showPOS
+                  ? {
+                      title: t("pos.title"),
+                      tabBarIcon: ({ color }: any) => (
+                        <Icon as={ShoppingCartIcon} size="md" color={color} />
+                      ),
+                      tabBarButtonTestID: "pos-tab",
+                    }
+                  : {
+                      href: null,
+                    }
+              }
+            />
 
             <Tabs.Screen
               name="orders"
@@ -161,6 +162,7 @@ function WalletHandler({ children }: { children: React.ReactNode }) {
     if (user && !hasEvmWallet) {
       handleCreateWallet();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, hasEvmWallet]);
 
   return children;
