@@ -63,6 +63,13 @@ export default function RootLayout() {
     return null;
   }
 
+  if (
+    !process.env.EXPO_PUBLIC_PRIVY_APP_ID ||
+    !process.env.EXPO_PUBLIC_PRIVY_MOBILE_CLIENT_ID
+  ) {
+    return <Text>Missing Privy credentials</Text>;
+  }
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <GluestackUIProvider mode="system">
@@ -76,8 +83,8 @@ export default function RootLayout() {
           >
             <QueryProvider>
               <PrivyProvider
-                appId="cmeyff6cn00ysl50b04g72k5o"
-                clientId="client-WY6PsmwzvcGusMZSKi8hBDr9Q5Bt3hs72PQub4BdGquDz"
+                appId={process.env.EXPO_PUBLIC_PRIVY_APP_ID}
+                clientId={process.env.EXPO_PUBLIC_PRIVY_MOBILE_CLIENT_ID}
                 supportedChains={[base]}
                 config={{
                   embedded: {

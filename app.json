@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "rozo-app-mobile",
+    "name": "Rozo",
+    "description": "Rozo is a modern mobile application that combines a Point-of-Sale system with embedded wallets. It’s designed to make it easy for merchants and users to handle payments, deposits, and withdrawals — all in one place.",
     "slug": "rozo-app-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,10 +15,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundImage": "./assets/images/icon.png",
+        "monochromeImage": "./assets/images/icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -40,6 +41,13 @@
             "image": "./assets/images/splash-dark.png",
             "backgroundColor": "#0a0a0a"
           }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app needs access to your photos to allow you to upload merchant logo.",
+          "cameraPermission": "The app needs access to your camera to allow you to upload merchant logo."
         }
       ],
       "expo-secure-store",

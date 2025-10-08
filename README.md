@@ -1,50 +1,112 @@
-# Welcome to your Expo app 👋
+<h1 align="center">
+  <img alt="logo" src="https://rewards.rozo.ai/logo-square.png" width="124px" style="border-radius:10px"/><br/> Rozo App
+</h1>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## About
 
-## Get started
+Rozo App is a modern mobile application that combines a Point-of-Sale system with embedded wallets.
+It’s designed to make it easy for merchants and users to handle payments, deposits, and withdrawals — all in one place.
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+🔐 Embedded Wallets – Powered by the **Privy SDK**, so every user has a secure digital wallet built in.
 
-2. Start the app
+🛒 POS System – Simple and fast checkout experience for merchants and customers.
 
-   ```bash
-   npx expo start
-   ```
+💰 Deposit & Withdraw – Seamlessly move funds in and out of the app.
 
-In the output, you'll find options to open the app in a
+🌍 Multi-Platform – Works on iOS, Android, and Web.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+🔑 Secure Login – Protect your account with modern authentication.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+🌐 Multi-language Support – Accessible to users in different regions.
 
-## Get a fresh project
+## Screenshots
 
-When you're ready, run:
+| Sign In                                                                                                                            | Balance                                                                                                                            | Orders                                                                                                                             | POS                                                                                                                                |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| <img width="430" height="932" alt="image" src="https://github.com/user-attachments/assets/518130ee-88d4-4043-b4a5-308a92816f97" /> | <img width="430" height="932" alt="image" src="https://github.com/user-attachments/assets/33e434fb-1d71-4bee-a7de-b580f00522c1" /> | <img width="430" height="932" alt="image" src="https://github.com/user-attachments/assets/9717dbd5-03fe-4d77-a706-7c9cb8fc4233" /> | <img width="430" height="932" alt="image" src="https://github.com/user-attachments/assets/47598596-543d-4649-a1b9-b53113379b17" /> |
 
-```bash
-npm run reset-project
+## Setup
+
+### Requirements
+
+- [React Native dev environment](https://reactnative.dev/docs/environment-setup)
+- [Node.js LTS release](https://nodejs.org/en/)
+- [Git](https://git-scm.com/)
+- [Watchman](https://facebook.github.io/watchman/docs/install#buildinstall), required only for macOS or Linux users
+- [Bun](https://bun.sh/docs/installation)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+
+### Installation
+
+Clone the repo to your machine and install dependencies:
+
+```sh
+git clone https://github.com/RozoAI/rozo-app-mobile
+
+cd ./rozo-app-mobile
+
+bun install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Usage
 
-## Learn more
+### Development
 
-To learn more about developing your project with Expo, look at the following resources:
+Start the development server:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```sh
+bun start
+```
 
-## Join the community
+Run on iOS:
 
-Join our community of developers creating universal apps.
+```sh
+bun ios
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Run on Android:
+
+```sh
+bun android
+```
+
+### Environment Variables
+
+The app supports different environments:
+
+- Development: `bun start`
+- Staging: `bun start:staging`
+- Production: `bun start:production`
+
+## Stack
+
+- **Framework**: [Expo](https://expo.dev/)
+- **UI**: [React Native](https://reactnative.dev/) with [Gluestack](https://gluestack.io/)
+- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/)
+- **Data Fetching**: [React Query](https://tanstack.com/query/latest) with React Query Kit
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/)
+- **Validation**: [Zod](https://zod.dev/)
+- **Storage**: [React Native MMKV](https://github.com/mrousavy/react-native-mmkv)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) via [Gluestack](https://gluestack.io/)
+
+## Folder Structure
+
+```
+app/                # Expo Router file-based routing
+  │   ├── (app)/         # App screens (protected routes)
+  │   └── features/      # Feature-specific components
+  ├── components/        # Shared components
+  │   ├── samples/       # Example components
+  │   └── ui/            # Core UI components (buttons, inputs, etc.)
+  ├── hooks/             # Custom React hooks
+  ├── lib/               # Shared utilities
+  ├── modules/           # Feature modules
+  │   ├── auth/          # Authentication logic
+  │   └── i18n/          # Internationalization
+  ├── resources/         # External resources
+  │   └── api/           # API clients and services
+  ├── styles/            # Global styles
+  └── translations/      # Translation files
+```

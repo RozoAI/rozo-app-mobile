@@ -31,7 +31,7 @@ export default function LoginScreen() {
   // Redirect to home if user is authenticated
   useEffect(() => {
     if (user) {
-      router.replace("/(main)");
+      router.replace("/(main)/settings");
     }
   }, [user, router]);
 
@@ -56,7 +56,7 @@ export default function LoginScreen() {
           await handleCreateWallet();
         }
 
-        router.replace("/(main)");
+        router.replace("/(main)/settings");
       }
     } catch {
       setIsAuthLoading(false);
