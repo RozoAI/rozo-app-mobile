@@ -1,6 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BanknoteArrowDown, InfoIcon } from "lucide-react-native";
-import { useMemo, useState } from "react";
+import { InfoIcon } from "lucide-react-native";
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Keyboard, KeyboardAvoidingView, Platform } from "react-native";
@@ -17,12 +22,7 @@ import {
 } from "@/components/ui/actionsheet";
 import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
 import { Box } from "@/components/ui/box";
-import {
-  Button,
-  ButtonIcon,
-  ButtonSpinner,
-  ButtonText,
-} from "@/components/ui/button";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { Divider } from "@/components/ui/divider";
 import {
   FormControl,
@@ -44,7 +44,12 @@ import { showToast } from "@/libs/utils";
 
 import { WithdrawManualConfirmation } from "./withdraw-manual-confirmation";
 
-type Props = {
+export type WithdrawDialogRef = {
+  open: () => void;
+  close: () => void;
+};
+
+type WithdrawDialogProps = {
   onClose?: () => void;
   onSuccess?: () => void;
   balance?: TokenBalanceResult;
@@ -55,189 +60,188 @@ type FormValues = {
   amount: string;
 };
 
-export function WithdrawActionSheet({ onClose, onSuccess, balance }: Props) {
-  const { t } = useTranslation();
-  const { isAbleToTransfer, transfer } = useTokenTransfer();
-  const insets = useSafeAreaInsets();
-  const bottomInset = useKeyboardBottomInset();
+// Withdraw Sheet Component
+export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
+  ({ onClose, onSuccess, balance }, ref) => {
+    const { t } = useTranslation();
+    const { isAbleToTransfer, transfer } = useTokenTransfer();
+    const insets = useSafeAreaInsets();
+    const bottomInset = useKeyboardBottomInset();
 
-  const [open, setOpen] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [isManual, setIsManual] = useState(false);
-  const [isManualConfirmDialogOpen, setIsManualConfirmDialogOpen] =
-    useState(false);
-  const [isManualSubmiting, setIsManualSubmitting] = useState(false);
+    const [isManual, setIsManual] = useState(false);
+    const [isManualConfirmDialogOpen, setIsManualConfirmDialogOpen] =
+      useState(false);
+    const [isManualSubmiting, setIsManualSubmitting] = useState(false);
 
-  const MIN_AMOUNT = 0.1;
-  const maxAmount = useMemo(
-    () => (balance?.balance ? parseFloat(balance?.balance) : 0),
-    [balance]
-  );
+    const MIN_AMOUNT = 0.1;
+    const maxAmount = useMemo(
+      () => (balance?.balance ? parseFloat(balance?.balance) : 0),
+      [balance]
+    );
 
-  // Create Zod schema for form validation
-  const createFormSchema = () => {
-    return z.object({
-      withdrawAddress: z.string().trim().min(1, t("validation.required")),
-      amount: z
-        .string()
-        .trim()
-        .min(1, t("validation.required"))
-        .refine((val) => !isNaN(parseFloat(val)), {
-          message: t("validation.invalidAmount"),
-        })
-        .refine((val) => parseFloat(val) >= MIN_AMOUNT, {
-          message: t("validation.minAmount", { min: MIN_AMOUNT }),
-        })
-        .refine((val) => parseFloat(val) <= maxAmount, {
-          message: t("validation.maxAmount", { max: maxAmount }),
-        }),
+    // Create Zod schema for form validation
+    const createFormSchema = () => {
+      return z.object({
+        withdrawAddress: z.string().trim().min(1, t("validation.required")),
+        amount: z
+          .string()
+          .trim()
+          .min(1, t("validation.required"))
+          .refine((val) => !isNaN(parseFloat(val)), {
+            message: t("validation.invalidAmount"),
+          })
+          .refine((val) => parseFloat(val) >= MIN_AMOUNT, {
+            message: t("validation.minAmount", { min: MIN_AMOUNT }),
+          })
+          .refine((val) => parseFloat(val) <= maxAmount, {
+            message: t("validation.maxAmount", { max: maxAmount }),
+          }),
+      });
+    };
+
+    const formSchema = createFormSchema();
+
+    const {
+      control,
+      handleSubmit: hookFormSubmit,
+      formState: { errors, isValid },
+      setValue,
+      reset,
+    } = useForm<FormValues>({
+      resolver: zodResolver(formSchema),
+      defaultValues: {
+        withdrawAddress: "",
+        amount: "",
+      },
+      mode: "onChange",
     });
-  };
 
-  const formSchema = createFormSchema();
+    useImperativeHandle(ref, () => ({
+      open: () => setIsOpen(true),
+      close: () => {
+        setIsOpen(false);
+        reset();
+      },
+    }));
 
-  const {
-    control,
-    handleSubmit: hookFormSubmit,
-    formState: { errors, isValid },
-    setValue,
-    reset,
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      withdrawAddress: "",
-      amount: "",
-    },
-    mode: "onChange",
-  });
+    const onSubmit = async (data: FormValues) => {
+      Keyboard.dismiss();
+      setIsSubmitting(true);
 
-  const onSubmit = async (data: FormValues) => {
-    Keyboard.dismiss();
-    setIsSubmitting(true);
-
-    try {
-      if (isAbleToTransfer) {
-        // const result = await transfer(data.withdrawAddress as Address, data.amount, true);
-        const result = await transfer({
-          toAddress: data.withdrawAddress as Address,
-          amount: data.amount,
-          useGasless: true,
-        });
-
-        if (!result) {
-          throw new Error("Failed to transfer tokens");
-        }
-
-        if (result.success) {
-          showToast({
-            message: t("withdraw.success"),
-            type: "success",
+      try {
+        if (isAbleToTransfer) {
+          // const result = await transfer(data.withdrawAddress as Address, data.amount, true);
+          const result = await transfer({
+            toAddress: data.withdrawAddress as Address,
+            amount: data.amount,
+            useGasless: true,
           });
 
-          resetForm();
-          onSuccess?.();
-        } else {
-          throw result.error;
+          if (!result) {
+            throw new Error("Failed to transfer tokens");
+          }
+
+          if (result.success) {
+            showToast({
+              message: t("withdraw.success"),
+              type: "success",
+            });
+
+            resetForm();
+            onSuccess?.();
+          } else {
+            throw result.error;
+          }
         }
+      } catch (error) {
+        showToast({
+          message: `${t("withdraw.error")} - ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+          type: "danger",
+        });
+      } finally {
+        setIsSubmitting(false);
       }
-    } catch (error) {
-      showToast({
-        message: `${t("withdraw.error")} - ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        type: "danger",
-      });
-    } finally {
+    };
+
+    const resetForm = () => {
+      reset();
       setIsSubmitting(false);
-    }
-  };
+      setIsOpen(false);
+    };
 
-  const resetForm = () => {
-    reset();
-    setIsSubmitting(false);
-    setOpen(false);
-  };
+    const handleClose = () => {
+      resetForm();
+      onClose?.();
+    };
 
-  const handleClose = () => {
-    resetForm();
-    onClose?.();
-  };
+    const setMaxAmount = () => {
+      setValue("amount", maxAmount.toString(), { shouldValidate: true });
+    };
 
-  const setMaxAmount = () => {
-    setValue("amount", maxAmount.toString(), { shouldValidate: true });
-  };
+    // const handleManualWithdraw = () => {
+    //   setIsManualConfirmDialogOpen(true);
+    //   setIsManual(true);
+    // };
 
-  // const handleManualWithdraw = () => {
-  //   setIsManualConfirmDialogOpen(true);
-  //   setIsManual(true);
-  // };
+    const handleCancelManualWithdraw = () => {
+      if (isManualSubmiting) return;
 
-  const handleCancelManualWithdraw = () => {
-    if (isManualSubmiting) return;
+      setIsManualConfirmDialogOpen(false);
+      setIsManual(false);
+    };
 
-    setIsManualConfirmDialogOpen(false);
-    setIsManual(false);
-  };
+    const handleConfirmManualWithdraw = async () => {
+      try {
+        if (isManual) {
+          if (!process.env.EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS) {
+            throw new Error("Missing DEFAULT_MANUAL_WITHDRAW_ADDRESS");
+          }
 
-  const handleConfirmManualWithdraw = async () => {
-    try {
-      if (isManual) {
-        if (!process.env.EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS) {
-          throw new Error("Missing DEFAULT_MANUAL_WITHDRAW_ADDRESS");
-        }
+          Keyboard.dismiss();
+          setIsManualSubmitting(true);
 
-        Keyboard.dismiss();
-        setIsManualSubmitting(true);
-
-        const result = await transfer({
-          toAddress: process.env
-            .EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS as Address,
-          amount: maxAmount.toString(),
-          useGasless: true,
-        });
-
-        if (!result) {
-          throw new Error("Failed to transfer tokens");
-        }
-
-        if (result.success) {
-          showToast({
-            message: t("withdraw.success"),
-            type: "success",
+          const result = await transfer({
+            toAddress: process.env
+              .EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS as Address,
+            amount: maxAmount.toString(),
+            useGasless: true,
           });
 
-          resetForm();
-          onSuccess?.();
-        } else {
-          throw result.error;
+          if (!result) {
+            throw new Error("Failed to transfer tokens");
+          }
+
+          if (result.success) {
+            showToast({
+              message: t("withdraw.success"),
+              type: "success",
+            });
+
+            resetForm();
+            onSuccess?.();
+          } else {
+            throw result.error;
+          }
         }
+      } catch {
+        showToast({
+          message: `${t("withdraw.error")}`,
+          type: "danger",
+        });
+      } finally {
+        setIsManualSubmitting(false);
+        setIsManual(false);
+        setIsManualConfirmDialogOpen(false);
       }
-    } catch {
-      showToast({
-        message: `${t("withdraw.error")}`,
-        type: "danger",
-      });
-    } finally {
-      setIsManualSubmitting(false);
-      setIsManual(false);
-      setIsManualConfirmDialogOpen(false);
-    }
-  };
+    };
 
-  return (
-    <>
-      <Button
-        isDisabled={parseFloat(balance?.balance ?? "0") < MIN_AMOUNT}
-        size="sm"
-        className="rounded-xl"
-        onPress={() => setOpen(true)}
-      >
-        <ButtonIcon as={BanknoteArrowDown}></ButtonIcon>
-        <ButtonText>{t("general.withdraw")}</ButtonText>
-      </Button>
-
-      <Actionsheet isOpen={open} onClose={handleClose}>
+    return (
+      <Actionsheet isOpen={isOpen} onClose={handleClose}>
         <ActionsheetBackdrop />
         <ActionsheetContent
           style={{ paddingBottom: insets.bottom + bottomInset + 8 }}
@@ -444,6 +448,8 @@ export function WithdrawActionSheet({ onClose, onSuccess, balance }: Props) {
           </KeyboardAvoidingView>
         </ActionsheetContent>
       </Actionsheet>
-    </>
-  );
-}
+    );
+  }
+);
+
+WithdrawSheet.displayName = "WithdrawSheet";

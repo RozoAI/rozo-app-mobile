@@ -3,8 +3,8 @@ import React from "react";
 import { Alert } from "react-native";
 
 import { FocusAwareStatusBar } from "@/components/focus-aware-status-bar";
+import { ThemedText } from "@/components/themed-text";
 import { Button, ButtonText } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 
 type ErrorScreenProps = {
@@ -25,7 +25,7 @@ export default function ErrorScreen({
   function handleReload() {
     try {
       // Clear tokens but keep state
-      router.replace("/");
+      router.replace("/login");
     } catch {
       Alert.alert(
         "Reload Failed",
@@ -39,10 +39,12 @@ export default function ErrorScreen({
       <FocusAwareStatusBar />
       <Stack.Screen options={{ title: "Error", headerShown: false }} />
       <View className="flex-1 items-center justify-center bg-white p-6">
-        <Text className="mb-2 text-center text-2xl font-bold">Oops!</Text>
-        <Text className="mb-8 text-center text-base text-gray-600">
+        <ThemedText className="mb-2 text-center text-2xl font-bold">
+          Oops!
+        </ThemedText>
+        <ThemedText className="mb-8 text-center text-base text-gray-600">
           {message}
-        </Text>
+        </ThemedText>
         <View className="w-full gap-4">
           <Button
             onPress={handleReload}

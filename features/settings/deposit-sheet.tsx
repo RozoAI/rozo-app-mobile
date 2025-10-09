@@ -206,8 +206,8 @@ export const TopupSheet = forwardRef<DepositDialogRef, DepositDialogProps>(
                   render={({ field: { onChange, value } }) => (
                     <FormControl isInvalid={!!errors.amount}>
                       <Input className="rounded-xl" isInvalid={!!errors.amount}>
-                        <InputSlot className="pl-2">
-                          <Text size="sm" className="text-typography-500">
+                        <InputSlot>
+                          <Text size="sm" className="text-typography-500 pl-2">
                             {defaultCurrency?.code}
                           </Text>
                         </InputSlot>

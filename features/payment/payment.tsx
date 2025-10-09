@@ -1,4 +1,4 @@
-import { NumPad } from "@umit-turk/react-native-num-pad";
+import { NumPad } from "@/components/ui/numpad";
 import { useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import { Image, useWindowDimensions, View } from "react-native";
@@ -157,7 +157,7 @@ export function PaymentScreen() {
 
   const handleBackToHome = useCallback(() => {
     handleClosePaymentModal();
-    router.replace("/");
+    router.replace("/pos");
   }, []);
 
   const handleNote = useCallback((note: string) => {
@@ -184,7 +184,7 @@ export function PaymentScreen() {
           ) : (
             <LogoSvg width={24} height={24} />
           )}
-          <Text className="text-lg font-bold text-gray-800 dark:text-gray-200">
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
             {merchant?.display_name || "Rozo POS"}
           </Text>
         </View>
@@ -212,7 +212,7 @@ export function PaymentScreen() {
       </View>
 
       {/* Numpad Section */}
-      <View className="mt-5 dark:[&_svg]:fill-gray-200">
+      <View className="mt-5">
         <NumPad
           onPress={handlePress}
           decimalSeparator={
@@ -225,24 +225,13 @@ export function PaymentScreen() {
             borderTopRightRadius: 16,
           }}
           buttonStyle={{
-            backgroundColor: selectedTheme === "dark" ? "#222430" : "#ffffff",
-            borderRadius: 16,
             margin: dynamicStyles.numpad.margin,
             height: dynamicStyles.numpad.height,
-            // width: '30%',
-            shadowColor: "rgba(38, 38, 38, 0.15)",
-            shadowOffset: { width: -1, height: 1 },
-            shadowOpacity: 1,
-            shadowRadius: 3,
-            elevation: 1,
-            boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1)",
-            borderColor: selectedTheme === "light" ? "#222430" : "#ffffff",
-            borderWidth: 1,
+            borderRadius: 16,
           }}
           buttonTextStyle={{
             fontSize: dynamicStyles.numpad.fontSize,
             fontWeight: "500",
-            color: selectedTheme === "dark" ? "#ffffff" : "#000000",
           }}
         />
 
@@ -253,6 +242,7 @@ export function PaymentScreen() {
           dynamicStyles={dynamicStyles}
           onPress={handleOpenPaymentModal}
         />
+
         {/* Payment Modal */}
         <PaymentModal
           isOpen={isPaymentModalOpen}

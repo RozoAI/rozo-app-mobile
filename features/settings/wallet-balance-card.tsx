@@ -13,14 +13,20 @@ import { useWalletBalance } from "@/hooks/use-wallet-balance";
 import { showToast } from "@/libs/utils";
 
 import { type DepositDialogRef, TopupSheet } from "./deposit-sheet";
-import { WithdrawActionSheet } from "./withdraw-sheet";
+import { WithdrawDialogRef, WithdrawSheet } from "./withdraw-sheet";
 
 export const WalletBalanceCard = () => {
   const { t } = useTranslation();
   const { balance, isLoading, refetch } = useWalletBalance();
   const DepositDialogRef = useRef<DepositDialogRef>(null);
+  const WithdrawDialogRef = useRef<WithdrawDialogRef>(null);
+
   const handleTopUpPress = () => {
     DepositDialogRef.current?.open();
+  };
+
+  const handleWithdrawPress = () => {
+    WithdrawDialogRef.current?.open();
   };
 
   const handleTopUpConfirm = (amount: string) => {
@@ -63,6 +69,15 @@ export const WalletBalanceCard = () => {
             <ButtonText>{t("general.receive")}</ButtonText>
           </Button>
           <Button
+            size="xs"
+            variant="solid"
+            action="secondary"
+            className="p-2"
+            onPress={handleWithdrawPress}
+          >
+            <ButtonText>{t("general.withdraw")}</ButtonText>
+          </Button>
+          <Button
             onPress={refetch}
             disabled={isLoading}
             size="xs"
@@ -74,11 +89,12 @@ export const WalletBalanceCard = () => {
         </View>
       </View>
 
-      <WithdrawActionSheet
+      <TopupSheet ref={DepositDialogRef} onConfirm={handleTopUpConfirm} />
+      <WithdrawSheet
+        ref={WithdrawDialogRef}
         onSuccess={() => refetch()}
         balance={balance ?? undefined}
       />
-      <TopupSheet ref={DepositDialogRef} onConfirm={handleTopUpConfirm} />
     </VStack>
   );
 };

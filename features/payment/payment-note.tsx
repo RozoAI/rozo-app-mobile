@@ -23,7 +23,6 @@ import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
-import { cn } from "@/libs/utils";
 
 type ActionSheetPaymentNoteProps = {
   isEdit?: boolean;
@@ -94,12 +93,9 @@ export function ActionSheetPaymentNote({
 
   return (
     <>
-      <Button className={cn("text-center")} variant="link" onPress={handleOpen}>
-        <ButtonIcon
-          as={value ? Edit : Plus}
-          className="text-black dark:text-white"
-        />
-        <ButtonText className="text-black dark:text-white">
+      <Button variant="link" onPress={handleOpen}>
+        <ButtonIcon as={value ? Edit : Plus} />
+        <ButtonText>
           {value
             ? `${t("general.note")}: ${
                 value.length > 20 ? `${value.substring(0, 20)}...` : value

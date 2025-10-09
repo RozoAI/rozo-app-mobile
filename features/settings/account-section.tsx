@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from "lucide-react-native";
 import React, { useRef } from "react";
 
+import { ThemedText } from "@/components/themed-text";
 import {
   Avatar,
   AvatarFallbackText,
@@ -11,7 +12,6 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
-import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import {
   ProfileSheet,
@@ -43,17 +43,21 @@ export function AccountSection() {
           </Avatar>
           <Box className="flex flex-col">
             <Heading size="sm">{merchant?.display_name ?? "-"}</Heading>
-            {merchant?.display_name !== merchant?.email && (
-              <Text size="xs" className="text-typography-500">
+            {merchant?.display_name !== merchant?.email ? (
+              <ThemedText
+                style={{ fontSize: 12, color: "#6B7280" }}
+                type="default"
+              >
                 {merchant?.email ?? "-"}
-              </Text>
+              </ThemedText>
+            ) : (
+              <ThemedText style={{ fontSize: 12 }} type="default">
+                {"-"}
+              </ThemedText>
             )}
           </Box>
         </HStack>
-        <Icon
-          as={ChevronRightIcon}
-          className="text-gray-400 dark:text-gray-50"
-        />
+        <Icon as={ChevronRightIcon} />
       </Pressable>
 
       <ProfileSheet ref={profileSheetRef} />

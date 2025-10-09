@@ -4,9 +4,10 @@ import { useTranslation } from "react-i18next";
 import { CurrencyConverter } from "@/components/currency-converter";
 import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
-import { Text } from "@/components/ui/text";
 import { useApp } from "@/providers/app.provider";
 
+import { ThemedText } from "@/components/themed-text";
+import { useSelectedTheme } from "@/hooks/use-selected-theme";
 import type { DynamicStyles } from "./types";
 
 type AmountDisplayProps = {
@@ -17,6 +18,7 @@ type AmountDisplayProps = {
 export function AmountDisplay({ amount, dynamicStyles }: AmountDisplayProps) {
   const { defaultCurrency } = useApp();
   const { t } = useTranslation();
+  const { selectedTheme } = useSelectedTheme();
 
   // Format amount with appropriate decimal and thousand separators
   const formattedAmount = useMemo(() => {
@@ -50,31 +52,41 @@ export function AmountDisplay({ amount, dynamicStyles }: AmountDisplayProps) {
 
   return (
     <Card
-      className={`rounded-xl border shadow-soft-1 dark:w-full dark:border-white dark:bg-gray-600 ${dynamicStyles.spacing.cardPadding}`}
+      className={`rounded-xl shadow-soft-1 ${dynamicStyles.spacing.cardPadding}`}
+      style={{
+        backgroundColor: selectedTheme === "dark" ? "#0a0a0a" : "#ffffff",
+        borderColor: selectedTheme === "dark" ? "#222430" : "gray",
+        borderWidth: 1,
+      }}
     >
-      <Text className="text-center text-gray-500 dark:text-gray-200">
-        {t("general.amount")}
-      </Text>
-      <Text
-        className={`my-3 text-center font-bold text-gray-800 dark:text-gray-200 ${dynamicStyles.fontSize.amount}`}
+      <ThemedText className="text-center">{t("general.amount")}</ThemedText>
+      <ThemedText
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          marginTop: 12,
+          marginBottom: 12,
+        }}
+        className={`text-center ${dynamicStyles.fontSize.amount}`}
       >
         {`${formattedAmount} ${defaultCurrency?.code}`}
-      </Text>
+      </ThemedText>
       {/* USD Conversion */}
       {defaultCurrency?.code !== "USD" && (
-        <Box className="mt-1 rounded-lg bg-gray-100 p-2 dark:bg-gray-800">
+        <Box className="rounded-lg p-2">
           <CurrencyConverter
             amount={Number(amount)}
-            className={`text-center text-gray-600 dark:text-gray-200 ${dynamicStyles.fontSize.label}`}
+            className={`text-center`}
           />
         </Box>
       )}
-      <Text
-        className={`mt-2 text-center italic text-gray-500 dark:text-gray-200 ${dynamicStyles.fontSize.label}`}
+      <ThemedText
+        className={`text-center italic ${dynamicStyles.fontSize.label}`}
+        type="default"
+        style={{ fontSize: 14, marginTop: 12 }}
       >
         {t("payment.enterPaymentAmount")}
-      </Text>
+      </ThemedText>
     </Card>
   );
 }
-// End of Selection

@@ -11,6 +11,7 @@ import { useSelectedLanguage } from "@/hooks/use-selected-language";
 import { MERCHANT_KEY } from "@/libs/constants";
 import { currencies, type CurrencyConfig } from "@/libs/currencies";
 import { AppError } from "@/libs/error";
+import { privyClient } from "@/libs/privy-client";
 import { getItem, setItem } from "@/libs/storage";
 import { defaultToken, type Token, tokens } from "@/libs/tokens";
 import { showToast } from "@/libs/utils";
@@ -102,14 +103,23 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           const error = profileResult.error as unknown as AppError;
           if (error.statusCode === 404) {
             // Create profile
-            const email = (user as any)?.email?.address || "";
-            const displayName =
-              (user as any)?.email?.address || user?.id || "User";
             const logoUrl = (user as any)?.image || "";
 
+            const privyUser = await privyClient.user.get();
+
+            let email = privyUser.user.id;
+
+            const userEmail = privyUser.user.linked_accounts.find(
+              (account) => account.type === "email"
+            )?.address;
+
+            if (userEmail) {
+              email = userEmail;
+            }
+
             const profilePayload = {
-              email,
-              display_name: displayName,
+              email: email,
+              display_name: email === privyUser.user.id ? null : email,
               description: "",
               logo_url: logoUrl,
               default_currency: "USD",

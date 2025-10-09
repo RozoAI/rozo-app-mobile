@@ -28,9 +28,7 @@ export function BalanceInfo({
   return (
     <VStack className="items-start" space="sm">
       <HStack space="sm" className="w-full items-center justify-between">
-        <Text size="sm" className="tracking-wide text-typography-600">
-          {t("general.walletBalance")}
-        </Text>
+        <Text style={{ fontSize: 14 }}>{t("general.walletBalance")}</Text>
 
         <Button
           onPress={refetch}
@@ -52,7 +50,7 @@ export function BalanceInfo({
               {balance?.formattedBalance ?? "0.00"}
             </Heading>
 
-            <Text size="lg" className={`font-medium text-typography-500`}>
+            <Text style={{ fontSize: 16, color: "#6B7280", marginTop: "auto" }}>
               {balance?.token?.label ?? "USD"}
             </Text>
           </HStack>

@@ -1,4 +1,4 @@
-import { usePrivy } from "@privy-io/expo";
+import { PrivyUser, usePrivy } from "@privy-io/expo";
 import React, {
   createContext,
   useCallback,
@@ -17,7 +17,7 @@ interface AuthContextProps {
   isAuthenticated: boolean;
   token: string | undefined;
   isAuthLoading: boolean;
-  user?: any;
+  user?: PrivyUser | null;
   getAccessToken?: () => Promise<string | null>;
   refreshAccessToken: () => Promise<string | null>;
 }

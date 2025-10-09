@@ -11,11 +11,13 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { privyClient } from "@/libs/privy-client";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 
 import { PrivyReady } from "@/components/privy-ready";
+import { ThemedText } from "@/components/themed-text";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { AppProvider } from "@/providers/app.provider";
@@ -33,7 +35,7 @@ import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 
 export const unstable_settings = {
-  initialRouteName: "(main)",
+  initialRouteName: "login",
 };
 
 // Set the animation options. This is optional.
@@ -86,6 +88,7 @@ export default function RootLayout() {
                 appId={process.env.EXPO_PUBLIC_PRIVY_APP_ID}
                 clientId={process.env.EXPO_PUBLIC_PRIVY_MOBILE_CLIENT_ID}
                 supportedChains={[base]}
+                client={privyClient}
                 config={{
                   embedded: {
                     ethereum: {
@@ -104,6 +107,26 @@ export default function RootLayout() {
                         />
                         <Stack.Screen
                           name="login"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="balance"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="pos"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="orders"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="transactions"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="settings"
                           options={{ headerShown: false }}
                         />
                       </Stack>
@@ -138,10 +161,14 @@ function ErrorFallback({ error }: { error: Error }) {
         padding: 20,
       }}
     >
-      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+      <ThemedText
+        style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}
+      >
         Something went wrong:
-      </Text>
-      <Text style={{ color: "red", textAlign: "center" }}>{error.message}</Text>
+      </ThemedText>
+      <ThemedText style={{ color: "red", textAlign: "center" }}>
+        {error.message}
+      </ThemedText>
     </View>
   );
 }

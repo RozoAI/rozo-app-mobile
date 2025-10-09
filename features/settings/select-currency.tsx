@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ThemedText } from "@/components/themed-text";
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -163,13 +164,12 @@ export function ActionSheetCurrencySwitcher(): React.ReactElement {
               <Icon as={DollarSign} className="mb-auto mt-1 stroke-[#747474]" />
               <View className="flex-col items-start gap-1">
                 <Text size="md">{t("settings.currency.title")}</Text>
-                <Text size="sm">{currencyLabel}</Text>
+                <ThemedText style={{ fontSize: 14 }} type="default">
+                  {currencyLabel}
+                </ThemedText>
               </View>
             </View>
-            <Icon
-              as={ChevronRightIcon}
-              className="text-gray-400 dark:text-gray-50"
-            />
+            <Icon as={ChevronRightIcon} />
           </View>
           {isLoading && (
             <View className="absolute inset-x-0 top-0 z-10 flex size-full items-center justify-center bg-white/50 py-2">

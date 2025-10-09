@@ -2,15 +2,15 @@ import { PrivyEmbeddedWalletAccount, usePrivy } from "@privy-io/expo";
 import { useLogin } from "@privy-io/expo/ui";
 import { useRouter } from "expo-router";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { FocusAwareStatusBar } from "@/components/focus-aware-status-bar";
 import { LoadingScreen } from "@/components/loading-screen";
 import LogoSvg from "@/components/svg/logo";
 import LogoWhiteSvg from "@/components/svg/logo-white";
+import { ThemedText } from "@/components/themed-text";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 
@@ -27,13 +27,14 @@ export default function LoginScreen() {
   const { handleCreateWallet, isCreating } = useEVMWallet();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [isFreshLogin, setIsFreshLogin] = useState(false);
 
   // Redirect to home if user is authenticated
-  useEffect(() => {
-    if (user) {
-      router.replace("/(main)/settings");
-    }
-  }, [user, router]);
+  // useEffect(() => {
+  //   if (user && !isFreshLogin) {
+  //     router.replace("/balance");
+  //   }
+  // }, [user, router]);
 
   const handleSignIn = async () => {
     setIsAuthLoading(true);
@@ -44,6 +45,7 @@ export default function LoginScreen() {
       });
 
       if (result) {
+        setIsFreshLogin(true);
         const hasEmbeddedWallet =
           (result.user?.linked_accounts ?? []).filter(
             (account): account is PrivyEmbeddedWalletAccount =>
@@ -56,7 +58,9 @@ export default function LoginScreen() {
           await handleCreateWallet();
         }
 
-        router.replace("/(main)/settings");
+        setTimeout(() => {
+          router.replace("/balance");
+        }, 2000);
       }
     } catch {
       setIsAuthLoading(false);
@@ -83,13 +87,11 @@ export default function LoginScreen() {
             <LogoSvg width={100} height={100} />
           )}
 
-          <Text className="text-primary text-center text-3xl font-bold">
-            Rozo App
-          </Text>
+          <ThemedText type="title">ROZO</ThemedText>
 
-          <Text className="mt-2 text-center text-base text-gray-600 dark:text-gray-300">
+          <ThemedText type="default" className="text-center mt-4">
             Simple and efficient point of sale system
-          </Text>
+          </ThemedText>
         </Box>
 
         {/* Button section */}
@@ -105,7 +107,7 @@ export default function LoginScreen() {
           <ButtonText>
             {isAuthLoading
               ? "Loading..."
-              : `Login ${ready ? "with email" : "with wallet"}`}
+              : `Login ${ready ? "with Email" : ""}`}
           </ButtonText>
         </Button>
       </Box>

@@ -1,20 +1,18 @@
-import { ArrowDownIcon } from "lucide-react-native";
+import { ArrowDownIcon, BanknoteArrowDown } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
-import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
-// import { type DepositDialogRef, TopupSheet } from '@/features/settings/deposit-sheet';
-// import { WithdrawActionSheet } from '@/features/settings/withdraw-sheet';
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
 import { showToast } from "@/libs/utils";
 
+import { ThemedText } from "@/components/themed-text";
 import { useRef } from "react";
 import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
-import { WithdrawActionSheet } from "../settings/withdraw-sheet";
+import { WithdrawDialogRef, WithdrawSheet } from "../settings/withdraw-sheet";
 import { BalanceInfo } from "./balance-info";
 
 export function BalanceScreen() {
@@ -22,9 +20,14 @@ export function BalanceScreen() {
   const { balance, refetch, isLoading } = useWalletBalance();
 
   const depositDialogRef = useRef<DepositDialogRef>(null);
+  const withdrawDialogRef = useRef<WithdrawDialogRef>(null);
 
   const handleReceivePress = () => {
     depositDialogRef.current?.open();
+  };
+
+  const handleWithdrawPress = () => {
+    withdrawDialogRef.current?.open();
   };
 
   const handleTopUpConfirm = (amount: string) => {
@@ -39,17 +42,23 @@ export function BalanceScreen() {
       {/* Header */}
       <VStack className="flex flex-row items-start justify-between">
         <View className="mb-6">
-          <Text className="mb-1 text-2xl font-bold">{t("balance.title")}</Text>
-          <Text className="text-sm text-gray-400">
+          <ThemedText style={{ fontSize: 24, fontWeight: "bold" }}>
+            {t("balance.title")}
+          </ThemedText>
+          <ThemedText style={{ fontSize: 14, color: "#6B7280" }} type="default">
             {t("balance.description")}
-          </Text>
+          </ThemedText>
         </View>
       </VStack>
 
       <VStack space="lg">
         {/* Balance Card */}
 
-        <VStack className="rounded-xl border border-background-300 bg-background-0 px-4 py-2">
+        <VStack
+          className="rounded-xl border border-background-300 bg-background-0"
+          style={{ padding: 16 }}
+          space="lg"
+        >
           <BalanceInfo
             balance={balance ?? undefined}
             isLoading={isLoading}
@@ -72,19 +81,29 @@ export function BalanceScreen() {
               <ButtonText>{t("general.receive")}</ButtonText>
             </Button>
 
-            {/* Withdraw Button */}
-            <View className="flex-1">
-              <WithdrawActionSheet
-                onSuccess={() => refetch()}
-                balance={balance ?? undefined}
-              />
-            </View>
+            <Button
+              size="sm"
+              className="flex-1 rounded-xl"
+              variant="solid"
+              action="primary"
+              onPress={handleWithdrawPress}
+            >
+              <ButtonIcon as={BanknoteArrowDown} />
+              <ButtonText>{t("general.withdraw")}</ButtonText>
+            </Button>
           </HStack>
         </VStack>
       </VStack>
 
       {/* Receive Sheet */}
       <TopupSheet ref={depositDialogRef} onConfirm={handleTopUpConfirm} />
+
+      {/* Withdraw Sheet */}
+      <WithdrawSheet
+        ref={withdrawDialogRef}
+        onSuccess={() => refetch()}
+        balance={balance ?? undefined}
+      />
     </ScrollView>
   );
 }

@@ -11,18 +11,21 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rozoapp"
+      "bundleIdentifier": "com.rozoapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
-        "foregroundImage": "./assets/images/icon.png",
-        "backgroundImage": "./assets/images/icon.png",
-        "monochromeImage": "./assets/images/icon.png"
+        "foregroundImage": "./assets/images/playstore-icon.png",
+        "backgroundImage": "./assets/images/playstore-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.rozoapp"
+      "package": "com.rozoapp",
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "output": "static",
@@ -58,12 +61,12 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
+    "owner": "rozodev",
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "a31ce00b-0b60-4394-964b-7de0371b3f22"
+        "projectId": "8b6aa76e-6766-4389-8241-26b3e141ee86"
       }
-    },
-    "owner": "akbarsaputrait"
+    }
   }
 }

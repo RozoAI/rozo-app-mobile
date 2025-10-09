@@ -4,5 +4,6 @@
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
   },
-  "i18n-ally.localesPaths": ["modules/i18n", "translations"]
+  "i18n-ally.localesPaths": ["modules/i18n", "translations"],
+  "i18n-ally.keystyle": "nested"
 }

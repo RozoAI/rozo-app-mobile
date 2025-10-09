@@ -6,7 +6,7 @@ import { type MerchantProfile } from "@/resources/schema/merchant";
 
 type Payload = {
   email: string;
-  display_name: string;
+  display_name: string | null;
   description?: string | null;
   logo_url?: string | null;
   default_currency: string;

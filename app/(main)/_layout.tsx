@@ -2,8 +2,8 @@ import { Redirect, Tabs } from "expo-router";
 import React, { useEffect } from "react";
 
 import { LoadingScreen } from "@/components/loading-screen";
+import { ThemedText } from "@/components/themed-text";
 import { Icon } from "@/components/ui/icon";
-import { Text } from "@/components/ui/text";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { cn } from "@/libs/utils";
 import { usePOSToggle } from "@/providers/app.provider";
@@ -39,7 +39,7 @@ export default function TabLayout() {
             screenOptions={{
               headerShown: false,
               tabBarStyle: {
-                height: 64,
+                // height: 64,
                 paddingTop: 6,
                 paddingBottom: 10,
                 marginBottom: insets.bottom,
@@ -50,9 +50,9 @@ export default function TabLayout() {
                 borderTopColor:
                   theme?.colorScheme === "dark" ? "#222430" : "#E5E7EB",
               },
-              tabBarActiveTintColor: "#0369A1", // Primary blue color
-              tabBarInactiveTintColor:
-                theme?.colorScheme === "dark" ? "#FFFFFF" : "#6B7280", // Gray-500
+              tabBarActiveTintColor:
+                theme?.colorScheme === "dark" ? "white" : "#0a0a0a",
+              tabBarInactiveTintColor: "gray", // Gray-500
               tabBarIconStyle: {
                 marginBottom: -4,
               },
@@ -68,15 +68,15 @@ export default function TabLayout() {
                 color: string;
                 focused: boolean;
               }) => (
-                <Text
+                <ThemedText
                   className={cn(
                     "text-sm font-medium",
                     focused && `font-semibold`
                   )}
-                  style={{ color }}
+                  style={{ color, fontSize: 12 }}
                 >
                   {children}
-                </Text>
+                </ThemedText>
               ),
               sceneStyle: {
                 paddingTop: insets.top,
@@ -88,7 +88,7 @@ export default function TabLayout() {
             }}
           >
             <Tabs.Screen
-              name="index"
+              name="balance"
               options={{
                 title: t("balance.title"),
                 tabBarIcon: ({ color }: any) => (

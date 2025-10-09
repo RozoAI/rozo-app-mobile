@@ -65,6 +65,8 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
   const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  console.log({ merchant });
+
   const {
     control,
     handleSubmit,
@@ -87,9 +89,11 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
       base64: true,
     });
 
+    console.log("result", JSON.stringify(result, null, 2));
+
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setAvatarPreview(result.assets[0].uri);
-      setAvatarBase64(result.assets[0].uri);
+      setAvatarBase64(result.assets[0].base64 || result.assets[0].uri);
     }
   }
 
@@ -97,18 +101,23 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
     Keyboard.dismiss();
     setIsSubmitting(true);
 
-    updateProfile({
+    const payload = {
       ...data,
       logo: avatarBase64,
-    })
+    };
+
+    console.log("payload", { payload });
+
+    updateProfile(payload)
       .then((res) => {
         setAvatarBase64(null);
         setAvatarPreview(res.logo_url);
-
+        console.log({ res });
         setMerchant(res);
         setIsOpen(false); // Close sheet after successful update
       })
       .catch((err) => {
+        console.log("error", { err });
         showToast({
           message: err.message,
           type: "danger",
@@ -217,18 +226,13 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
                         {t("profile.email")}
                       </FormControlLabelText>
                     </FormControlLabel>
-                    <Input
-                      className="rounded-xl"
-                      isDisabled={true}
-                      isReadOnly={true}
-                    >
+                    <Input className="rounded-xl">
                       <InputField
                         placeholder={t("profile.placeholder.email")}
                         value={value}
                         onChangeText={onChange}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        readOnly
                         keyboardType="email-address"
                       />
                     </Input>
@@ -242,9 +246,9 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
             <Button
               size="lg"
               onPress={handleSubmit(onSubmit)}
-              isDisabled={
-                isSubmitting || !isValid || (!isDirty && !avatarBase64)
-              }
+              // isDisabled={
+              //   isSubmitting || !isValid || (!isDirty && !avatarBase64)
+              // }
               className="w-full rounded-xl"
             >
               {isSubmitting && <ButtonSpinner />}

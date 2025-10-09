@@ -21,6 +21,7 @@ import { AccountSection } from "@/features/settings/account-section";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
 import { useApp } from "@/providers/app.provider";
 
+import { ThemedText } from "@/components/themed-text";
 import { Card } from "@/components/ui/card";
 import { POSToggleSetting } from "./pos-toggle-setting";
 import { ActionSheetCurrencySwitcher } from "./select-currency";
@@ -37,10 +38,12 @@ export function SettingScreen() {
     <SafeAreaView className="flex-1">
       <ScrollView className="flex-1">
         <View className="mb-6">
-          <Text className="text-2xl font-bold">{t("settings.title")}</Text>
-          <Text className="text-sm text-gray-400">
+          <ThemedText style={{ fontSize: 24, fontWeight: "bold" }}>
+            {t("settings.title")}
+          </ThemedText>
+          <ThemedText style={{ fontSize: 14, color: "#6B7280" }} type="default">
             {t("settings.description")}
-          </Text>
+          </ThemedText>
         </View>
         <VStack space="lg">
           <Card className="items-start justify-between rounded-xl border border-background-300 bg-background-0 px-4 py-2">
@@ -78,13 +81,12 @@ export function SettingScreen() {
                     />
                     <View className="flex-col items-start gap-1">
                       <Text size="md">{t("settings.language.title")}</Text>
-                      <Text size="sm">{lg}</Text>
+                      <ThemedText style={{ fontSize: 14 }} type="default">
+                        {lg}
+                      </ThemedText>
                     </View>
                   </View>
-                  <Icon
-                    as={ChevronRightIcon}
-                    className="text-gray-400 dark:text-gray-50"
-                  />
+                  <Icon as={ChevronRightIcon} />
                 </View>
               )}
             />
@@ -101,15 +103,12 @@ export function SettingScreen() {
                     />
                     <View className="flex-col items-start gap-1">
                       <Text size="md">{t("settings.theme.title")}</Text>
-                      <Text size="sm">
+                      <ThemedText style={{ fontSize: 14 }} type="default">
                         {t(`settings.theme.${selectedTheme}`)}
-                      </Text>
+                      </ThemedText>
                     </View>
                   </View>
-                  <Icon
-                    as={ChevronRightIcon}
-                    className="text-gray-400 dark:text-gray-50"
-                  />
+                  <Icon as={ChevronRightIcon} />
                 </View>
               )}
             />
