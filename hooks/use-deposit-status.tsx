@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Platform } from "react-native";
 
 import type { PaymentCompletedEvent } from "@/modules/pusher/pusher";
 import {
@@ -16,7 +15,6 @@ type PaymentStatus = "pending" | "completed" | "failed";
  */
 export function useDepositStatus(merchantId?: string, depositId?: string) {
   const [status, setStatus] = useState<PaymentStatus>("pending");
-  const isWeb = Platform.OS === "web";
 
   const {
     refetch: refetchDeposit,
@@ -56,11 +54,7 @@ export function useDepositStatus(merchantId?: string, depositId?: string) {
           }
         );
 
-        console.log(
-          `Subscribed to ${channelName} channel on ${
-            isWeb ? "web" : "native"
-          } platform`
-        );
+        console.log(`Subscribed to ${channelName} channel on native platform`);
       } catch (error) {
         console.error("Error setting up Pusher:", error);
       }
@@ -86,7 +80,7 @@ export function useDepositStatus(merchantId?: string, depositId?: string) {
         cleanup();
       }
     };
-  }, [merchantId, depositId, isWeb]);
+  }, [merchantId, depositId]);
 
   useEffect(() => {
     if (dataDeposit && dataDeposit.status === "COMPLETED") {

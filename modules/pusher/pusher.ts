@@ -67,13 +67,24 @@ export async function subscribeToChannel(
   // Native implementation using @pusher/pusher-websocket-react-native
   const nativePusher = pusher as PusherNative;
 
+  // Debug: log connection intent
+  console.debug(`[Pusher] Connecting to Pusher...`);
+
   // Make sure we're connected
   await nativePusher.connect();
+
+  // Debug: log subscribe attempt
+  console.debug(`[Pusher] Subscribing to channel: ${channelName}`);
 
   // Subscribe to the channel
   await nativePusher.subscribe({
     channelName,
     onEvent: (event: PusherNativeEvent) => {
+      console.debug(
+        `[Pusher] Event received on channel "${channelName}": eventName="${
+          event.eventName
+        }", data=${JSON.stringify(event.data)}`
+      );
       // If we have a specific event name and callback, only trigger for that event
       if (eventName && callback && event.eventName === eventName) {
         try {
@@ -81,6 +92,10 @@ export async function subscribeToChannel(
             typeof event.data === "string"
               ? JSON.parse(event.data)
               : event.data;
+          console.debug(
+            `[Pusher] Event "${eventName}" matched. Triggering callback with:`,
+            data
+          );
           callback(data);
         } catch (error) {
           console.error(`Error parsing event data for ${eventName}:`, error);

@@ -47,7 +47,7 @@ export function BalanceInfo({
         ) : (
           <HStack space="sm" className="items-end">
             <Heading size="4xl" className={`font-bold text-primary-600`}>
-              {balance?.formattedBalance ?? "0.00"}
+              {Number(balance?.formattedBalance).toFixed(2) ?? "0.00"}
             </Heading>
 
             <Text style={{ fontSize: 16, color: "#6B7280", marginTop: "auto" }}>

@@ -42,6 +42,7 @@ export type DepositDialogRef = {
 type DepositDialogProps = {
   onConfirm?: (amount: string) => void;
   onCancel?: () => void;
+  onComplete?: () => void;
 };
 
 type FormValues = {
@@ -49,7 +50,7 @@ type FormValues = {
 };
 
 export const TopupSheet = forwardRef<DepositDialogRef, DepositDialogProps>(
-  ({ onConfirm, onCancel }, ref) => {
+  ({ onConfirm, onCancel, onComplete }, ref) => {
     const { t } = useTranslation();
     const { defaultCurrency } = useApp();
     const insets = useSafeAreaInsets();
@@ -175,7 +176,8 @@ export const TopupSheet = forwardRef<DepositDialogRef, DepositDialogProps>(
 
     const handleBackToHome = () => {
       handleClosePaymentModal();
-      router.replace("/settings");
+      router.replace("/balance");
+      onComplete?.();
     };
 
     return (
@@ -207,7 +209,11 @@ export const TopupSheet = forwardRef<DepositDialogRef, DepositDialogProps>(
                     <FormControl isInvalid={!!errors.amount}>
                       <Input className="rounded-xl" isInvalid={!!errors.amount}>
                         <InputSlot>
-                          <Text size="sm" className="text-typography-500 pl-2">
+                          <Text
+                            size="sm"
+                            className="text-typography-500"
+                            style={{ marginLeft: 8 }}
+                          >
                             {defaultCurrency?.code}
                           </Text>
                         </InputSlot>

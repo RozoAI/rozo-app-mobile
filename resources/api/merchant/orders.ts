@@ -54,8 +54,7 @@ export const useGetOrder = createQuery<
   fetcher: async (variables) => {
     const { id, force = false } = variables;
     const cacheKey = `order:${id}`;
-    // Cache individual order for 2 minutes (120,000 ms)
-    const CACHE_DURATION = 2 * 60 * 1000;
+    const CACHE_DURATION = 30 * 1000;
 
     if (!force) {
       const cached = getItem<MerchantOrder>(cacheKey);

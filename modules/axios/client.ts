@@ -6,7 +6,7 @@ import { AppError } from "@/libs/error";
 import { storage } from "@/libs/storage";
 
 export const client = axios.create({
-  timeout: 20 * 1000,
+  timeout: 2 * 60 * 1000,
   baseURL: process.env.EXPO_PUBLIC_API_URL,
 });
 

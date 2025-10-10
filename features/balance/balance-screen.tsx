@@ -96,7 +96,11 @@ export function BalanceScreen() {
       </VStack>
 
       {/* Receive Sheet */}
-      <TopupSheet ref={depositDialogRef} onConfirm={handleTopUpConfirm} />
+      <TopupSheet
+        ref={depositDialogRef}
+        onConfirm={handleTopUpConfirm}
+        onComplete={() => refetch()}
+      />
 
       {/* Withdraw Sheet */}
       <WithdrawSheet
