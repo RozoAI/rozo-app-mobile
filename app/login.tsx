@@ -11,8 +11,11 @@ import LogoWhiteSvg from "@/components/svg/logo-white";
 import { ThemedText } from "@/components/themed-text";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import { ActionSheetLanguageSwitcher } from "@/features/settings/select-language";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
+import { useSelectedLanguage } from "@/hooks/use-selected-language";
+import { useTranslation } from "react-i18next";
 
 /**
  * Login screen component with Privy authentication
@@ -25,12 +28,14 @@ export default function LoginScreen() {
   const { isReady: ready, user } = usePrivy();
   const { login } = useLogin();
   const { handleCreateWallet, isCreating } = useEVMWallet();
+  const { language, setLanguage } = useSelectedLanguage();
+  const { t } = useTranslation();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [isFreshLogin, setIsFreshLogin] = useState(false);
 
   // Redirect to home if user is authenticated
-  // useEffect(() => {
+  // React.useEffect(() => {
   //   if (user && !isFreshLogin) {
   //     router.replace("/balance");
   //   }
@@ -90,7 +95,7 @@ export default function LoginScreen() {
           <ThemedText type="title">ROZO</ThemedText>
 
           <ThemedText type="default" className="text-center mt-4">
-            Simple and efficient point of sale system
+            {t("login.description")}
           </ThemedText>
         </Box>
 
@@ -105,11 +110,22 @@ export default function LoginScreen() {
         >
           {isAuthLoading && <ButtonSpinner />}
           <ButtonText>
-            {isAuthLoading
-              ? "Loading..."
-              : `Login ${ready ? "with Email" : ""}`}
+            {isAuthLoading ? t("login.loading") : t("login.signIn")}
           </ButtonText>
         </Button>
+
+        <Box className="mt-10 w-full flex-row items-center justify-center">
+          <ActionSheetLanguageSwitcher
+            updateApi={false}
+            initialLanguage={language ?? "en"}
+            onChange={(lang) => setLanguage(lang)}
+            trigger={(label) => (
+              <ThemedText className="mb-4 space-x-2 rounded-xl text-center text-sm">
+                {label}
+              </ThemedText>
+            )}
+          />
+        </Box>
       </Box>
     </>
   );

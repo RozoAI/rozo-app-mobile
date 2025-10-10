@@ -10,7 +10,7 @@ import React, {
 } from "react";
 
 import { TOKEN_KEY } from "@/libs/constants";
-import { setItem } from "@/libs/storage";
+import { storage } from "@/libs/storage";
 import { showToast } from "@/libs/utils";
 
 interface AuthContextProps {
@@ -54,7 +54,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const token = await getAccessToken();
       if (token) {
         setAccessToken(token);
-        setItem(TOKEN_KEY, token);
+        // Store token as plain string, not JSON
+        storage.set(TOKEN_KEY, token);
         return token;
       }
       return null;
@@ -88,7 +89,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         setAccessToken(token);
-        setItem(TOKEN_KEY, token);
+        // Store token as plain string, not JSON
+        storage.set(TOKEN_KEY, token);
       } catch (error) {
         console.error("Auth initialization error:", error);
         if (isMounted) {

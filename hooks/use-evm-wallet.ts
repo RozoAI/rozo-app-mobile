@@ -74,13 +74,11 @@ export function useEVMWallet() {
 
   const handleCreateWallet = async () => {
     if (!privyUser) {
-      console.log("No user found");
       return;
     }
 
     // Only create wallet if user doesn't have an embedded wallet
     if (wallets.length > 0) {
-      console.log("Wallet already exists");
       return;
     }
 
@@ -158,10 +156,6 @@ export function useEVMWallet() {
 
   const getBalance = async () => {
     try {
-      console.log("Wallet data:", primaryWallet);
-
-      console.log("user:", JSON.stringify(user, null, 2));
-
       if (primaryWallet) {
         const headers = {
           "privy-app-id": process.env.EXPO_PUBLIC_PRIVY_APP_ID || "",
@@ -192,9 +186,6 @@ export function useEVMWallet() {
 
         const ethData = await ethResp.json();
         const usdcData = await usdcResp.json();
-
-        console.log("ETH data:", JSON.stringify(ethData, null, 2));
-        console.log("USDC data:", JSON.stringify(usdcData, null, 2));
 
         const allBalances = [
           ...(ethData.balances || []),

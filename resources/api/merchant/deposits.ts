@@ -1,6 +1,7 @@
 import { type AxiosError } from "axios";
 import { createMutation, createQuery } from "react-query-kit";
 
+import { getItem, setItem } from "@/libs/storage";
 import { client } from "@/modules/axios/client";
 import { type DepositResponse } from "@/resources/schema/deposit";
 
@@ -21,28 +22,58 @@ type DepositPayload = {
 
 export const useGetDeposits = createQuery<
   MerchantDeposit[],
-  { status: string },
+  { status: string; force?: boolean },
   AxiosError
 >({
   queryKey: ["deposits"],
-  fetcher: ({ status }) =>
-    client
-      .get("functions/v1/deposits", {
-        params: { status },
-      })
-      .then((res) => res?.data?.deposits ?? []),
+  fetcher: async (variables) => {
+    const { status, force = false } = variables;
+    const cacheKey = `deposits:${status}`;
+    // Cache deposits for 3 minutes (180,000 ms)
+    const CACHE_DURATION = 3 * 60 * 1000;
+
+    if (!force) {
+      const cached = getItem<MerchantDeposit[]>(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
+    const response = await client.get("functions/v1/deposits", {
+      params: { status },
+    });
+
+    const data = response?.data?.deposits ?? [];
+    await setItem(cacheKey, data, CACHE_DURATION);
+    return data;
+  },
 });
 
 export const useGetDeposit = createQuery<
   MerchantDeposit,
-  { id: string },
+  { id: string; force?: boolean },
   AxiosError
 >({
   queryKey: ["deposits"],
-  fetcher: (variables) =>
-    client
-      .get(`functions/v1/deposits/${variables.id}`)
-      .then((res) => res.data.deposit),
+  fetcher: async (variables) => {
+    const { id, force = false } = variables;
+    const cacheKey = `deposit:${id}`;
+    // Cache individual deposit for 2 minutes (120,000 ms)
+    const CACHE_DURATION = 2 * 60 * 1000;
+
+    if (!force) {
+      const cached = getItem<MerchantDeposit>(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
+    const response = await client.get(`functions/v1/deposits/${id}`);
+    const data = response.data.deposit;
+
+    await setItem(cacheKey, data, CACHE_DURATION);
+    return data;
+  },
   enabled: false,
 });
 

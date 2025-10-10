@@ -1,6 +1,7 @@
 import type { AxiosError } from "axios";
 import { createMutation, createQuery } from "react-query-kit";
 
+import { getItem, setItem } from "@/libs/storage";
 import { client } from "@/modules/axios/client";
 import { type MerchantProfile } from "@/resources/schema/merchant";
 
@@ -17,6 +18,7 @@ type Payload = {
 type Response = MerchantProfile;
 
 type UpdateProfilePayload = {
+  email: string;
   display_name?: string;
   logo?: string | null;
 };
@@ -43,17 +45,53 @@ export const useUpdateProfile = createMutation<
     }).then((response) => response.data.profile),
 });
 
-export const useGetProfile = createQuery<Response, {}, AxiosError>({
+export const useGetProfile = createQuery<
+  Response,
+  { force?: boolean },
+  AxiosError
+>({
   queryKey: ["profile"],
-  fetcher: () =>
-    client
-      .get("functions/v1/merchants", {
+  fetcher: async (variables = {}) => {
+    const { force = false } = variables;
+    const cacheKey = "profile";
+    // Cache profile for 10 minutes (600,000 ms) - profile data changes less frequently
+    const CACHE_DURATION = 10 * 60 * 1000;
+
+    console.log("[useGetProfile] fetcher called with variables:", variables);
+
+    if (!force) {
+      const cached = getItem<Response>(cacheKey);
+      if (cached) {
+        console.log("[useGetProfile] Returning cached profile data:", cached);
+        return cached;
+      }
+    }
+
+    try {
+      const response = await client.get("functions/v1/merchants", {
         "axios-retry": {
           retries: 0,
         },
-      })
-      .then((response) => response.data.profile),
+      });
+
+      const data = response.data.profile;
+      await setItem(cacheKey, data, CACHE_DURATION);
+      console.log("[useGetProfile] Fetched profile from API and cached:", data);
+      return data;
+    } catch (error: any) {
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        const cached = getItem<Response>(cacheKey);
+        if (cached) {
+          console.warn(
+            "[useGetProfile] Authentication error, returning cached profile data"
+          );
+          return cached;
+        }
+      }
+      console.error("[useGetProfile] Error fetching profile:", error);
+      throw error;
+    }
+  },
   enabled: false,
-  staleTime: 5 * 60 * 1000, // 5 minutes - prevent unnecessary refetches
   retry: false,
 });

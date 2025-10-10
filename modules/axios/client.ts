@@ -16,7 +16,8 @@ client.interceptors.request.use(async (config) => {
   const token = storage.getString(TOKEN_KEY);
 
   if (token) {
-    config.headers.Authorization = `Bearer ${token.replace(/^"|"$/g, "")}`;
+    // Token is now stored as plain string, no need to remove quotes
+    config.headers.Authorization = `Bearer ${token}`;
   }
   config.headers["Content-Type"] = "application/json";
 

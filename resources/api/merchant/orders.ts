@@ -22,8 +22,11 @@ export const useGetOrders = createQuery<
   AxiosError
 >({
   queryKey: ["orders"],
-  fetcher: async ({ status, force }) => {
+  fetcher: async (variables) => {
+    const { status, force = false } = variables;
     const cacheKey = `orders:${status}`;
+    // Cache orders for 5 minutes (300,000 ms)
+    const CACHE_DURATION = 5 * 60 * 1000;
 
     if (!force) {
       const cached = getItem<MerchantOrder[]>(cacheKey);
@@ -37,21 +40,36 @@ export const useGetOrders = createQuery<
     });
 
     const data = response?.data?.orders ?? [];
-    await setItem(cacheKey, data);
+    await setItem(cacheKey, data, CACHE_DURATION);
     return data;
   },
 });
 
 export const useGetOrder = createQuery<
   MerchantOrder,
-  { id: string },
+  { id: string; force?: boolean },
   AxiosError
 >({
   queryKey: ["orders"],
-  fetcher: (variables) =>
-    client
-      .get(`functions/v1/orders/${variables.id}`)
-      .then((res) => res.data.order),
+  fetcher: async (variables) => {
+    const { id, force = false } = variables;
+    const cacheKey = `order:${id}`;
+    // Cache individual order for 2 minutes (120,000 ms)
+    const CACHE_DURATION = 2 * 60 * 1000;
+
+    if (!force) {
+      const cached = getItem<MerchantOrder>(cacheKey);
+      if (cached) {
+        return cached;
+      }
+    }
+
+    const response = await client.get(`functions/v1/orders/${id}`);
+    const data = response.data.order;
+
+    await setItem(cacheKey, data, CACHE_DURATION);
+    return data;
+  },
   enabled: false,
 });
 

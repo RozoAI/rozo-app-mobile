@@ -72,24 +72,26 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
   const auth = useAuth();
   const merchant = useMerchant();
   const wallet = useWallet();
-  const { logout: logoutPrivy } = usePrivy();
+  const { logout: logoutPrivy, user: privyUser } = usePrivy();
 
   const logout = useCallback(async () => {
     try {
-      // Logout Privy
-      await logoutPrivy();
+      if (privyUser) {
+        // Logout Privy
+        await logoutPrivy();
 
-      // Clear storage
-      removeItem(TOKEN_KEY);
-      removeItem(MERCHANT_KEY);
+        // Clear storage
+        removeItem(TOKEN_KEY);
+        removeItem(MERCHANT_KEY);
 
-      // Reset merchant state
-      merchant.setMerchant(undefined);
+        // Reset merchant state
+        merchant.setMerchant(undefined);
 
-      showToast({
-        type: "success",
-        message: "Logged out successfully",
-      });
+        showToast({
+          type: "success",
+          message: "Logged out successfully",
+        });
+      }
     } catch (error) {
       console.error("Logout error:", error);
       showToast({

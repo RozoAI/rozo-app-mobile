@@ -33,6 +33,8 @@ export const useBaseUSDCTransactions = createInfiniteQuery<
   fetcher: async (variables, context) => {
     if (!variables?.address) return [];
     const cacheKey = `txs:${variables.address}:page:${context.pageParam}`;
+    // Cache transactions for 1 minute (60,000 ms) - blockchain data changes frequently
+    const CACHE_DURATION = 1 * 60 * 1000;
 
     if (!variables.force) {
       const cached = getItem<Transaction[]>(cacheKey);
@@ -77,7 +79,7 @@ export const useBaseUSDCTransactions = createInfiniteQuery<
       })
     );
 
-    await setItem(cacheKey, data);
+    await setItem(cacheKey, data, CACHE_DURATION);
     return data;
   },
   // @ts-ignore ignore this

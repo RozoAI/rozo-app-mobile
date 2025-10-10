@@ -1,5 +1,13 @@
-import { Text } from "@/components/ui/text";
+import React from "react";
 
-export default function TransactionsPage() {
-  return <Text>Transactions</Text>;
+import { FocusAwareStatusBar } from "@/components/focus-aware-status-bar";
+import { TransactionScreen } from "@/features/transactions/transaction-screen";
+
+export default function SettingsPage() {
+  return (
+    <>
+      <FocusAwareStatusBar />
+      <TransactionScreen />
+    </>
+  );
 }

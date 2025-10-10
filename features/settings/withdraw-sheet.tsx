@@ -23,7 +23,6 @@ import {
 import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
-import { Divider } from "@/components/ui/divider";
 import {
   FormControl,
   FormControlError,
@@ -35,7 +34,6 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
-import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
 import { useTokenTransfer } from "@/hooks/use-token-transfer";
@@ -71,7 +69,6 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [isManual, setIsManual] = useState(false);
     const [isManualConfirmDialogOpen, setIsManualConfirmDialogOpen] =
       useState(false);
     const [isManualSubmiting, setIsManualSubmitting] = useState(false);
@@ -82,8 +79,8 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
       [balance]
     );
 
-    // Create Zod schema for form validation
-    const createFormSchema = () => {
+    // Create Zod schema for form validation - memoized to prevent recreation
+    const formSchema = useMemo(() => {
       return z.object({
         withdrawAddress: z.string().trim().min(1, t("validation.required")),
         amount: z
@@ -100,9 +97,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
             message: t("validation.maxAmount", { max: maxAmount }),
           }),
       });
-    };
-
-    const formSchema = createFormSchema();
+    }, [t, maxAmount]);
 
     const {
       control,
@@ -183,50 +178,41 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
       setValue("amount", maxAmount.toString(), { shouldValidate: true });
     };
 
-    // const handleManualWithdraw = () => {
-    //   setIsManualConfirmDialogOpen(true);
-    //   setIsManual(true);
-    // };
-
     const handleCancelManualWithdraw = () => {
       if (isManualSubmiting) return;
-
       setIsManualConfirmDialogOpen(false);
-      setIsManual(false);
     };
 
     const handleConfirmManualWithdraw = async () => {
       try {
-        if (isManual) {
-          if (!process.env.EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS) {
-            throw new Error("Missing DEFAULT_MANUAL_WITHDRAW_ADDRESS");
-          }
+        if (!process.env.EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS) {
+          throw new Error("Missing DEFAULT_MANUAL_WITHDRAW_ADDRESS");
+        }
 
-          Keyboard.dismiss();
-          setIsManualSubmitting(true);
+        Keyboard.dismiss();
+        setIsManualSubmitting(true);
 
-          const result = await transfer({
-            toAddress: process.env
-              .EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS as Address,
-            amount: maxAmount.toString(),
-            useGasless: true,
+        const result = await transfer({
+          toAddress: process.env
+            .EXPO_PUBLIC_DEFAULT_MANUAL_WITHDRAW_ADDRESS as Address,
+          amount: maxAmount.toString(),
+          useGasless: true,
+        });
+
+        if (!result) {
+          throw new Error("Failed to transfer tokens");
+        }
+
+        if (result.success) {
+          showToast({
+            message: t("withdraw.success"),
+            type: "success",
           });
 
-          if (!result) {
-            throw new Error("Failed to transfer tokens");
-          }
-
-          if (result.success) {
-            showToast({
-              message: t("withdraw.success"),
-              type: "success",
-            });
-
-            resetForm();
-            onSuccess?.();
-          } else {
-            throw result.error;
-          }
+          resetForm();
+          onSuccess?.();
+        } else {
+          throw result.error;
         }
       } catch {
         showToast({
@@ -235,7 +221,6 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
         });
       } finally {
         setIsManualSubmitting(false);
-        setIsManual(false);
         setIsManualConfirmDialogOpen(false);
       }
     };
@@ -244,26 +229,31 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
       <Actionsheet isOpen={isOpen} onClose={handleClose}>
         <ActionsheetBackdrop />
         <ActionsheetContent
-          style={{ paddingBottom: insets.bottom + bottomInset + 8 }}
+          style={{
+            paddingBottom: insets.bottom + bottomInset + 8,
+            paddingHorizontal: 16,
+          }}
         >
           <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // Adjust offset as needed
+            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+            style={{ width: "100%" }}
           >
-            <VStack className="w-full" space="lg">
+            <VStack space="lg" className="w-full">
               <Box className="items-center">
                 <Heading size="lg" className="text-typography-950">
                   {t("general.withdraw")}
                 </Heading>
               </Box>
 
-              <VStack space="md">
+              <VStack space="md" className="w-full">
                 <Alert
                   action="info"
-                  className="flex w-full flex-row items-start gap-4 self-center py-4"
+                  className="flex w-full flex-row items-start gap-4"
+                  style={{ paddingVertical: 16 }}
                 >
                   <AlertIcon as={InfoIcon} className="mt-1" />
                   <VStack className="flex-1">
@@ -300,14 +290,17 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                   control={control}
                   name="withdrawAddress"
                   render={({ field: { onChange, value } }) => (
-                    <FormControl isInvalid={!!errors.withdrawAddress}>
+                    <FormControl
+                      isInvalid={!!errors.withdrawAddress}
+                      className="w-full"
+                    >
                       <FormControlLabel>
                         <FormControlLabelText size="sm">
                           {t("general.walletAddress")}
                         </FormControlLabelText>
                       </FormControlLabel>
                       <Input
-                        className="rounded-xl"
+                        className="w-full rounded-xl"
                         isInvalid={!!errors.withdrawAddress}
                       >
                         <InputField
@@ -316,6 +309,8 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                           onChangeText={onChange}
                           autoCapitalize="none"
                           autoCorrect={false}
+                          returnKeyType="next"
+                          onSubmitEditing={() => Keyboard.dismiss()}
                         />
                       </Input>
                       {errors.withdrawAddress && (
@@ -333,15 +328,15 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                   control={control}
                   name="amount"
                   render={({ field: { onChange, value } }) => (
-                    <FormControl isInvalid={!!errors.amount}>
+                    <FormControl isInvalid={!!errors.amount} className="w-full">
                       <FormControlLabel>
                         <FormControlLabelText size="sm">
                           {t("general.amount")}
                         </FormControlLabelText>
                       </FormControlLabel>
-                      <VStack space="xs">
+                      <VStack space="xs" className="w-full">
                         <Input
-                          className="rounded-xl"
+                          className="w-full rounded-xl"
                           isInvalid={!!errors.amount}
                         >
                           <InputField
@@ -361,10 +356,12 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                               );
                               onChange(standardFormat);
                             }}
-                            keyboardType="numeric"
+                            keyboardType="decimal-pad"
+                            returnKeyType="done"
+                            onSubmitEditing={() => Keyboard.dismiss()}
                           />
                         </Input>
-                        <HStack className="items-center justify-between">
+                        <HStack className="w-full items-center justify-between">
                           <Button
                             size="xs"
                             variant="link"
@@ -390,9 +387,10 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                 />
               </VStack>
 
-              <View className="mt-4 flex-col gap-2">
+              <VStack space="md" className="mt-4 w-full">
                 <Button
                   size="lg"
+                  variant="solid"
                   onPress={hookFormSubmit(onSubmit)}
                   isDisabled={isSubmitting || !isValid}
                   className="w-full rounded-xl"
@@ -404,37 +402,16 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                       : t("general.submit")}
                   </ButtonText>
                 </Button>
+
                 <Button
                   size="lg"
+                  variant="outline"
                   onPress={handleClose}
                   isDisabled={isSubmitting}
                   className="w-full rounded-xl"
-                  variant="link"
                 >
                   <ButtonText>{t("general.cancel")}</ButtonText>
                 </Button>
-
-                <Divider />
-
-                {/* <Alert action="warning" className="flex w-full flex-row items-start gap-4 self-center py-4">
-                <AlertIcon as={InfoIcon} className="mt-1" />
-                <VStack className="flex-1">
-                  <Text className="font-semibold text-typography-900" size="xs">
-                    {t('general.information')}
-                  </Text>
-                  <AlertText className="font-light text-typography-900" size="xs">
-                    {t('general.manualWithdraw1')}{' '}
-                    <Text className="font-semibold text-typography-900" size="xs">
-                      hi@rozo.ai
-                    </Text>{' '}
-                    {t('general.manualWithdraw2')}
-                  </AlertText>
-                </VStack>
-              </Alert>
-
-              <Button onPress={handleManualWithdraw} isDisabled={isValid} className="w-full rounded-xl">
-                <ButtonText>{t('general.manualWithdraw')}</ButtonText>
-              </Button> */}
 
                 <WithdrawManualConfirmation
                   balance={maxAmount.toString()}
@@ -443,7 +420,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                   onConfirm={handleConfirmManualWithdraw}
                   isLoading={isManualSubmiting}
                 />
-              </View>
+              </VStack>
             </VStack>
           </KeyboardAvoidingView>
         </ActionsheetContent>
