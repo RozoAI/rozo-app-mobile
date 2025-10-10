@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "فيما يلي أحدث معاملاتك على أساس Etherscan"
   },
   "transactions": {
-    "title": "المعاملات"
+    "title": "المعاملات",
+    "5Latest": "5 الأحدث"
   },
   "validation": {
     "invalidAmount": "مبلغ غير صالح",

@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "Di bawah ini adalah transaksi terbaru Anda berdasarkan Etherscan"
   },
   "transactions": {
-    "title": "Transaksi"
+    "title": "Transaksi",
+    "5Latest": "5 Terbaru"
   },
   "validation": {
     "invalidAmount": "Jumlah tidak valid",

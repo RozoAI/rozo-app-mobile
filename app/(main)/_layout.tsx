@@ -9,7 +9,6 @@ import { cn } from "@/libs/utils";
 import { usePOSToggle } from "@/providers/app.provider";
 import { AuthBoundary, usePrivy } from "@privy-io/expo";
 import {
-  CircleDollarSignIcon,
   Coins,
   Settings2Icon,
   ShoppingBagIcon,
@@ -129,11 +128,7 @@ export default function TabLayout() {
             <Tabs.Screen
               name="transactions"
               options={{
-                title: t("transactions.title"),
-                tabBarIcon: ({ color }: any) => (
-                  <Icon as={CircleDollarSignIcon} size="md" color={color} />
-                ),
-                tabBarButtonTestID: "transactions-tab",
+                href: null,
               }}
             />
 

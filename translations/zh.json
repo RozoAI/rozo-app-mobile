@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "以下是您基于Etherscan的最新交易"
   },
   "transactions": {
-    "title": "交易"
+    "title": "交易",
+    "5Latest": "5 最新"
   },
   "validation": {
     "invalidAmount": "无效的金额",

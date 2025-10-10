@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "Vous trouverez ci-dessous vos transactions les plus récentes basées sur Etherscan"
   },
   "transactions": {
-    "title": "Transactions"
+    "title": "Transactions",
+    "5Latest": "5 Dernières"
   },
   "validation": {
     "invalidAmount": "Montant non valide",

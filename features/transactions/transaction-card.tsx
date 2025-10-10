@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { ClockIcon } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
@@ -77,10 +76,10 @@ export function TransactionCard({
             {transaction.timestamp &&
               (() => {
                 try {
-                  const date = new Date(transaction.timestamp);
-                  if (isNaN(date.getTime())) {
-                    return null;
-                  }
+                  const date = transaction.timestamp;
+                  // if (isNaN(date.getTime())) {
+                  //   return null;
+                  // }
                   return (
                     <View className="flex-row items-center gap-1">
                       <Icon
@@ -95,7 +94,7 @@ export function TransactionCard({
                           fontSize: 12,
                         }}
                       >
-                        {format(date, "MMM dd yyyy, HH:mm")}
+                        {date}
                       </ThemedText>
                     </View>
                   );

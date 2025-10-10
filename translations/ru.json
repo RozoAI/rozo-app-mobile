@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "Ниже приведены ваши последние транзакции на основе Etherscan"
   },
   "transactions": {
-    "title": "Транзакции"
+    "title": "Транзакции",
+    "5Latest": "5 последних"
   },
   "validation": {
     "invalidAmount": "Неверная сумма",

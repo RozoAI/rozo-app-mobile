@@ -32,7 +32,7 @@ export const useBaseUSDCTransactions = createInfiniteQuery<
   queryKey: ["usdc-transactions"],
   fetcher: async (variables, context) => {
     if (!variables?.address) return [];
-    const cacheKey = `txs:${variables.address}:page:${context.pageParam}`;
+    const cacheKey = `txs:${variables.address}`;
     // Cache transactions for 1 minute (60,000 ms) - blockchain data changes frequently
     const CACHE_DURATION = 1 * 60 * 1000;
 

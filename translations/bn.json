@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "নীচে আপনার সাম্প্রতিক লেনদেনগুলি ইথারস্ক্যানের উপর ভিত্তি করে"
   },
   "transactions": {
-    "title": "লেনদেন"
+    "title": "লেনদেন",
+    "5Latest": "5 সর্বশেষ"
   },
   "validation": {
     "invalidAmount": "অবৈধ পরিমাণ",

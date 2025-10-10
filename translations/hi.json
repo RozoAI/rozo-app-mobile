@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "नीचे इथरस्कैन पर आधारित आपके सबसे हाल के लेनदेन हैं"
   },
   "transactions": {
-    "title": "लेनदेन"
+    "title": "लेनदेन",
+    "5Latest": "5 नवीनतम"
   },
   "validation": {
     "invalidAmount": "अमान्य राशि",

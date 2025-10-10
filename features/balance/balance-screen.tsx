@@ -1,19 +1,17 @@
-import { ArrowDownIcon, BanknoteArrowDown } from "lucide-react-native";
+import { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView } from "react-native";
+import { RefreshControl, ScrollView } from "react-native";
 
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
-import { HStack } from "@/components/ui/hstack";
-import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
 import { showToast } from "@/libs/utils";
 
-import { ThemedText } from "@/components/themed-text";
-import { useRef } from "react";
 import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "../settings/withdraw-sheet";
+import { BalanceActions } from "./balance-actions";
+import { BalanceHeader } from "./balance-header";
 import { BalanceInfo } from "./balance-info";
+import { BalanceTransactions } from "./balance-transactions";
 
 export function BalanceScreen() {
   const { t } = useTranslation();
@@ -21,6 +19,9 @@ export function BalanceScreen() {
 
   const depositDialogRef = useRef<DepositDialogRef>(null);
   const withdrawDialogRef = useRef<WithdrawDialogRef>(null);
+  const transactionsRef = useRef<{ refresh: () => void }>(null);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleReceivePress = () => {
     depositDialogRef.current?.open();
@@ -37,63 +38,60 @@ export function BalanceScreen() {
     });
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch();
+    transactionsRef.current?.refresh();
+
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, [refetch]);
+
+  const handleBalanceRefresh = useCallback(() => {
+    refetch();
+    transactionsRef.current?.refresh();
+  }, [refetch]);
+
   return (
-    <ScrollView className="my-6 flex-1">
-      {/* Header */}
-      <VStack className="flex flex-row items-start justify-between">
-        <View className="mb-6">
-          <ThemedText style={{ fontSize: 24, fontWeight: "bold" }}>
-            {t("balance.title")}
-          </ThemedText>
-          <ThemedText style={{ fontSize: 14, color: "#6B7280" }} type="default">
-            {t("balance.description")}
-          </ThemedText>
-        </View>
-      </VStack>
+    <>
+      <ScrollView
+        className="flex-1"
+        style={{ padding: 0, margin: 0, width: "100%" }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        <VStack space="lg" className="pb-6">
+          {/* Header */}
+          <BalanceHeader />
 
-      <VStack space="lg">
-        {/* Balance Card */}
+          {/* Balance Card */}
+          <VStack space="lg">
+            <VStack
+              className="rounded-xl border border-background-300 bg-background-0"
+              style={{ padding: 16 }}
+              space="lg"
+            >
+              <BalanceInfo
+                balance={balance ?? undefined}
+                isLoading={isLoading}
+                refetch={handleBalanceRefresh}
+              />
+            </VStack>
+          </VStack>
 
-        <VStack
-          className="rounded-xl border border-background-300 bg-background-0"
-          style={{ padding: 16 }}
-          space="lg"
-        >
-          <BalanceInfo
-            balance={balance ?? undefined}
-            isLoading={isLoading}
-            refetch={refetch}
+          {/* Action Buttons */}
+          <BalanceActions
+            onReceivePress={handleReceivePress}
+            onWithdrawPress={handleWithdrawPress}
           />
-        </VStack>
 
-        {/* Action Buttons */}
-        <VStack space="md" className="flex-1 justify-center">
-          <HStack space="md" className="w-full">
-            {/* Receive Button */}
-            <Button
-              size="sm"
-              className="flex-1 rounded-xl"
-              variant="solid"
-              action="secondary"
-              onPress={handleReceivePress}
-            >
-              <ButtonIcon as={ArrowDownIcon}></ButtonIcon>
-              <ButtonText>{t("general.receive")}</ButtonText>
-            </Button>
-
-            <Button
-              size="sm"
-              className="flex-1 rounded-xl"
-              variant="solid"
-              action="primary"
-              onPress={handleWithdrawPress}
-            >
-              <ButtonIcon as={BanknoteArrowDown} />
-              <ButtonText>{t("general.withdraw")}</ButtonText>
-            </Button>
-          </HStack>
+          {/* Transaction List */}
+          <BalanceTransactions ref={transactionsRef} />
         </VStack>
-      </VStack>
+      </ScrollView>
 
       {/* Receive Sheet */}
       <TopupSheet
@@ -108,6 +106,6 @@ export function BalanceScreen() {
         onSuccess={() => refetch()}
         balance={balance ?? undefined}
       />
-    </ScrollView>
+    </>
   );
 }

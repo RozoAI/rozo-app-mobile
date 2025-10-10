@@ -162,7 +162,8 @@
     "recentTransactionsDesc": "A continuación se presentan sus transacciones más recientes basadas en Esterscan"
   },
   "transactions": {
-    "title": "Actas"
+    "title": "Actas",
+    "5Latest": "5 último"
   },
   "validation": {
     "invalidAmount": "Cantidad no válida",

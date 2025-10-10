@@ -26,6 +26,7 @@ export function TransactionList() {
   });
 
   const txs = data?.pages.flat() ?? [];
+  console.log("txs", JSON.stringify(txs, null, 2));
 
   const onRefresh = useCallback(() => {
     setForceRefresh(true);
@@ -60,7 +61,7 @@ export function TransactionList() {
           <Text style={{ padding: 10 }}>Loading more…</Text>
         ) : null
       }
-      contentContainerStyle={{ gap: 16, paddingBottom: 20 }}
+      contentContainerStyle={{ gap: 12, paddingBottom: 20 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

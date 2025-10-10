@@ -25,14 +25,14 @@ export default function LoginScreen() {
   const colorScheme = useColorScheme();
 
   // Privy
-  const { isReady: ready, user } = usePrivy();
+  const { isReady: ready } = usePrivy();
   const { login } = useLogin();
   const { handleCreateWallet, isCreating } = useEVMWallet();
   const { language, setLanguage } = useSelectedLanguage();
   const { t } = useTranslation();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
-  const [isFreshLogin, setIsFreshLogin] = useState(false);
+  // const [isFreshLogin, setIsFreshLogin] = useState(false);
 
   // Redirect to home if user is authenticated
   // React.useEffect(() => {
@@ -50,7 +50,7 @@ export default function LoginScreen() {
       });
 
       if (result) {
-        setIsFreshLogin(true);
+        // setIsFreshLogin(true);
         const hasEmbeddedWallet =
           (result.user?.linked_accounts ?? []).filter(
             (account): account is PrivyEmbeddedWalletAccount =>
