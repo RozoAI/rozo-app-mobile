@@ -7,6 +7,7 @@
 Rozo App is a modern mobile application that combines a Point-of-Sale system with embedded wallets.
 It’s designed to make it easy for merchants and users to handle payments, deposits, and withdrawals — all in one place.
 
+[Web](https://github.com/rozoai/rozo-app) [Mobile](https://github.com/rozoai/rozo-app-mobile)
 ## Features
 
 🔐 Embedded Wallets – Powered by the **Privy SDK**, so every user has a secure digital wallet built in.
