@@ -87,17 +87,6 @@ export default function TabLayout() {
             }}
           >
             <Tabs.Screen
-              name="balance"
-              options={{
-                title: t("balance.title"),
-                tabBarIcon: ({ color }: any) => (
-                  <Icon as={Coins} size="md" color={color} />
-                ),
-                tabBarButtonTestID: "balance-tab",
-              }}
-            />
-
-            <Tabs.Screen
               name="pos"
               options={
                 showPOS
@@ -112,6 +101,17 @@ export default function TabLayout() {
                       href: null,
                     }
               }
+            />
+
+            <Tabs.Screen
+              name="balance"
+              options={{
+                title: t("balance.title"),
+                tabBarIcon: ({ color }: any) => (
+                  <Icon as={Coins} size="md" color={color} />
+                ),
+                tabBarButtonTestID: "balance-tab",
+              }}
             />
 
             <Tabs.Screen

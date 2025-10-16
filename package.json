@@ -1,7 +1,7 @@
 {
   "name": "rozo-app-mobile",
   "main": "entrypoint.js",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -11,6 +11,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "prebuild": "expo prebuild",
+    "publish:android": "expo prebuild && bunx eas build --platform android",
+    "publish:ios": "expo prebuild && eas publish --platform ios",
     "sync:types": "bunx expo customize tsconfig.json",
     "lint": "expo lint"
   },
@@ -107,6 +109,9 @@
   },
   "packageManager": "bun@1.2.23",
   "private": true,
+  "overrides": {
+    "expo-dev-menu": "7.0.14"
+  },
   "expo": {
     "doctor": {
       "reactNativeDirectoryCheck": {

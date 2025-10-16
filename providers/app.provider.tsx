@@ -81,8 +81,9 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
         await logoutPrivy();
 
         // Clear storage
-        removeItem(TOKEN_KEY);
-        removeItem(MERCHANT_KEY);
+        await removeItem(TOKEN_KEY);
+        await removeItem(MERCHANT_KEY);
+        await wallet.deleteTogglePOS();
 
         // Reset merchant state
         merchant.setMerchant(undefined);

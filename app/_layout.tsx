@@ -110,11 +110,11 @@ export default function RootLayout() {
                           options={{ headerShown: false }}
                         />
                         <Stack.Screen
-                          name="balance"
+                          name="pos"
                           options={{ headerShown: false }}
                         />
                         <Stack.Screen
-                          name="pos"
+                          name="balance"
                           options={{ headerShown: false }}
                         />
                         <Stack.Screen

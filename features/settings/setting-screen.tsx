@@ -50,9 +50,9 @@ export function SettingScreen() {
             <AccountSection />
           </Card>
 
-          <VStack className="items-center justify-between rounded-xl border border-background-300 bg-background-0 px-4 py-2 dark:divide-[#2b2b2b]">
+          <VStack className="items-center justify-between rounded-xl border border-background-300 bg-background-0 px-4 pt-2 pb-0 dark:divide-[#2b2b2b]">
             <WalletAddressCard />
-            <Alert action="info" variant="solid" className="m-2">
+            <Alert action="info" variant="solid" style={{ marginInline: -1 }}>
               <AlertIcon as={InfoIcon} />
               <AlertText className="text-xs">
                 {t("settings.gaslessInfo")}

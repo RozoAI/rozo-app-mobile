@@ -98,10 +98,6 @@ export function PaymentModal({
 
   // Watch for payment status changes
   useEffect(() => {
-    console.log("status", status);
-    console.log("depositStatus", depositStatus);
-    console.log("isDeposit", isDeposit);
-
     if (status === "completed" || depositStatus === "completed") {
       // Show success view after a brief delay
       if (isDeposit) {
@@ -113,9 +109,6 @@ export function PaymentModal({
   }, [status, depositStatus]);
 
   useEffect(() => {
-    console.log("fetchData", fetchData);
-    console.log("dataDeposit", dataDeposit);
-
     if (
       fetchData?.status === "COMPLETED" ||
       dataDeposit?.status === "COMPLETED" ||

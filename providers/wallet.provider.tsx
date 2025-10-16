@@ -8,7 +8,7 @@ import React, {
 } from "react";
 
 import { type GenericWallet } from "@/contexts/auth.context";
-import { getItem, setItem } from "@/libs/storage";
+import { getItem, removeItem, setItem } from "@/libs/storage";
 import { useAuth } from "./auth.provider";
 
 const POS_TOGGLE_BASE_KEY = "show_pos_toggle";
@@ -18,6 +18,7 @@ interface WalletContextProps {
   primaryWallet: GenericWallet | null;
   showPOS: boolean;
   togglePOS: (value: boolean) => Promise<void>;
+  deleteTogglePOS: () => Promise<void>;
 }
 
 const WalletContext = createContext<WalletContextProps>({
@@ -25,6 +26,7 @@ const WalletContext = createContext<WalletContextProps>({
   primaryWallet: null,
   showPOS: false,
   togglePOS: async () => {},
+  deleteTogglePOS: async () => {},
 });
 
 interface WalletProviderProps {
@@ -68,6 +70,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     [userPOSToggleKey]
   );
 
+  const deleteTogglePOS = useCallback(async () => {
+    await removeItem(userPOSToggleKey);
+  }, [userPOSToggleKey]);
+
   // Effect for POS toggle state
   useEffect(() => {
     if (userPOSToggleKey && primaryWallet) {
@@ -84,8 +90,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       primaryWallet,
       showPOS,
       togglePOS,
+      deleteTogglePOS,
     }),
-    [wallets, primaryWallet, showPOS, togglePOS]
+    [wallets, primaryWallet, showPOS, togglePOS, deleteTogglePOS]
   );
 
   return (

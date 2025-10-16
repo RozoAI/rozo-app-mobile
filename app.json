@@ -3,7 +3,7 @@
     "name": "Rozo",
     "description": "Rozo is a modern mobile application that combines a Point-of-Sale system with embedded wallets. It’s designed to make it easy for merchants and users to handle payments, deposits, and withdrawals — all in one place.",
     "slug": "rozo-app-mobile",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "rozoappmobile",
@@ -25,7 +25,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.rozoapp",
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.rozoapp"
     },
     "web": {
       "output": "static",

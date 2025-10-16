@@ -26,7 +26,6 @@ export function TransactionList() {
   });
 
   const txs = data?.pages.flat() ?? [];
-  console.log("txs", JSON.stringify(txs, null, 2));
 
   const onRefresh = useCallback(() => {
     setForceRefresh(true);

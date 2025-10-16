@@ -25,7 +25,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
-import { showToast } from "@/libs/utils";
+import { cn, showToast } from "@/libs/utils";
 import { type Language } from "@/modules/i18n/resources";
 import { useApp } from "@/providers/app.provider";
 import { useCreateProfile } from "@/resources/api";
@@ -104,6 +104,7 @@ export const languages: readonly LanguageOption[] = [
 ] as const;
 
 type ActionSheetLanguageSwitcherProps = {
+  className?: string;
   trigger: (lg: string) => React.ReactNode;
   /**
    * Whether to update the API when language changes
@@ -122,6 +123,7 @@ type ActionSheetLanguageSwitcherProps = {
 };
 
 export function ActionSheetLanguageSwitcher({
+  className,
   trigger,
   updateApi = true,
   onChange,
@@ -284,7 +286,10 @@ export function ActionSheetLanguageSwitcher({
 
   return (
     <>
-      <Pressable onPress={handleOpen} className="relative w-full">
+      <Pressable
+        onPress={handleOpen}
+        className={cn("relative w-full", className)}
+      >
         <View>
           {trigger(selectedLabel ?? initialLabel)}
           {updateApi && isPending && (

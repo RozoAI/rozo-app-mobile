@@ -30,8 +30,10 @@ const themes = [
 ];
 
 export function ActionSheetThemeSwitcher({
+  className,
   trigger,
 }: {
+  className?: string;
   trigger: (them: ModeType) => React.ReactNode;
 }) {
   const { t } = useTranslation();
@@ -68,7 +70,10 @@ export function ActionSheetThemeSwitcher({
 
   return (
     <>
-      <Pressable onPress={() => setShowActionsheet(true)} className="w-full">
+      <Pressable
+        onPress={() => setShowActionsheet(true)}
+        className={cn("w-full", className)}
+      >
         <View>{trigger((selectedTheme ?? "system") as ModeType)}</View>
       </Pressable>
 

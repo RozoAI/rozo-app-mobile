@@ -1,20 +1,25 @@
 import { PrivyEmbeddedWalletAccount, usePrivy } from "@privy-io/expo";
 import { useLogin } from "@privy-io/expo/ui";
+import * as Application from "expo-application";
 import { useRouter } from "expo-router";
 import * as React from "react";
 import { useState } from "react";
 
 import { FocusAwareStatusBar } from "@/components/focus-aware-status-bar";
 import { LoadingScreen } from "@/components/loading-screen";
+import { ProtectedByPrivyLogo } from "@/components/protected-by-privy-logo";
 import LogoSvg from "@/components/svg/logo";
 import LogoWhiteSvg from "@/components/svg/logo-white";
 import { ThemedText } from "@/components/themed-text";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
+import { HStack } from "@/components/ui/hstack";
 import { ActionSheetLanguageSwitcher } from "@/features/settings/select-language";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
+import { showToast } from "@/libs/utils";
+import { usePOSToggle } from "@/providers/app.provider";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -23,6 +28,7 @@ import { useTranslation } from "react-i18next";
 export default function LoginScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const { showPOS } = usePOSToggle();
 
   // Privy
   const { isReady: ready } = usePrivy();
@@ -64,11 +70,19 @@ export default function LoginScreen() {
         }
 
         setTimeout(() => {
-          router.replace("/balance");
+          if (showPOS) {
+            router.replace("/pos");
+          } else {
+            router.replace("/balance");
+          }
         }, 2000);
       }
-    } catch {
+    } catch (error) {
       setIsAuthLoading(false);
+      showToast({
+        type: "danger",
+        message: error instanceof Error ? error.message : "Failed to sign in",
+      });
     } finally {
       setIsAuthLoading(false);
     }
@@ -102,7 +116,6 @@ export default function LoginScreen() {
         {/* Button section */}
         <Button
           size="lg"
-          variant="outline"
           action="primary"
           className="w-full flex-row items-center justify-center space-x-2 rounded-xl dark:border-neutral-700"
           onPress={handleSignIn}
@@ -114,17 +127,34 @@ export default function LoginScreen() {
           </ButtonText>
         </Button>
 
-        <Box className="mt-10 w-full flex-row items-center justify-center">
+        <HStack className="mt-10" space="md">
           <ActionSheetLanguageSwitcher
+            className="w-min"
             updateApi={false}
             initialLanguage={language ?? "en"}
             onChange={(lang) => setLanguage(lang)}
             trigger={(label) => (
-              <ThemedText className="mb-4 space-x-2 rounded-xl text-center text-sm">
+              <ThemedText
+                className="space-x-2 rounded-xl text-center text-sm border border-neutral-200 dark:border-neutral-700 p-1.5 px-3 max-w-64 m-auto"
+                style={{ fontSize: 14 }}
+              >
                 {label}
               </ThemedText>
             )}
           />
+        </HStack>
+
+        {ready && (
+          <Box className="mt-3 w-full items-center justify-center">
+            <ProtectedByPrivyLogo />
+          </Box>
+        )}
+
+        {/* App version */}
+        <Box className="mt-6 w-full items-center justify-center">
+          <ThemedText style={{ fontSize: 14, color: "#747474" }}>
+            Version {Application.nativeApplicationVersion}
+          </ThemedText>
         </Box>
       </Box>
     </>

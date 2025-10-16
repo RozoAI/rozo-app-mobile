@@ -65,8 +65,6 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
   const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log({ merchant });
-
   const {
     control,
     handleSubmit,
@@ -89,8 +87,6 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
       base64: true,
     });
 
-    console.log("result", JSON.stringify(result, null, 2));
-
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setAvatarPreview(result.assets[0].uri);
       setAvatarBase64(result.assets[0].base64 || result.assets[0].uri);
@@ -105,8 +101,6 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
       ...data,
       logo: avatarBase64,
     };
-
-    console.log("payload", { payload });
 
     updateProfile(payload)
       .then((res) => {
