@@ -1,13 +1,11 @@
-import { Redirect, Tabs } from "expo-router";
-import React, { useEffect } from "react";
-
 import { LoadingScreen } from "@/components/loading-screen";
 import { ThemedText } from "@/components/themed-text";
 import { Icon } from "@/components/ui/icon";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { cn } from "@/libs/utils";
-import { usePOSToggle } from "@/providers/app.provider";
+import { usePOSToggle } from "@/providers/preferences.provider";
 import { AuthBoundary, usePrivy } from "@privy-io/expo";
+import { Redirect, Tabs } from "expo-router";
 import {
   Coins,
   Settings2Icon,
@@ -15,6 +13,8 @@ import {
   ShoppingCartIcon,
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
+import type React from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   SafeAreaProvider,
@@ -70,7 +70,7 @@ export default function TabLayout() {
                 <ThemedText
                   className={cn(
                     "text-sm font-medium",
-                    focused && `font-semibold`
+                    focused && `font-semibold`,
                   )}
                   style={{ color, fontSize: 12 }}
                 >
@@ -86,23 +86,7 @@ export default function TabLayout() {
               },
             }}
           >
-            <Tabs.Screen
-              name="pos"
-              options={
-                showPOS
-                  ? {
-                      title: t("pos.title"),
-                      tabBarIcon: ({ color }: any) => (
-                        <Icon as={ShoppingCartIcon} size="md" color={color} />
-                      ),
-                      tabBarButtonTestID: "pos-tab",
-                    }
-                  : {
-                      href: null,
-                    }
-              }
-            />
-
+            {/* Main Screen - Balance (First Tab) */}
             <Tabs.Screen
               name="balance"
               options={{
@@ -112,6 +96,24 @@ export default function TabLayout() {
                 ),
                 tabBarButtonTestID: "balance-tab",
               }}
+            />
+
+            {/* Conditional POS Tab - Only visible when enabled */}
+            <Tabs.Screen
+              name="pos"
+              options={
+                showPOS
+                  ? {
+                    title: t("pos.title"),
+                    tabBarIcon: ({ color }: any) => (
+                      <Icon as={ShoppingCartIcon} size="md" color={color} />
+                    ),
+                    tabBarButtonTestID: "pos-tab",
+                  }
+                  : {
+                    href: null,
+                  }
+              }
             />
 
             <Tabs.Screen
@@ -125,6 +127,7 @@ export default function TabLayout() {
               }}
             />
 
+            {/* Hidden utility screen - accessible via navigation only */}
             <Tabs.Screen
               name="transactions"
               options={{

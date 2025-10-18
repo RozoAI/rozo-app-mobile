@@ -1,10 +1,3 @@
-import { PrivyEmbeddedWalletAccount, usePrivy } from "@privy-io/expo";
-import { useLogin } from "@privy-io/expo/ui";
-import * as Application from "expo-application";
-import { useRouter } from "expo-router";
-import * as React from "react";
-import { useState } from "react";
-
 import { FocusAwareStatusBar } from "@/components/focus-aware-status-bar";
 import { LoadingScreen } from "@/components/loading-screen";
 import { ProtectedByPrivyLogo } from "@/components/protected-by-privy-logo";
@@ -19,7 +12,12 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
 import { showToast } from "@/libs/utils";
-import { usePOSToggle } from "@/providers/app.provider";
+import { usePrivy, type PrivyEmbeddedWalletAccount } from "@privy-io/expo";
+import { useLogin } from "@privy-io/expo/ui";
+import * as Application from "expo-application";
+import { useRouter } from "expo-router";
+import * as React from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -28,7 +26,6 @@ import { useTranslation } from "react-i18next";
 export default function LoginScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const { showPOS } = usePOSToggle();
 
   // Privy
   const { isReady: ready } = usePrivy();
@@ -62,7 +59,7 @@ export default function LoginScreen() {
             (account): account is PrivyEmbeddedWalletAccount =>
               account.type === "wallet" &&
               account.wallet_client_type === "privy" &&
-              account.chain_type === "ethereum"
+              account.chain_type === "ethereum",
           ).length > 0;
 
         if (!hasEmbeddedWallet) {
@@ -70,11 +67,7 @@ export default function LoginScreen() {
         }
 
         setTimeout(() => {
-          if (showPOS) {
-            router.replace("/pos");
-          } else {
-            router.replace("/balance");
-          }
+          router.replace("/balance");
         }, 2000);
       }
     } catch (error) {
