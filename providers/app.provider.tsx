@@ -11,6 +11,7 @@ import { type MerchantProfile } from "@/resources/schema/merchant";
 import { usePrivy } from "@privy-io/expo";
 import { AuthProvider, useAuth } from "./auth.provider";
 import { MerchantProvider, useMerchant } from "./merchant.provider";
+import { PreferencesProvider, usePreferences } from "./preferences.provider";
 import { WalletProvider, useWallet } from "./wallet.provider";
 
 // Re-export GenericWallet type for backward compatibility
@@ -56,10 +57,10 @@ export const AppContext = createContext<IContextProps>({
   wallets: [],
   primaryWallet: null,
   showPOS: false,
-  setToken: () => {},
-  setMerchant: () => {},
-  logout: async () => {},
-  togglePOS: async () => {},
+  setToken: () => { },
+  setMerchant: () => { },
+  logout: async () => { },
+  togglePOS: async () => { },
   getAccessToken: undefined,
 });
 
@@ -72,6 +73,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
   const auth = useAuth();
   const merchant = useMerchant();
   const wallet = useWallet();
+  const preferences = usePreferences();
   const { logout: logoutPrivy, user: privyUser } = usePrivy();
 
   const logout = useCallback(async () => {
@@ -83,7 +85,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
         // Clear storage
         await removeItem(TOKEN_KEY);
         await removeItem(MERCHANT_KEY);
-        await wallet.deleteTogglePOS();
+        await preferences.deleteTogglePOS();
 
         // Reset merchant state
         merchant.setMerchant(undefined);
@@ -100,7 +102,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
         message: "Failed to logout",
       });
     }
-  }, [merchant]);
+  }, [merchant, preferences, logoutPrivy, privyUser]);
 
   // Determine if we're still loading
   const isLoading = auth.isAuthLoading || merchant.isMerchantLoading;
@@ -124,13 +126,13 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       primaryWallet: wallet.primaryWallet,
 
       // POS Toggle state
-      showPOS: wallet.showPOS,
+      showPOS: preferences.showPOS,
 
       // Actions
-      setToken: () => {}, // Not used in this simplified approach
+      setToken: () => { }, // Not used in this simplified approach
       setMerchant: merchant.setMerchant,
       logout,
-      togglePOS: wallet.togglePOS,
+      togglePOS: preferences.togglePOS,
 
       // Additional Privy-specific functionality
       getAccessToken: auth.refreshAccessToken,
@@ -147,8 +149,8 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       merchant.setMerchant,
       wallet.wallets,
       wallet.primaryWallet,
-      wallet.showPOS,
-      wallet.togglePOS,
+      preferences.showPOS,
+      preferences.togglePOS,
       logout,
     ]
   );
@@ -166,7 +168,9 @@ export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
     <AuthProvider>
       <MerchantProvider>
         <WalletProvider>
-          <AppProviderInternal>{children}</AppProviderInternal>
+          <PreferencesProvider>
+            <AppProviderInternal>{children}</AppProviderInternal>
+          </PreferencesProvider>
         </WalletProvider>
       </MerchantProvider>
     </AuthProvider>
@@ -174,9 +178,3 @@ export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
 };
 
 export const useApp = () => useContext(AppContext);
-
-// Export usePOSToggle for backward compatibility
-export const usePOSToggle = () => {
-  const { showPOS, togglePOS } = useWallet();
-  return { showPOS, togglePOS };
-};

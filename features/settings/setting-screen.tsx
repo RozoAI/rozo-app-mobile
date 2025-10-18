@@ -1,3 +1,17 @@
+import { ThemedText } from "@/components/themed-text";
+import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
+import { Button, ButtonText } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Divider } from "@/components/ui/divider";
+import type { ModeType } from "@/components/ui/gluestack-ui-provider";
+import { Icon } from "@/components/ui/icon";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { Text } from "@/components/ui/text";
+import { View } from "@/components/ui/view";
+import { VStack } from "@/components/ui/vstack";
+import { AccountSection } from "@/features/settings/account-section";
+import { useSelectedLanguage } from "@/hooks/use-selected-language";
+import { useApp } from "@/providers/app.provider";
 import * as Application from "expo-application";
 import {
   ChevronRightIcon,
@@ -7,22 +21,6 @@ import {
 } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native-gesture-handler";
-
-import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
-import { Button, ButtonText } from "@/components/ui/button";
-import { Divider } from "@/components/ui/divider";
-import { type ModeType } from "@/components/ui/gluestack-ui-provider";
-import { Icon } from "@/components/ui/icon";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
-import { Text } from "@/components/ui/text";
-import { View } from "@/components/ui/view";
-import { VStack } from "@/components/ui/vstack";
-import { AccountSection } from "@/features/settings/account-section";
-import { useSelectedLanguage } from "@/hooks/use-selected-language";
-import { useApp } from "@/providers/app.provider";
-
-import { ThemedText } from "@/components/themed-text";
-import { Card } from "@/components/ui/card";
 import { POSToggleSetting } from "./pos-toggle-setting";
 import { ActionSheetCurrencySwitcher } from "./select-currency";
 import { ActionSheetLanguageSwitcher } from "./select-language";

@@ -11,6 +11,10 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import {
+  useRouteProtection,
+  type RouteProtectionRule,
+} from "@/hooks/use-route-protection";
 import { privyClient } from "@/libs/privy-client";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
@@ -21,6 +25,7 @@ import { ThemedText } from "@/components/themed-text";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { AppProvider } from "@/providers/app.provider";
+import { usePOSToggle } from "@/providers/preferences.provider";
 import { QueryProvider } from "@/providers/query.provider";
 import {
   Inter_400Regular,
@@ -31,6 +36,7 @@ import { PrivyElements } from "@privy-io/expo/ui";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import type { ReactNode } from "react";
 import { useCallback } from "react";
 import { StyleSheet } from "react-native";
 
@@ -100,36 +106,38 @@ export default function RootLayout() {
                 <PrivyReady>
                   <AppProvider>
                     <KeyboardProvider>
-                      <Stack>
-                        <Stack.Screen
-                          name="(main)"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="login"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="pos"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="balance"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="orders"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="transactions"
-                          options={{ headerShown: false }}
-                        />
-                        <Stack.Screen
-                          name="settings"
-                          options={{ headerShown: false }}
-                        />
-                      </Stack>
+                      <RouteProtectionWrapper>
+                        <Stack>
+                          <Stack.Screen
+                            name="(main)"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="login"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="pos"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="balance"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="orders"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="transactions"
+                            options={{ headerShown: false }}
+                          />
+                          <Stack.Screen
+                            name="settings"
+                            options={{ headerShown: false }}
+                          />
+                        </Stack>
+                      </RouteProtectionWrapper>
                     </KeyboardProvider>
                   </AppProvider>
 
@@ -171,6 +179,39 @@ function ErrorFallback({ error }: { error: Error }) {
       </ThemedText>
     </View>
   );
+}
+
+/**
+ * Wrapper component that enables route protection
+ * Must be inside AppProvider to access preferences context
+ */
+function RouteProtectionWrapper({ children }: { children: ReactNode }) {
+  const { showPOS } = usePOSToggle();
+
+  // Define protection rules
+  const protectionRules: RouteProtectionRule[] = [
+    {
+      paths: ["/(main)/pos", "/pos"],
+      condition: () => showPOS,
+      redirectTo: "/(main)/balance",
+      reason: "POS feature is disabled",
+      onProtected: (pathname) => {
+        console.log(`[Analytics] User attempted to access POS from: ${pathname}`);
+      },
+    },
+    // Add more protection rules here as needed
+    // Example:
+    // {
+    //   paths: ["/admin"],
+    //   condition: () => isAdmin,
+    //   redirectTo: "/(main)/balance",
+    //   reason: "Admin access required",
+    // },
+  ];
+
+  useRouteProtection(protectionRules);
+
+  return <>{children}</>;
 }
 
 const styles = StyleSheet.create({

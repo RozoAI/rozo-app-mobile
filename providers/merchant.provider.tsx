@@ -1,4 +1,20 @@
-import React, {
+import { useSelectedLanguage } from "@/hooks/use-selected-language";
+import { MERCHANT_KEY, TOKEN_KEY } from "@/libs/constants";
+import { currencies, type CurrencyConfig } from "@/libs/currencies";
+import type { AppError } from "@/libs/error";
+import { privyClient } from "@/libs/privy-client";
+import { getItem, removeItem, setItem } from "@/libs/storage";
+import { defaultToken, tokens, type Token } from "@/libs/tokens";
+import { showToast } from "@/libs/utils";
+import {
+  useCreateProfile,
+  useGetProfile,
+  useUpdateProfile,
+} from "@/resources/api";
+import type { MerchantProfile } from "@/resources/schema/merchant";
+import { usePrivy } from "@privy-io/expo";
+import type React from "react";
+import {
   createContext,
   useContext,
   useEffect,
@@ -6,22 +22,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-
-import { useSelectedLanguage } from "@/hooks/use-selected-language";
-import { MERCHANT_KEY, TOKEN_KEY } from "@/libs/constants";
-import { currencies, type CurrencyConfig } from "@/libs/currencies";
-import { AppError } from "@/libs/error";
-import { privyClient } from "@/libs/privy-client";
-import { getItem, removeItem, setItem } from "@/libs/storage";
-import { defaultToken, type Token, tokens } from "@/libs/tokens";
-import { showToast } from "@/libs/utils";
-import {
-  useCreateProfile,
-  useGetProfile,
-  useUpdateProfile,
-} from "@/resources/api";
-import { type MerchantProfile } from "@/resources/schema/merchant";
-import { usePrivy } from "@privy-io/expo";
 import { useAuth } from "./auth.provider";
 
 interface MerchantContextProps {
@@ -37,7 +37,7 @@ const MerchantContext = createContext<MerchantContextProps>({
   defaultCurrency: undefined,
   merchantToken: undefined,
   isMerchantLoading: false,
-  setMerchant: () => {},
+  setMerchant: () => { },
 });
 
 interface MerchantProviderProps {
@@ -52,7 +52,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
   const { logout: logoutPrivy } = usePrivy();
 
   const [merchant, setMerchant] = useState<MerchantProfile | undefined>(
-    undefined
+    undefined,
   );
   const [isMerchantLoading, setIsMerchantLoading] = useState(false);
 
@@ -94,7 +94,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
       if (!isAuthenticated || !user || !token || !isMounted) {
         console.log(
           "[MerchantProvider] Skipping: Not authenticated or not mounted or no user or no token.",
-          { isAuthenticated, user: !!user, token: !!token, isMounted }
+          { isAuthenticated, user: !!user, token: !!token, isMounted },
         );
         return;
       }
@@ -115,7 +115,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
         if (cachedMerchant && isMounted) {
           console.log(
             "[MerchantProvider] Using cached merchant:",
-            cachedMerchant
+            cachedMerchant,
           );
           setMerchant(cachedMerchant);
           setIsMerchantLoading(false);
@@ -127,24 +127,24 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
 
         if (profileResult.data && isMounted) {
           console.log(
-            "[MerchantProvider] Profile fetch success, setting merchant."
+            "[MerchantProvider] Profile fetch success, setting merchant.",
           );
 
           if (!profileResult.data.email) {
             console.log(
-              "[MerchantProvider] No email found, creating new profile."
+              "[MerchantProvider] No email found, creating new profile.",
             );
 
             const privyUser = await privyClient.user.get();
             const email = privyUser.user.linked_accounts.find(
-              (account) => account.type === "email"
+              (account) => account.type === "email",
             )?.address;
 
             if (email) {
               profileResult.data.email = email;
               console.log(
                 "[MerchantProvider] Updating profile with payload:",
-                JSON.stringify(profileResult.data, null, 2)
+                JSON.stringify(profileResult.data, null, 2),
               );
               const newProfile = await updateProfile({
                 email: email,
@@ -155,7 +155,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
               setItem(MERCHANT_KEY, newProfile);
             } else {
               console.error(
-                "[MerchantProvider] No email found, skipping profile creation."
+                "[MerchantProvider] No email found, skipping profile creation.",
               );
               setMerchant(profileResult.data);
               setItem(MERCHANT_KEY, profileResult.data);
@@ -177,7 +177,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           const error = profileResult.error as unknown as AppError;
           if (error.statusCode === 404) {
             console.log(
-              "[MerchantProvider] No profile found (404), creating new profile."
+              "[MerchantProvider] No profile found (404), creating new profile.",
             );
 
             // Create profile
@@ -186,12 +186,12 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
             const privyUser = await privyClient.user.get();
             console.log(
               "[MerchantProvider] privyUser for profile creation:",
-              privyUser
+              privyUser,
             );
 
             let email = privyUser.user.id;
             const userEmail = privyUser.user.linked_accounts.find(
-              (account) => account.type === "email"
+              (account) => account.type === "email",
             )?.address;
 
             if (userEmail) {
@@ -210,7 +210,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
 
             console.log(
               "[MerchantProvider] Creating profile with payload:",
-              profilePayload
+              profilePayload,
             );
 
             const newProfile = await createProfile(profilePayload);
@@ -230,7 +230,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
             // Don't show error toast for authentication issues if we have cached data
             if (appError.statusCode === 401 || appError.statusCode === 403) {
               console.warn(
-                "Authentication error during profile fetch, using cached data if available"
+                "Authentication error during profile fetch, using cached data if available",
               );
             } else {
               showToast({
@@ -269,7 +269,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           setIsMerchantLoading(false);
           console.log(
             "[MerchantProvider] Finished initializeMerchant, loading:",
-            false
+            false,
           );
         }
       }
@@ -298,7 +298,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
       isMerchantLoading,
       setMerchant,
     }),
-    [merchant, defaultCurrency, merchantToken, isMerchantLoading, setMerchant]
+    [merchant, defaultCurrency, merchantToken, isMerchantLoading, setMerchant],
   );
 
   return (
