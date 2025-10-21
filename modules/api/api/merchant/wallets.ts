@@ -9,6 +9,7 @@ type WalletTransferPayload = {
   recipientAddress: string;
   amount: number;
   signature: string;
+  pinCode?: string; // Optional PIN code for authorization
 };
 
 type WalletTransferResponse = {
@@ -24,15 +25,42 @@ type WalletTransferResponse = {
   message?: string;
 };
 
+type WalletTransferError = {
+  success: false;
+  error: string;
+  code?: 'PIN_REQUIRED' | 'PIN_BLOCKED' | 'INACTIVE' | 'INVALID_PIN';
+  attempts_remaining?: number;
+  is_blocked?: boolean;
+};
+
+// Wallet Transfer (POST /wallets/:walletId)
+// Uses x-pin-code header for PIN authorization if provided
 export const useWalletTransfer = createMutation<
   WalletTransferResponse,
   WalletTransferPayload,
-  AxiosError
+  AxiosError<WalletTransferError>
 >({
-  mutationFn: async (payload: WalletTransferPayload) =>
-    client({
-      url: `functions/v1/wallets/${payload.walletId}`,
+  mutationFn: async (payload: WalletTransferPayload) => {
+    const { walletId, recipientAddress, amount, signature, pinCode } = payload;
+    
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    
+    // Add PIN code to header if provided
+    if (pinCode) {
+      headers["x-pin-code"] = pinCode;
+    }
+    
+    return client({
+      url: `functions/v1/wallets/${walletId}`,
       method: "POST",
-      data: payload,
-    }).then((response) => response.data),
-} as UseMutationOptions<WalletTransferResponse, AxiosError, WalletTransferPayload>);
+      headers,
+      data: {
+        recipientAddress,
+        amount,
+        signature,
+      },
+    }).then((response) => response.data);
+  },
+} as UseMutationOptions<WalletTransferResponse, AxiosError<WalletTransferError>, WalletTransferPayload>);

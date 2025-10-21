@@ -91,6 +91,49 @@
     "verifyPayment": "Проверить оплату",
     "voiceSuccess": "Вы получили {{amount}} {{currency}} через Rozo"
   },
+  "pin": {
+    "setup": {
+      "title": "Настройка PIN",
+      "description": "Создайте 6-значный PIN для повышенной безопасности",
+      "placeholder": "Введите ваш PIN",
+      "confirm": "Установить PIN",
+      "success": "PIN был успешно установлен",
+      "error": "Не удалось установить PIN. Попробуйте снова",
+      "invalidLength": "PIN должен содержать ровно 6 цифр"
+    },
+    "management": {
+      "title": "Управление PIN",
+      "description": "Управляйте настройками безопасности PIN",
+      "status": "Ваш PIN в настоящее время активен и защищает ваш аккаунт",
+      "change": "Изменить PIN",
+      "revoke": "Отозвать PIN"
+    },
+    "validation": {
+      "blocked": "Аккаунт Заблокирован",
+      "blockedDescription": "Ваш аккаунт был заблокирован из-за слишком большого количества неудачных попыток ввода PIN. Обратитесь в службу поддержки.",
+      "attemptsRemaining": "{{count}} попытка осталась",
+      "attemptsRemaining_other": "{{count}} попыток осталось",
+      "validating": "Проверка PIN...",
+      "wrongPin": "Неверный PIN",
+      "error": "Не удалось проверить PIN"
+    },
+    "revoke": {
+      "title": "Отозвать PIN",
+      "confirmationMessage": "Это навсегда удалит вашу PIN-защиту. Вы можете установить новый PIN в любое время в настройках.",
+      "enterPin": "Введите PIN для отзыва",
+      "success": "PIN был успешно отозван",
+      "error": "Не удалось отозвать PIN",
+      "processing": "Отзыв PIN..."
+    },
+    "change": {
+      "title": "Изменить PIN",
+      "confirmationMessage": "Вам нужно будет ввести текущий PIN и установить новый.",
+      "enterCurrentPin": "Введите текущий PIN",
+      "enterNewPin": "Введите новый PIN",
+      "success": "PIN был успешно изменен",
+      "error": "Не удалось изменить PIN"
+    }
+  },
   "pos": {
     "title": "Поступок"
   },

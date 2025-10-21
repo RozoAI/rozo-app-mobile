@@ -10,7 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
-import { showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
 
 import { type DepositDialogRef, TopupSheet } from "./deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "./withdraw-sheet";
@@ -18,6 +18,7 @@ import { WithdrawDialogRef, WithdrawSheet } from "./withdraw-sheet";
 export const WalletBalanceCard = () => {
   const { t } = useTranslation();
   const { balance, isLoading, refetch } = useWalletBalance();
+  const { success, error: showError } = useToast();
   const DepositDialogRef = useRef<DepositDialogRef>(null);
   const WithdrawDialogRef = useRef<WithdrawDialogRef>(null);
 
@@ -30,10 +31,7 @@ export const WalletBalanceCard = () => {
   };
 
   const handleTopUpConfirm = (amount: string) => {
-    showToast({
-      message: `Top up of ${amount} initiated`,
-      type: "success",
-    });
+    success(`Top up of ${amount} initiated`);
   };
 
   return (

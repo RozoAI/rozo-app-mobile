@@ -1,27 +1,25 @@
-import { CheckIcon, LaptopIcon, MoonIcon, SunIcon } from "lucide-react-native";
+import { CheckIcon, LaptopIcon, MoonIcon, Palette, SunIcon } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetIcon,
-  ActionsheetItem,
-  ActionsheetItemText,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetIcon,
+    ActionsheetItem,
+    ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { type ModeType } from "@/components/ui/gluestack-ui-provider";
 import { Heading } from "@/components/ui/heading";
-import { Pressable } from "@/components/ui/pressable";
-import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
+import { SettingItem } from "@/features/settings/setting-item";
 import { useSelectedTheme } from "@/hooks/use-selected-theme";
-import { cn } from "@/libs/utils";
 
 const themes = [
   { value: "system", icon: LaptopIcon },
@@ -31,10 +29,8 @@ const themes = [
 
 export function ActionSheetThemeSwitcher({
   className,
-  trigger,
 }: {
   className?: string;
-  trigger: (them: ModeType) => React.ReactNode;
 }) {
   const { t } = useTranslation();
   const { selectedTheme, setSelectedTheme } = useSelectedTheme();
@@ -70,12 +66,13 @@ export function ActionSheetThemeSwitcher({
 
   return (
     <>
-      <Pressable
+      <SettingItem
+        icon={Palette}
+        title={t("settings.theme.title")}
+        value={t(`settings.theme.${selectedTheme ?? "system"}`)}
         onPress={() => setShowActionsheet(true)}
-        className={cn("w-full", className)}
-      >
-        <View>{trigger((selectedTheme ?? "system") as ModeType)}</View>
-      </Pressable>
+        className={className}
+      />
 
       <Actionsheet
         isOpen={showActionsheet}
@@ -106,7 +103,7 @@ export function ActionSheetThemeSwitcher({
                     data-active={isActive}
                   >
                     <ActionsheetIcon
-                      className={cn("stroke-[#747474]")}
+                      className="stroke-[#747474]"
                       as={th.icon}
                     />
                     <ActionsheetItemText className="flex w-full items-center justify-between">

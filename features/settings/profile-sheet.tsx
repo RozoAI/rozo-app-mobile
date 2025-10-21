@@ -8,25 +8,25 @@ import { Keyboard } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-    Actionsheet,
-    ActionsheetBackdrop,
-    ActionsheetContent,
-    ActionsheetDragIndicator,
-    ActionsheetDragIndicatorWrapper,
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
 } from "@/components/ui/actionsheet";
 import {
-    Avatar,
-    AvatarFallbackText,
-    AvatarImage,
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
 } from "@/components/ui/avatar";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import {
-    FormControl,
-    FormControlError,
-    FormControlErrorText,
-    FormControlLabel,
-    FormControlLabelText,
+  FormControl,
+  FormControlError,
+  FormControlErrorText,
+  FormControlLabel,
+  FormControlLabelText,
 } from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
@@ -35,11 +35,11 @@ import { Pressable } from "@/components/ui/pressable";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
-import { showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
 import { useUpdateProfile } from "@/modules/api/api";
 import {
-    type UpdateMerchantProfile,
-    UpdateMerchantProfileSchema,
+  type UpdateMerchantProfile,
+  UpdateMerchantProfileSchema,
 } from "@/modules/api/schema/merchant";
 import { useApp } from "@/providers/app.provider";
 
@@ -54,6 +54,7 @@ export type ProfileSheetRefType = {
 export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
   const { merchant, setMerchant } = useApp();
   const { t } = useTranslation();
+  const { success, error: showError } = useToast();
   const insets = useSafeAreaInsets();
   const bottomInset = useKeyboardBottomInset();
   const { mutateAsync: updateProfile } = useUpdateProfile();
@@ -112,10 +113,7 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
       })
       .catch((err) => {
         console.log("error", { err });
-        showToast({
-          message: err.message,
-          type: "danger",
-        });
+        showError(err.message);
       })
       .finally(() => {
         setIsSubmitting(false);

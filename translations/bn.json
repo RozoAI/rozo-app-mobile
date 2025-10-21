@@ -91,6 +91,49 @@
     "verifyPayment": "পেমেন্ট যাচাই করুন",
     "voiceSuccess": "আপনি Rozo-এর মাধ্যমে {{amount}} {{currency}} পেয়েছেন"
   },
+  "pin": {
+    "setup": {
+      "title": "PIN সেটআপ",
+      "description": "উন্নত নিরাপত্তার জন্য 6-অঙ্কের PIN তৈরি করুন",
+      "placeholder": "আপনার PIN লিখুন",
+      "confirm": "PIN সেট করুন",
+      "success": "PIN সফলভাবে সেট করা হয়েছে",
+      "error": "PIN সেট করতে ব্যর্থ। আবার চেষ্টা করুন",
+      "invalidLength": "PIN অবশ্যই ঠিক 6 অঙ্কের হতে হবে"
+    },
+    "management": {
+      "title": "PIN ব্যবস্থাপনা",
+      "description": "আপনার PIN নিরাপত্তা সেটিংস পরিচালনা করুন",
+      "status": "আপনার PIN বর্তমানে সক্রিয় এবং আপনার অ্যাকাউন্ট রক্ষা করছে",
+      "change": "PIN পরিবর্তন করুন",
+      "revoke": "PIN প্রত্যাহার করুন"
+    },
+    "validation": {
+      "blocked": "অ্যাকাউন্ট ব্লক করা হয়েছে",
+      "blockedDescription": "অনেকগুলি ব্যর্থ PIN চেষ্টার কারণে আপনার অ্যাকাউন্ট ব্লক করা হয়েছে। সহায়তার সাথে যোগাযোগ করুন।",
+      "attemptsRemaining": "{{count}} চেষ্টা বাকি",
+      "attemptsRemaining_other": "{{count}} চেষ্টা বাকি",
+      "validating": "PIN যাচাই করা হচ্ছে...",
+      "wrongPin": "ভুল PIN",
+      "error": "PIN যাচাই করতে ব্যর্থ"
+    },
+    "revoke": {
+      "title": "PIN প্রত্যাহার করুন",
+      "confirmationMessage": "এটি আপনার PIN নিরাপত্তা স্থায়ীভাবে সরিয়ে দেবে। আপনি যেকোনো সময় সেটিংসে একটি নতুন PIN সেট করতে পারেন।",
+      "enterPin": "প্রত্যাহারের জন্য PIN লিখুন",
+      "success": "PIN সফলভাবে প্রত্যাহার করা হয়েছে",
+      "error": "PIN প্রত্যাহার করতে ব্যর্থ",
+      "processing": "PIN প্রত্যাহার করা হচ্ছে..."
+    },
+    "change": {
+      "title": "PIN পরিবর্তন করুন",
+      "confirmationMessage": "আপনাকে আপনার বর্তমান PIN লিখতে হবে এবং একটি নতুন সেট করতে হবে।",
+      "enterCurrentPin": "বর্তমান PIN লিখুন",
+      "enterNewPin": "নতুন PIN লিখুন",
+      "success": "PIN সফলভাবে পরিবর্তন করা হয়েছে",
+      "error": "PIN পরিবর্তন করতে ব্যর্থ"
+    }
+  },
   "pos": {
     "title": "পোস"
   },

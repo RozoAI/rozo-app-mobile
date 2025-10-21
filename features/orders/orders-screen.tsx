@@ -6,8 +6,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
 import { useGetOrders } from "@/modules/api/api/merchant/orders";
 import {
-    type MerchantOrder,
-    type MerchantOrderStatus,
+  type MerchantOrder,
+  type MerchantOrderStatus,
 } from "@/modules/api/schema/order";
 
 import { ThemedText } from "@/components/themed-text";
@@ -15,8 +15,8 @@ import EmptyOrdersState from "./empty-orders";
 import { FilterOrderActionSheet } from "./filter-order";
 import { OrderCard } from "./order-card";
 import {
-    OrderDetailActionSheet,
-    type OrderDetailActionSheetRef,
+  OrderDetailActionSheet,
+  type OrderDetailActionSheetRef,
 } from "./order-detail";
 
 export function OrdersScreen() {
@@ -56,7 +56,8 @@ export function OrdersScreen() {
   }, [refetch]);
 
   return (
-    <ScrollView className="my-6 flex-1">
+    
+    <ScrollView className="py-6 flex-1">
       {/* Header */}
       <VStack className="flex flex-row items-start justify-between">
         <View className="mb-6">
@@ -108,5 +109,6 @@ export function OrdersScreen() {
 
       <OrderDetailActionSheet ref={orderDetailRef} />
     </ScrollView>
+    
   );
 }

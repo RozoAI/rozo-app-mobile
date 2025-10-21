@@ -91,6 +91,49 @@
     "verifyPayment": "Verifikasi Pembayaran",
     "voiceSuccess": "Anda telah menerima {{amount}} {{currency}} dari Rozo"
   },
+  "pin": {
+    "setup": {
+      "title": "Pengaturan PIN",
+      "description": "Buat PIN 6 digit untuk keamanan yang lebih baik",
+      "placeholder": "Masukkan PIN Anda",
+      "confirm": "Setel PIN",
+      "success": "PIN berhasil disetel",
+      "error": "Gagal menyetel PIN. Silakan coba lagi",
+      "invalidLength": "PIN harus tepat 6 digit"
+    },
+    "management": {
+      "title": "Manajemen PIN",
+      "description": "Kelola pengaturan keamanan PIN Anda",
+      "status": "PIN Anda saat ini aktif dan melindungi akun Anda",
+      "change": "Ubah PIN",
+      "revoke": "Cabut PIN"
+    },
+    "validation": {
+      "blocked": "Akun Diblokir",
+      "blockedDescription": "Akun Anda telah diblokir karena terlalu banyak percobaan PIN yang gagal. Hubungi dukungan.",
+      "attemptsRemaining": "{{count}} percobaan tersisa",
+      "attemptsRemaining_other": "{{count}} percobaan tersisa",
+      "validating": "Memvalidasi PIN...",
+      "wrongPin": "PIN salah",
+      "error": "Gagal memvalidasi PIN"
+    },
+    "revoke": {
+      "title": "Cabut PIN",
+      "confirmationMessage": "Ini akan menghapus keamanan PIN Anda secara permanen. Anda dapat menyetel PIN baru kapan saja di pengaturan.",
+      "enterPin": "Masukkan PIN untuk dicabut",
+      "success": "PIN berhasil dicabut",
+      "error": "Gagal mencabut PIN",
+      "processing": "Mencabut PIN..."
+    },
+    "change": {
+      "title": "Ubah PIN",
+      "confirmationMessage": "Anda perlu memasukkan PIN saat ini dan menyetel yang baru.",
+      "enterCurrentPin": "Masukkan PIN saat ini",
+      "enterNewPin": "Masukkan PIN baru",
+      "success": "PIN berhasil diubah",
+      "error": "Gagal mengubah PIN"
+    }
+  },
   "pos": {
     "title": "Pos"
   },

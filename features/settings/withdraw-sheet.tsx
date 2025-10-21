@@ -35,10 +35,11 @@ import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useWithdrawWithPinValidation } from "@/features/settings/pin/use-withdraw-with-pin";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
+import { useToast } from "@/hooks/use-toast";
 import { useTokenTransfer } from "@/hooks/use-token-transfer";
 import { type TokenBalanceResult } from "@/libs/tokens";
-import { showToast } from "@/libs/utils";
 
 import { WithdrawManualConfirmation } from "./withdraw-manual-confirmation";
 
@@ -62,7 +63,8 @@ type FormValues = {
 export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
   ({ onClose, onSuccess, balance }, ref) => {
     const { t } = useTranslation();
-    const { isAbleToTransfer, transfer } = useTokenTransfer();
+    const { transfer } = useTokenTransfer();
+    const { success, error: showError } = useToast();
     const insets = useSafeAreaInsets();
     const bottomInset = useKeyboardBottomInset();
 
@@ -72,6 +74,18 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
     const [isManualConfirmDialogOpen, setIsManualConfirmDialogOpen] =
       useState(false);
     const [isManualSubmiting, setIsManualSubmitting] = useState(false);
+
+    // PIN validation for withdraw
+    const withdrawWithPin = useWithdrawWithPinValidation({
+      onSuccess: () => {
+        resetForm();
+        onSuccess?.();
+      },
+      balance,
+    });
+
+    // Combined loading state: either submitting form or processing withdrawal
+    const isLoading = isSubmitting || withdrawWithPin.isProcessing;
 
     const MIN_AMOUNT = 0.1;
     const maxAmount = useMemo(
@@ -127,37 +141,17 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
       setIsSubmitting(true);
 
       try {
-        if (isAbleToTransfer) {
-          // const result = await transfer(data.withdrawAddress as Address, data.amount, true);
-          const result = await transfer({
-            toAddress: data.withdrawAddress as Address,
-            amount: data.amount,
-            useGasless: true,
-          });
-
-          if (!result) {
-            throw new Error("Failed to transfer tokens");
-          }
-
-          if (result.success) {
-            showToast({
-              message: t("withdraw.success"),
-              type: "success",
-            });
-
-            resetForm();
-            onSuccess?.();
-          } else {
-            throw result.error;
-          }
-        }
-      } catch (error) {
-        showToast({
-          message: `${t("withdraw.error")} - ${
-            error instanceof Error ? error.message : "Unknown error"
-          }`,
-          type: "danger",
+        // Use PIN validation flow for withdrawal
+        await withdrawWithPin.initiateWithdraw({
+          withdrawAddress: data.withdrawAddress as Address,
+          amount: data.amount,
         });
+      } catch (error) {
+        // Error handling is done inside the hook
+        // Only show generic errors that aren't PIN-related
+        if (error instanceof Error && !error.message.includes('PIN')) {
+          showError(`${t("withdraw.error")} - ${error.message}`);
+        }
       } finally {
         setIsSubmitting(false);
       }
@@ -204,10 +198,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
         }
 
         if (result.success) {
-          showToast({
-            message: t("withdraw.success"),
-            type: "success",
-          });
+          success(t("withdraw.success"));
 
           resetForm();
           onSuccess?.();
@@ -215,10 +206,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
           throw result.error;
         }
       } catch {
-        showToast({
-          message: `${t("withdraw.error")}`,
-          type: "danger",
-        });
+        showError(t("withdraw.error"));
       } finally {
         setIsManualSubmitting(false);
         setIsManualConfirmDialogOpen(false);
@@ -226,22 +214,23 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
     };
 
     return (
-      <Actionsheet isOpen={isOpen} onClose={handleClose}>
-        <ActionsheetBackdrop />
-        <ActionsheetContent
-          style={{
-            paddingBottom: insets.bottom + bottomInset + 8,
-            paddingHorizontal: 16,
-          }}
-        >
-          <ActionsheetDragIndicatorWrapper>
-            <ActionsheetDragIndicator />
-          </ActionsheetDragIndicatorWrapper>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-            style={{ width: "100%" }}
+      <>
+        <Actionsheet isOpen={isOpen} onClose={handleClose}>
+          <ActionsheetBackdrop />
+          <ActionsheetContent
+            style={{
+              paddingBottom: insets.bottom + bottomInset + 8,
+              paddingHorizontal: 16,
+            }}
           >
+            <ActionsheetDragIndicatorWrapper>
+              <ActionsheetDragIndicator />
+            </ActionsheetDragIndicatorWrapper>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+              style={{ width: "100%" }}
+            >
             <VStack space="lg" className="w-full">
               <Box className="items-center">
                 <Heading size="lg" className="text-typography-950">
@@ -392,12 +381,12 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                   size="lg"
                   variant="solid"
                   onPress={hookFormSubmit(onSubmit)}
-                  isDisabled={isSubmitting || !isValid}
+                  isDisabled={isLoading || !isValid}
                   className="w-full rounded-xl"
                 >
-                  {isSubmitting && <ButtonSpinner />}
+                  {isLoading && <ButtonSpinner />}
                   <ButtonText>
-                    {isSubmitting
+                    {isLoading
                       ? t("general.processing")
                       : t("general.submit")}
                   </ButtonText>
@@ -407,7 +396,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                   size="lg"
                   variant="outline"
                   onPress={handleClose}
-                  isDisabled={isSubmitting}
+                  isDisabled={isLoading}
                   className="w-full rounded-xl"
                 >
                   <ButtonText>{t("general.cancel")}</ButtonText>
@@ -425,6 +414,10 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
           </KeyboardAvoidingView>
         </ActionsheetContent>
       </Actionsheet>
+
+      {/* PIN Validation for Withdrawal */}
+      {withdrawWithPin.renderPinValidationInput()}
+    </>
     );
   }
 );

@@ -22,6 +22,7 @@ import { usePrivy } from "@privy-io/expo";
 import type React from "react";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -36,6 +37,7 @@ interface MerchantContextProps {
   merchantToken: Token | undefined;
   isMerchantLoading: boolean;
   setMerchant: (merchant: MerchantProfile | undefined) => void;
+  refetchMerchant: (options?: { force?: boolean; showToast?: boolean }) => Promise<void>;
 }
 
 const MerchantContext = createContext<MerchantContextProps>({
@@ -44,6 +46,7 @@ const MerchantContext = createContext<MerchantContextProps>({
   merchantToken: undefined,
   isMerchantLoading: false,
   setMerchant: () => { },
+  refetchMerchant: async () => { },
 });
 
 interface MerchantProviderProps {
@@ -67,7 +70,8 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
   const hasInitialized = useRef(false);
 
   // API hooks
-  const { refetch: fetchProfile } = useGetProfile();
+  const profileQuery = useGetProfile();
+  const { refetch: fetchProfile } = profileQuery;
   const { mutateAsync: createProfile } = useCreateProfile();
   const { mutateAsync: updateProfile } = useUpdateProfile();
 
@@ -86,6 +90,71 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
     const currency = merchant?.default_currency ?? "USD";
     return currencies[currency];
   }, [merchant]);
+
+  // Centralized refetch merchant function
+  const refetchMerchant = useCallback(async (options: { force?: boolean; showToast?: boolean } = {}) => {
+    const { force = true, showToast = false } = options;
+    
+    try {
+      console.log('[MerchantProvider] refetchMerchant called with options:', options);
+      setIsMerchantLoading(true);
+
+      // Clear AsyncStorage cache to force fresh fetch
+      if (force) {
+        console.log('[MerchantProvider] Clearing profile cache to force fresh fetch');
+        removeItem('profile');
+      }
+      
+      // Refetch profile (will fetch fresh data since cache is cleared)
+      const result = await fetchProfile();
+      
+      if (result.data) {
+        console.log('[MerchantProvider] Profile refetched successfully:', result.data);
+        setMerchant(result.data);
+        setItem(MERCHANT_KEY, result.data);
+        
+        if (showToast) {
+          success('Profile updated successfully');
+        }
+      } else if (result.error) {
+        console.error('[MerchantProvider] Error refetching profile:', result.error);
+        
+        // Check if it's a merchant status error
+        if (isMerchantStatusError(result.error)) {
+          const statusError = result.error as MerchantStatusError;
+          console.error('[MerchantProvider] Merchant status error during refetch:', statusError.statusErrorType);
+          
+          // Handle the status error with toast and logout
+          await handleMerchantStatusError(statusError, async () => {
+            await logoutPrivy();
+            removeItem(TOKEN_KEY);
+            removeItem(MERCHANT_KEY);
+            hasInitialized.current = false;
+            setMerchant(undefined);
+          });
+        } else if (showToast) {
+          showError('Failed to update profile');
+        }
+      }
+    } catch (error) {
+      console.error('[MerchantProvider] Exception during refetchMerchant:', error);
+      
+      if (isMerchantStatusError(error)) {
+        const statusError = error as MerchantStatusError;
+        await handleMerchantStatusError(statusError, async () => {
+          await logoutPrivy();
+          removeItem(TOKEN_KEY);
+          removeItem(MERCHANT_KEY);
+          hasInitialized.current = false;
+          setMerchant(undefined);
+        });
+      } else if (showToast) {
+        showError('Failed to update profile');
+      }
+    } finally {
+      setIsMerchantLoading(false);
+    }
+  }, [fetchProfile, handleMerchantStatusError, logoutPrivy, showError, success]);
 
   // Main merchant initialization effect
   useEffect(() => {
@@ -341,6 +410,15 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
     }
   }, [user]);
 
+  // Update merchant state when profile query data changes
+  useEffect(() => {
+    if (profileQuery.data && profileQuery.data !== merchant) {
+      console.log('[MerchantProvider] Profile query data changed, updating merchant state:', profileQuery.data);
+      setMerchant(profileQuery.data);
+      setItem(MERCHANT_KEY, profileQuery.data);
+    }
+  }, [profileQuery.data, merchant]);
+
   const contextValue = useMemo(
     () => ({
       merchant,
@@ -348,8 +426,9 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
       merchantToken,
       isMerchantLoading,
       setMerchant,
+      refetchMerchant,
     }),
-    [merchant, defaultCurrency, merchantToken, isMerchantLoading, setMerchant],
+    [merchant, defaultCurrency, merchantToken, isMerchantLoading, setMerchant, refetchMerchant],
   );
 
   return (

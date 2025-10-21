@@ -2,31 +2,18 @@ import type { AxiosError } from "axios";
 import { createMutation, createQuery } from "react-query-kit";
 
 import type {
-    PinApiError,
-    PinStatus,
-    PinSuccessResponse,
-    PinValidationResponse,
-    SetPinPayload,
-    UpdatePinPayload,
-    ValidatePinPayload,
+  PinApiError,
+  PinStatus,
+  PinSuccessResponse,
+  PinValidationResponse,
+  SetPinPayload,
+  UpdatePinPayload,
+  ValidatePinPayload,
 } from "@/modules/api/schema/pin";
 import { client } from "@/modules/axios/client";
 
 // PIN API Base URL
 const PIN_BASE_URL = "functions/v1/merchants/pin";
-
-// Helper function to create PIN headers
-const createPinHeaders = (pinCode?: string) => {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  
-  if (pinCode) {
-    headers["X-PIN-Code"] = pinCode;
-  }
-  
-  return headers;
-};
 
 // Helper function to handle PIN API errors
 const handlePinError = (error: AxiosError): PinApiError => {
@@ -72,6 +59,7 @@ const handlePinError = (error: AxiosError): PinApiError => {
 };
 
 // Set PIN (POST /merchants/pin)
+// No existing PIN required - sends pin_code in body
 export const useSetPin = createMutation<
   PinSuccessResponse,
   SetPinPayload,
@@ -82,8 +70,10 @@ export const useSetPin = createMutation<
       const response = await client({
         url: PIN_BASE_URL,
         method: "POST",
-        data: payload,
-        headers: createPinHeaders(),
+        data: { pin_code: payload.pin_code },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       
       return response.data;
@@ -94,6 +84,7 @@ export const useSetPin = createMutation<
 });
 
 // Update PIN (PUT /merchants/pin)
+// Validates current_pin automatically - sends both pins in body
 export const useUpdatePin = createMutation<
   PinSuccessResponse,
   UpdatePinPayload,
@@ -104,8 +95,13 @@ export const useUpdatePin = createMutation<
       const response = await client({
         url: PIN_BASE_URL,
         method: "PUT",
-        data: payload,
-        headers: createPinHeaders(payload.current_pin),
+        data: {
+          current_pin: payload.current_pin,
+          new_pin: payload.new_pin,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       
       return response.data;
@@ -116,6 +112,7 @@ export const useUpdatePin = createMutation<
 });
 
 // Revoke PIN (DELETE /merchants/pin)
+// Validates pin_code automatically - sends pin_code in body
 export const useRevokePin = createMutation<
   PinSuccessResponse,
   { pin_code: string },
@@ -126,7 +123,10 @@ export const useRevokePin = createMutation<
       const response = await client({
         url: PIN_BASE_URL,
         method: "DELETE",
-        headers: createPinHeaders(payload.pin_code),
+        data: { pin_code: payload.pin_code },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       
       return response.data;
@@ -137,6 +137,7 @@ export const useRevokePin = createMutation<
 });
 
 // Validate PIN (POST /merchants/pin/validate)
+// For manual checking - sends pin_code in body
 export const useValidatePin = createMutation<
   PinValidationResponse,
   ValidatePinPayload,
@@ -147,7 +148,10 @@ export const useValidatePin = createMutation<
       const response = await client({
         url: `${PIN_BASE_URL}/validate`,
         method: "POST",
-        headers: createPinHeaders(payload.pin_code),
+        data: { pin_code: payload.pin_code },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       
       return response.data;

@@ -1,31 +1,29 @@
 import { t } from "i18next";
-import { CheckIcon } from "lucide-react-native";
+import { CheckIcon, Languages } from "lucide-react-native";
 import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-    Actionsheet,
-    ActionsheetBackdrop,
-    ActionsheetContent,
-    ActionsheetDragIndicator,
-    ActionsheetDragIndicatorWrapper,
-    ActionsheetItem,
-    ActionsheetItemText,
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetItem,
+  ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
-import { Pressable } from "@/components/ui/pressable";
-import { Spinner } from "@/components/ui/spinner";
-import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
+import { SettingItem } from "@/features/settings/setting-item";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
-import { cn, showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
 import { useCreateProfile } from "@/modules/api/api";
 import { type Language } from "@/modules/i18n/resources";
 import { useApp } from "@/providers/app.provider";
@@ -105,7 +103,6 @@ export const languages: readonly LanguageOption[] = [
 
 type ActionSheetLanguageSwitcherProps = {
   className?: string;
-  trigger: (lg: string) => React.ReactNode;
   /**
    * Whether to update the API when language changes
    * @default true
@@ -124,7 +121,6 @@ type ActionSheetLanguageSwitcherProps = {
 
 export function ActionSheetLanguageSwitcher({
   className,
-  trigger,
   updateApi = true,
   onChange,
   initialLanguage,
@@ -132,10 +128,10 @@ export function ActionSheetLanguageSwitcher({
   const { language: contextLanguage, setLanguage } = useSelectedLanguage();
   const language = initialLanguage || contextLanguage;
   // Find the display language code based on the current language
-  const findDisplayLanguage = (lang: Language): DisplayLanguageCode => {
+  const findDisplayLanguage = useCallback((lang: Language): DisplayLanguageCode => {
     const found = languages.find((lg) => lg.value === lang);
     return found ? found.key : "EN";
-  };
+  }, []);
 
   const [selectedValue, setSelectedValue] = useState<DisplayLanguageCode>(
     findDisplayLanguage(language || "en")
@@ -149,6 +145,7 @@ export function ActionSheetLanguageSwitcher({
     error,
   } = useCreateProfile();
   const { merchant, setMerchant } = useApp();
+  const { success, error: showError } = useToast();
   const insets = useSafeAreaInsets();
 
   // Create refs once and store them
@@ -191,10 +188,7 @@ export function ActionSheetLanguageSwitcher({
       const languageValue =
         languages.find((lg) => lg.key === data.default_language.toUpperCase())
           ?.value || "en";
-      showToast({
-        message: "Language updated successfully",
-        type: "success",
-      });
+      success("Language updated successfully");
 
       setLanguage(languageValue);
 
@@ -203,12 +197,9 @@ export function ActionSheetLanguageSwitcher({
         onChange(languageValue);
       }
     } else if (error) {
-      showToast({
-        message: "Failed to update language",
-        type: "danger",
-      });
+      showError("Failed to update language");
     }
-  }, [data, error, updateApi, onChange, setLanguage, setMerchant]);
+  }, [data, error, updateApi, onChange, setLanguage, setMerchant, success, showError]);
 
   // Memoized values
   const initialLabel = useMemo(() => {
@@ -286,19 +277,14 @@ export function ActionSheetLanguageSwitcher({
 
   return (
     <>
-      <Pressable
+      <SettingItem
+        icon={Languages}
+        title={t("settings.language.title")}
+        value={selectedLabel ?? initialLabel}
         onPress={handleOpen}
-        className={cn("relative w-full", className)}
-      >
-        <View>
-          {trigger(selectedLabel ?? initialLabel)}
-          {updateApi && isPending && (
-            <View className="absolute inset-x-0 top-0 z-10 flex size-full items-center justify-center bg-white/50 py-2 dark:bg-white/20">
-              <Spinner />
-            </View>
-          )}
-        </View>
-      </Pressable>
+        loading={updateApi && isPending}
+        className={className}
+      />
 
       <Actionsheet
         isOpen={showActionsheet}

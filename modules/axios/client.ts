@@ -38,6 +38,12 @@ client.interceptors.response.use(
       return Promise.reject(error); // Preserve original error
     }
 
+    // Don't wrap PIN validation errors (401 with attempts_remaining)
+    // Preserve the validation response data for PIN operations
+    if (statusCode === 401 && errorData && 'attempts_remaining' in errorData) {
+      return Promise.reject(error); // Preserve original error
+    }
+
     throw new AppError(errorMessage, statusCode, errorData);
   }
 );

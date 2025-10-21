@@ -91,6 +91,49 @@
     "verifyPayment": "Verificar Pagamento",
     "voiceSuccess": "Você recebeu {{amount}} {{currency}} pelo Rozo"
   },
+  "pin": {
+    "setup": {
+      "title": "Configurar PIN",
+      "description": "Crie um PIN de 6 dígitos para maior segurança",
+      "placeholder": "Digite seu PIN",
+      "confirm": "Definir PIN",
+      "success": "PIN foi definido com sucesso",
+      "error": "Falha ao definir PIN. Tente novamente",
+      "invalidLength": "PIN deve ter exatamente 6 dígitos"
+    },
+    "management": {
+      "title": "Gerenciamento de PIN",
+      "description": "Gerencie suas configurações de segurança PIN",
+      "status": "Seu PIN está atualmente ativo e protegendo sua conta",
+      "change": "Alterar PIN",
+      "revoke": "Revogar PIN"
+    },
+    "validation": {
+      "blocked": "Conta Bloqueada",
+      "blockedDescription": "Sua conta foi bloqueada devido a muitas tentativas de PIN falhadas. Entre em contato com o suporte.",
+      "attemptsRemaining": "{{count}} tentativa restante",
+      "attemptsRemaining_other": "{{count}} tentativas restantes",
+      "validating": "Validando PIN...",
+      "wrongPin": "PIN incorreto",
+      "error": "Falha ao validar PIN"
+    },
+    "revoke": {
+      "title": "Revogar PIN",
+      "confirmationMessage": "Isso removerá permanentemente sua segurança PIN. Você pode definir um novo PIN a qualquer momento nas configurações.",
+      "enterPin": "Digite PIN para revogar",
+      "success": "PIN foi revogado com sucesso",
+      "error": "Falha ao revogar PIN",
+      "processing": "Revogando PIN..."
+    },
+    "change": {
+      "title": "Alterar PIN",
+      "confirmationMessage": "Você precisará digitar seu PIN atual e definir um novo.",
+      "enterCurrentPin": "Digite PIN atual",
+      "enterNewPin": "Digite novo PIN",
+      "success": "PIN foi alterado com sucesso",
+      "error": "Falha ao alterar PIN"
+    }
+  },
   "pos": {
     "title": "POS"
   },

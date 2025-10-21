@@ -26,7 +26,8 @@ import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
-import { getRedirectUri, showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
+import { getRedirectUri } from "@/libs/utils";
 import { useCreateDeposit } from "@/modules/api/api/merchant/deposits";
 import { type DepositResponse } from "@/modules/api/schema/deposit";
 import { useApp } from "@/providers/app.provider";
@@ -53,6 +54,7 @@ export const TopupSheet = forwardRef<DepositDialogRef, DepositDialogProps>(
   ({ onConfirm, onCancel, onComplete }, ref) => {
     const { t } = useTranslation();
     const { defaultCurrency } = useApp();
+    const { error: showError } = useToast();
     const insets = useSafeAreaInsets();
     const bottomInset = useKeyboardBottomInset();
     const [isOpen, setIsOpen] = useState(false);
@@ -153,7 +155,7 @@ export const TopupSheet = forwardRef<DepositDialogRef, DepositDialogProps>(
         reset();
       } catch (error: any) {
         console.error("Error creating order:", error);
-        showToast({ type: "danger", message: error.message as string });
+        showError(error.message as string);
       }
     };
 
