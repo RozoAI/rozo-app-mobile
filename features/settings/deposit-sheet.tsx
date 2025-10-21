@@ -7,18 +7,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { z } from "zod";
 
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import {
-  FormControl,
-  FormControlError,
-  FormControlErrorText,
+    FormControl,
+    FormControlError,
+    FormControlErrorText,
 } from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
 import { Input, InputField, InputSlot } from "@/components/ui/input";
@@ -27,9 +27,9 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
 import { getRedirectUri, showToast } from "@/libs/utils";
+import { useCreateDeposit } from "@/modules/api/api/merchant/deposits";
+import { type DepositResponse } from "@/modules/api/schema/deposit";
 import { useApp } from "@/providers/app.provider";
-import { useCreateDeposit } from "@/resources/api/merchant/deposits";
-import { type DepositResponse } from "@/resources/schema/deposit";
 
 import { useDynamicStyles } from "../payment";
 import { PaymentModal } from "../payment/payment-modal";

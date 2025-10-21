@@ -4,19 +4,19 @@ import { FlatList, RefreshControl, ScrollView, View } from "react-native";
 
 import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
-import { useGetOrders } from "@/resources/api/merchant/orders";
+import { useGetOrders } from "@/modules/api/api/merchant/orders";
 import {
-  type MerchantOrder,
-  type MerchantOrderStatus,
-} from "@/resources/schema/order";
+    type MerchantOrder,
+    type MerchantOrderStatus,
+} from "@/modules/api/schema/order";
 
 import { ThemedText } from "@/components/themed-text";
 import EmptyOrdersState from "./empty-orders";
 import { FilterOrderActionSheet } from "./filter-order";
 import { OrderCard } from "./order-card";
 import {
-  OrderDetailActionSheet,
-  type OrderDetailActionSheetRef,
+    OrderDetailActionSheet,
+    type OrderDetailActionSheetRef,
 } from "./order-detail";
 
 export function OrdersScreen() {

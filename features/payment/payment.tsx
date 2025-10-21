@@ -7,10 +7,11 @@ import LogoSvg from "@/components/svg/logo";
 import LogoWhiteSvg from "@/components/svg/logo-white";
 import { Text } from "@/components/ui/text";
 import { useSelectedTheme } from "@/hooks/use-selected-theme";
-import { getRedirectUri, showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
+import { getRedirectUri } from "@/libs/utils";
+import { useCreateOrder } from "@/modules/api/api/merchant/orders";
+import { type OrderResponse } from "@/modules/api/schema/order";
 import { useApp } from "@/providers/app.provider";
-import { useCreateOrder } from "@/resources/api/merchant/orders";
-import { type OrderResponse } from "@/resources/schema/order";
 
 import { AmountDisplay } from "./amount-display";
 import { PaymentButton } from "./payment-button";
@@ -20,6 +21,7 @@ import { useDynamicStyles } from "./style";
 
 export function PaymentScreen() {
   const { defaultCurrency, merchant } = useApp();
+  const { error } = useToast();
   // Get screen dimensions
   const { height } = useWindowDimensions();
   const [amount, setAmount] = useState("0");
@@ -144,7 +146,7 @@ export function PaymentScreen() {
       setIsPaymentModalOpen(true);
     } catch (error: any) {
       console.error("Error creating order:", error);
-      showToast({ type: "danger", message: error.message as string });
+      error(error.message as string);
     }
   };
 

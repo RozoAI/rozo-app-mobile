@@ -1,13 +1,14 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 
 import { LoadingScreen } from "@/components/loading-screen";
+import { ToastProvider } from "@/components/toast/toast-provider";
 import { type GenericWallet } from "@/contexts/auth.context";
+import { useToast } from "@/hooks/use-toast";
 import { MERCHANT_KEY, TOKEN_KEY } from "@/libs/constants";
 import { type CurrencyConfig } from "@/libs/currencies";
 import { removeItem } from "@/libs/storage";
 import { type Token } from "@/libs/tokens";
-import { showToast } from "@/libs/utils";
-import { type MerchantProfile } from "@/resources/schema/merchant";
+import { type MerchantProfile } from "@/modules/api/schema/merchant";
 import { usePrivy } from "@privy-io/expo";
 import { AuthProvider, useAuth } from "./auth.provider";
 import { MerchantProvider, useMerchant } from "./merchant.provider";
@@ -75,6 +76,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
   const wallet = useWallet();
   const preferences = usePreferences();
   const { logout: logoutPrivy, user: privyUser } = usePrivy();
+  const { success, error } = useToast();
 
   const logout = useCallback(async () => {
     try {
@@ -90,19 +92,13 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
         // Reset merchant state
         merchant.setMerchant(undefined);
 
-        showToast({
-          type: "success",
-          message: "Logged out successfully",
-        });
+        success("Logged out successfully");
       }
-    } catch (error) {
-      console.error("Logout error:", error);
-      showToast({
-        type: "danger",
-        message: "Failed to logout",
-      });
+    } catch (err) {
+      console.error("Logout error:", err);
+      error("Failed to logout");
     }
-  }, [merchant, preferences, logoutPrivy, privyUser]);
+  }, [merchant, preferences, logoutPrivy, privyUser, success, error]);
 
   // Determine if we're still loading
   const isLoading = auth.isAuthLoading || merchant.isMerchantLoading;
@@ -165,15 +161,17 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
 // Main AppProvider that composes all the separated providers
 export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
   return (
-    <AuthProvider>
-      <MerchantProvider>
-        <WalletProvider>
-          <PreferencesProvider>
-            <AppProviderInternal>{children}</AppProviderInternal>
-          </PreferencesProvider>
-        </WalletProvider>
-      </MerchantProvider>
-    </AuthProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <MerchantProvider>
+          <WalletProvider>
+            <PreferencesProvider>
+              <AppProviderInternal>{children}</AppProviderInternal>
+            </PreferencesProvider>
+          </WalletProvider>
+        </MerchantProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 };
 

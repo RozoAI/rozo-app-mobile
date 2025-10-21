@@ -1,23 +1,23 @@
 import { t } from "i18next";
 import { CheckIcon, ChevronRightIcon, DollarSign } from "lucide-react-native";
 import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/themed-text";
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetItem,
-  ActionsheetItemText,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetItem,
+    ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
@@ -29,8 +29,8 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { currencies as currencyList, defaultCurrency } from "@/libs/currencies";
 import { showToast } from "@/libs/utils";
+import { useCreateProfile } from "@/modules/api/api";
 import { useApp } from "@/providers/app.provider";
-import { useCreateProfile } from "@/resources/api";
 
 type CurrencyOption = {
   code: string;

@@ -1,22 +1,22 @@
 import { t } from "i18next";
 import { CheckIcon } from "lucide-react-native";
 import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetItem,
-  ActionsheetItemText,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetItem,
+    ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
@@ -26,9 +26,9 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
 import { cn, showToast } from "@/libs/utils";
+import { useCreateProfile } from "@/modules/api/api";
 import { type Language } from "@/modules/i18n/resources";
 import { useApp } from "@/providers/app.provider";
-import { useCreateProfile } from "@/resources/api";
 
 // Define a display language type that's different from the actual Language type
 type DisplayLanguageCode = string;

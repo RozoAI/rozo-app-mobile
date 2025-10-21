@@ -3,11 +3,11 @@ import { createMutation, createQuery } from "react-query-kit";
 
 import { getItem, setItem } from "@/libs/storage";
 
-import { client } from "@/modules/axios/client";
 import {
-  type MerchantOrder,
-  type OrderResponse,
-} from "@/resources/schema/order";
+    type MerchantOrder,
+    type OrderResponse,
+} from "@/modules/api/schema/order";
+import { client } from "@/modules/axios/client";
 
 type Payload = {
   display_amount: number;

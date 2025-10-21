@@ -11,8 +11,8 @@ import { type Address } from "viem";
 
 import { type TokenTransferResult } from "@/libs/tokens";
 import { getShortId } from "@/libs/utils";
+import { useWalletTransfer } from "@/modules/api/api/merchant/wallets";
 import { useApp } from "@/providers/app.provider";
-import { useWalletTransfer } from "@/resources/api/merchant/wallets";
 
 import { useEVMWallet } from "./use-evm-wallet";
 

@@ -9,13 +9,13 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
 import {
-  Modal,
-  ModalBackdrop,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
+    Modal,
+    ModalBackdrop,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
 } from "@/components/ui/modal";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
@@ -23,11 +23,11 @@ import { View } from "@/components/ui/view";
 import { useDepositStatus } from "@/hooks/use-deposit-status";
 import { usePaymentStatus } from "@/hooks/use-payment-status";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
+import { useGetOrder } from "@/modules/api/api";
+import { useGetDeposit } from "@/modules/api/api/merchant/deposits";
+import { type DepositResponse } from "@/modules/api/schema/deposit";
+import { type OrderResponse } from "@/modules/api/schema/order";
 import { useApp } from "@/providers/app.provider";
-import { useGetOrder } from "@/resources/api";
-import { useGetDeposit } from "@/resources/api/merchant/deposits";
-import { type DepositResponse } from "@/resources/schema/deposit";
-import { type OrderResponse } from "@/resources/schema/order";
 
 import { PaymentSuccess } from "./payment-success";
 import { type DynamicStyles } from "./types";

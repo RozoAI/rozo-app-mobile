@@ -11,7 +11,7 @@ import { ActionSheetLanguageSwitcher } from "@/features/settings/select-language
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
-import { showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
 import { usePrivy, type PrivyEmbeddedWalletAccount } from "@privy-io/expo";
 import { useLogin } from "@privy-io/expo/ui";
 import * as Application from "expo-application";
@@ -33,6 +33,7 @@ export default function LoginScreen() {
   const { handleCreateWallet, isCreating } = useEVMWallet();
   const { language, setLanguage } = useSelectedLanguage();
   const { t } = useTranslation();
+  const { error } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   // const [isFreshLogin, setIsFreshLogin] = useState(false);
@@ -72,10 +73,7 @@ export default function LoginScreen() {
       }
     } catch (error) {
       setIsAuthLoading(false);
-      showToast({
-        type: "danger",
-        message: error instanceof Error ? error.message : "Failed to sign in",
-      });
+      error(error instanceof Error ? error.message : "Failed to sign in");
     } finally {
       setIsAuthLoading(false);
     }

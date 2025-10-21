@@ -3,12 +3,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform } from "react-native";
 
+import { useGetOrder } from "@/modules/api/api/merchant/orders";
 import type { PaymentCompletedEvent } from "@/modules/pusher/pusher";
 import {
-  subscribeToChannel,
-  unsubscribeFromChannel,
+    subscribeToChannel,
+    unsubscribeFromChannel,
 } from "@/modules/pusher/pusher";
-import { useGetOrder } from "@/resources/api/merchant/orders";
 
 type PaymentStatus = "pending" | "completed" | "failed";
 

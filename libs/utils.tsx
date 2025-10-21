@@ -1,12 +1,10 @@
 // eslint-disable-next-line import/no-named-as-default
 import clsx, { type ClassValue } from "clsx";
-import { t } from "i18next";
 import { Dimensions, Linking, Platform } from "react-native";
-import Toast from "react-native-toast-message";
 import { twMerge } from "tailwind-merge";
 
 import { currencies } from "@/libs/currencies";
-import { type MerchantOrder } from "@/resources/schema/order";
+import { type MerchantOrder } from "@/modules/api/schema/order";
 
 // Platform
 export const IS_IOS = Platform.OS === "ios";
@@ -21,53 +19,6 @@ export const HEIGHT = height;
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
-};
-
-export const showToast = ({
-  type = "info",
-  message = "Something went wrong ",
-  duration = 4000,
-}: {
-  type: "danger" | "success" | "info";
-  message: string;
-  duration?: number;
-}) => {
-  // Use different icon based on toast type
-  // const iconMap = {
-  //   danger: <AlertCircle />,
-  //   success: <CheckCircle />,
-  //   warning: <AlertTriangle />,
-  //   info: <Info />,
-  // };
-
-  Toast.show({
-    type: type === "danger" ? "error" : type,
-    text1: t(`toast.${type}`),
-    text2: message,
-    visibilityTime: duration,
-    swipeable: true,
-    autoHide: true,
-    position: "top",
-    text2Style: {
-      fontSize: 14,
-      flexShrink: 1,
-      flexWrap: "wrap",
-      textOverflow: "unset",
-      overflow: "visible",
-      paddingBottom: 10,
-      lineHeight: 18,
-
-      // @ts-ignore
-      whiteSpace: "pre-wrap",
-      // @ts-ignore
-      overflowWrap: "break-word",
-    },
-    text1Style: {
-      paddingTop: 10,
-      paddingBottom: 5,
-      fontSize: 16,
-    },
-  });
 };
 
 export function openLinkInBrowser(url: string) {

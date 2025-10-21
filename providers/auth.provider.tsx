@@ -1,17 +1,17 @@
 import { PrivyUser, usePrivy } from "@privy-io/expo";
 import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
 
+import { useToast } from "@/hooks/use-toast";
 import { TOKEN_KEY } from "@/libs/constants";
 import { storage } from "@/libs/storage";
-import { showToast } from "@/libs/utils";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -37,6 +37,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { user, getAccessToken } = usePrivy();
+  const { error } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
@@ -94,10 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } catch (error) {
         console.error("Auth initialization error:", error);
         if (isMounted) {
-          showToast({
-            type: "danger",
-            message: "Failed to initialize authentication",
-          });
+          error("Failed to initialize authentication");
           hasInitialized.current = false; // Reset on error
         }
       } finally {

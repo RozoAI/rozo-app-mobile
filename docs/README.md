@@ -6,6 +6,29 @@ Welcome to the Rozo App Mobile documentation! This directory contains comprehens
 
 ## 📚 Available Documentation
 
+### Toast System
+
+A centralized toast notification system built on `react-native-toastify` for displaying user notifications across the application.
+
+#### **[TOAST_SYSTEM.md](./TOAST_SYSTEM.md)**
+
+Complete guide to the centralized toast system implementation and usage.
+
+**Topics Covered:**
+
+- 🏗️ Architecture overview and core components
+- 📦 Installation and setup
+- 🚀 Usage examples (basic to advanced)
+- 🎨 Toast types and themes
+- 🔄 Integration examples (merchant status, payment, auth)
+- 📋 Best practices and migration guide
+- 🐛 Troubleshooting and performance considerations
+- 📚 API reference
+
+**Best for:** Understanding and implementing toast notifications throughout the app.
+
+---
+
 ### Route Protection System
 
 A comprehensive guide to the flexible route protection system that guards routes based on user permissions, feature flags, and preferences.
@@ -81,6 +104,9 @@ Quick reference guide with real-world examples and code snippets.
 docs/
 ├── README.md (you are here)
 │
+├── Toast System
+│   └── TOAST_SYSTEM.md                  ← Complete Toast Guide
+│
 └── Route Protection System
     ├── ROUTE_PROTECTION.md              ← Overview & Architecture
     ├── FLEXIBLE_ROUTE_PROTECTION.md     ← Technical Reference
@@ -90,6 +116,25 @@ docs/
 ---
 
 ## 🚀 Quick Start Guides
+
+### For Toast Notifications
+
+**Start here:** [TOAST_SYSTEM.md](./TOAST_SYSTEM.md)
+
+1. Read the architecture overview
+2. Understand the centralized system
+3. See integration examples
+
+**Quick implementation:**
+```typescript
+import { useToast } from '@/hooks/use-toast';
+
+const { success, error } = useToast();
+success("Operation completed!");
+error("Something went wrong");
+```
+
+---
 
 ### For New Developers
 
@@ -156,6 +201,33 @@ docs/
 
 ## 🎯 Common Tasks
 
+### Task: Add toast notifications
+
+**File:** Any component file
+
+```typescript
+// 1. Import the hook
+import { useToast } from '@/hooks/use-toast';
+
+// 2. Use in component
+const MyComponent = () => {
+  const { success, error, warning, info } = useToast();
+  
+  const handleAction = () => {
+    try {
+      // Your logic here
+      success("Action completed!");
+    } catch (err) {
+      error("Action failed");
+    }
+  };
+};
+```
+
+**Reference:** [TOAST_SYSTEM.md#basic-usage](./TOAST_SYSTEM.md#basic-usage)
+
+---
+
 ### Task: Add a new protected route
 
 **File:** `app/_layout.tsx`
@@ -216,6 +288,9 @@ const protectionRules: RouteProtectionRule[] = [
 
 | I want to...                    | Go to...                                                                                               |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Add toast notifications         | [TOAST_SYSTEM.md](./TOAST_SYSTEM.md)                                                                 |
+| Understand toast architecture  | [TOAST_SYSTEM.md#architecture](./TOAST_SYSTEM.md#architecture)                                        |
+| See toast examples              | [TOAST_SYSTEM.md#usage](./TOAST_SYSTEM.md#usage)                                                      |
 | Understand overall architecture | [ROUTE_PROTECTION.md](./ROUTE_PROTECTION.md)                                                           |
 | See code examples               | [ROUTE_PROTECTION_EXAMPLES.md](./ROUTE_PROTECTION_EXAMPLES.md)                                         |
 | Learn the API                   | [FLEXIBLE_ROUTE_PROTECTION.md](./FLEXIBLE_ROUTE_PROTECTION.md)                                         |
@@ -248,7 +323,7 @@ When adding new features or making changes:
 
 ## 📅 Last Updated
 
-October 18, 2025
+December 19, 2024 - Added Toast System documentation
 
 ---
 

@@ -1,9 +1,14 @@
 import type { AxiosError } from "axios";
 import { createMutation, createQuery } from "react-query-kit";
 
+import {
+  detectMerchantStatusError,
+  MerchantStatusError,
+  shouldTriggerLogout
+} from "@/libs/error/merchant-status-error";
 import { getItem, setItem } from "@/libs/storage";
+import { type MerchantProfile } from "@/modules/api/schema/merchant";
 import { client } from "@/modules/axios/client";
-import { type MerchantProfile } from "@/resources/schema/merchant";
 
 type Payload = {
   email: string;
@@ -48,7 +53,7 @@ export const useUpdateProfile = createMutation<
 export const useGetProfile = createQuery<
   Response,
   { force?: boolean },
-  AxiosError
+  AxiosError | MerchantStatusError
 >({
   queryKey: ["profile"],
   fetcher: async (variables = {}) => {
@@ -75,10 +80,27 @@ export const useGetProfile = createQuery<
       });
 
       const data = response.data.profile;
+      
+      // Check for merchant status errors in the response data
+      if (data.status === 'PIN_BLOCKED' || data.status === 'INACTIVE') {
+        const errorType = data.status === 'PIN_BLOCKED' ? 'PIN_BLOCKED' : 'INACTIVE';
+        throw new MerchantStatusError(errorType, data);
+      }
+      
       await setItem(cacheKey, data, CACHE_DURATION);
       console.log("[useGetProfile] Fetched profile from API and cached:", data);
       return data;
     } catch (error: any) {
+      // Check if it's a merchant status error
+      const statusErrorType = detectMerchantStatusError(error);
+      
+      if (statusErrorType && shouldTriggerLogout(statusErrorType)) {
+        // Don't use cached data for status errors that require logout
+        console.error("[useGetProfile] Merchant status error detected:", statusErrorType);
+        throw new MerchantStatusError(statusErrorType, error.response?.data?.profile);
+      }
+      
+      // Handle other 401/403 errors with cached fallback
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         const cached = getItem<Response>(cacheKey);
         if (cached) {
@@ -88,6 +110,7 @@ export const useGetProfile = createQuery<
           return cached;
         }
       }
+      
       console.error("[useGetProfile] Error fetching profile:", error);
       throw error;
     }

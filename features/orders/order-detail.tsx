@@ -1,10 +1,10 @@
 import { format } from "date-fns";
 import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useState,
+    forwardRef,
+    useCallback,
+    useEffect,
+    useImperativeHandle,
+    useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,11 +13,11 @@ import QRCode from "react-qr-code";
 import CheckSvg from "@/components/svg/check";
 import { ThemedText } from "@/components/themed-text";
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
 } from "@/components/ui/actionsheet";
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Button, ButtonText } from "@/components/ui/button";
@@ -28,8 +28,8 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { usePaymentStatus } from "@/hooks/use-payment-status";
 import { getShortId, getStatusActionType } from "@/libs/utils";
+import { useGetOrder } from "@/modules/api/api/merchant/orders";
 import { useApp } from "@/providers/app.provider";
-import { useGetOrder } from "@/resources/api/merchant/orders";
 
 export type OrderDetailActionSheetRef = {
   openOrder: (orderId: string) => void;

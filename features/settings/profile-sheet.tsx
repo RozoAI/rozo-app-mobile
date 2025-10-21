@@ -8,25 +8,25 @@ import { Keyboard } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
 } from "@/components/ui/actionsheet";
 import {
-  Avatar,
-  AvatarFallbackText,
-  AvatarImage,
+    Avatar,
+    AvatarFallbackText,
+    AvatarImage,
 } from "@/components/ui/avatar";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import {
-  FormControl,
-  FormControlError,
-  FormControlErrorText,
-  FormControlLabel,
-  FormControlLabelText,
+    FormControl,
+    FormControlError,
+    FormControlErrorText,
+    FormControlLabel,
+    FormControlLabelText,
 } from "@/components/ui/form-control";
 import { Heading } from "@/components/ui/heading";
 import { Icon } from "@/components/ui/icon";
@@ -36,12 +36,12 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
 import { showToast } from "@/libs/utils";
-import { useApp } from "@/providers/app.provider";
-import { useUpdateProfile } from "@/resources/api";
+import { useUpdateProfile } from "@/modules/api/api";
 import {
-  type UpdateMerchantProfile,
-  UpdateMerchantProfileSchema,
-} from "@/resources/schema/merchant";
+    type UpdateMerchantProfile,
+    UpdateMerchantProfileSchema,
+} from "@/modules/api/schema/merchant";
+import { useApp } from "@/providers/app.provider";
 
 // Define the ProfileSheet ref interface
 export type ProfileSheetRefType = {
