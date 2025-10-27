@@ -35,12 +35,16 @@ export function POSToggleSetting() {
   const customization = useMemo(() => {
     const isEnabled = showPOS;
     return {
-      statusText: isEnabled ? t("settings.pointOfSales.enabled") : t("settings.pointOfSales.disabled"),
-      buttonText: isEnabled ? t("settings.pointOfSales.disable") : t("settings.pointOfSales.enable"),
+      statusText: isEnabled
+        ? t("settings.pointOfSales.enabled")
+        : t("settings.pointOfSales.disabled"),
+      buttonText: isEnabled
+        ? t("settings.pointOfSales.disable")
+        : t("settings.pointOfSales.enable"),
       buttonVariant: isEnabled ? "outline" : "solid",
       buttonAction: isEnabled ? "negative" : "positive",
       iconColor: isEnabled ? "#10B981" : "#6B7280",
-      message: isEnabled 
+      message: isEnabled
         ? t("settings.pointOfSales.disableMessage")
         : t("settings.pointOfSales.enableMessage"),
     };
@@ -79,8 +83,8 @@ export function POSToggleSetting() {
             <View className="relative mt-4 flex-col gap-2">
               <Button
                 size="lg"
-                variant={customization.buttonVariant}
-                action={customization.buttonAction}
+                variant={customization.buttonVariant as any}
+                action={customization.buttonAction as any}
                 onPress={handleEnableDisable}
                 className="w-full rounded-xl"
               >

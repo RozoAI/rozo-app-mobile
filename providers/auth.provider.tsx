@@ -1,15 +1,14 @@
 import { PrivyUser, usePrivy } from "@privy-io/expo";
 import React, {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 
-import { useToast } from "@/hooks/use-toast";
 import { TOKEN_KEY } from "@/libs/constants";
 import { storage } from "@/libs/storage";
 
@@ -37,7 +36,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { user, getAccessToken } = usePrivy();
-  const { error } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);

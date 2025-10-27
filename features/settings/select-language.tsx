@@ -128,10 +128,13 @@ export function ActionSheetLanguageSwitcher({
   const { language: contextLanguage, setLanguage } = useSelectedLanguage();
   const language = initialLanguage || contextLanguage;
   // Find the display language code based on the current language
-  const findDisplayLanguage = useCallback((lang: Language): DisplayLanguageCode => {
-    const found = languages.find((lg) => lg.value === lang);
-    return found ? found.key : "EN";
-  }, []);
+  const findDisplayLanguage = useCallback(
+    (lang: Language): DisplayLanguageCode => {
+      const found = languages.find((lg) => lg.value === lang);
+      return found ? found.key : "EN";
+    },
+    []
+  );
 
   const [selectedValue, setSelectedValue] = useState<DisplayLanguageCode>(
     findDisplayLanguage(language || "en")
@@ -199,7 +202,16 @@ export function ActionSheetLanguageSwitcher({
     } else if (error) {
       showError("Failed to update language");
     }
-  }, [data, error, updateApi, onChange, setLanguage, setMerchant, success, showError]);
+  }, [
+    data,
+    error,
+    updateApi,
+    onChange,
+    setLanguage,
+    setMerchant,
+    success,
+    showError,
+  ]);
 
   // Memoized values
   const initialLabel = useMemo(() => {

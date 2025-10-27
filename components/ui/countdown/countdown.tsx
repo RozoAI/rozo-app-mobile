@@ -1,8 +1,9 @@
-import { Spinner } from '@/components/ui/spinner';
-import { Text } from '@/components/ui/text';
-import { View } from '@/components/ui/view';
-import { differenceInSeconds, isBefore } from 'date-fns';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Text } from "@/components/ui/text";
+import { View } from "@/components/ui/view";
+import { differenceInSeconds, isBefore } from "date-fns";
+import { Clock } from "lucide-react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Icon } from "../icon";
 
 export interface CountdownProps {
   /**
@@ -24,7 +25,17 @@ export interface CountdownProps {
   /**
    * Custom text size for the countdown display
    */
-  textSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
+  textSize?:
+    | "xs"
+    | "sm"
+    | "md"
+    | "lg"
+    | "xl"
+    | "2xl"
+    | "3xl"
+    | "4xl"
+    | "5xl"
+    | "6xl";
   /**
    * Custom text color for the countdown display
    */
@@ -52,10 +63,10 @@ export const Countdown: React.FC<CountdownProps> = ({
   targetDate,
   onComplete,
   showSpinner = true,
-  textSize = 'lg',
-  textColor = 'text-gray-900 dark:text-gray-100',
+  textSize = "lg",
+  textColor = "text-gray-900 dark:text-gray-100",
   isActive = true,
-  className = '',
+  className = "",
   completedText = "Time's up!",
   expiredText = "Expired",
 }) => {
@@ -118,42 +129,48 @@ export const Countdown: React.FC<CountdownProps> = ({
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   const getTextSizeClass = (size: string): string => {
     const sizeMap: Record<string, string> = {
-      xs: 'text-xs',
-      sm: 'text-sm',
-      md: 'text-base',
-      lg: 'text-lg',
-      xl: 'text-xl',
-      '2xl': 'text-2xl',
-      '3xl': 'text-3xl',
-      '4xl': 'text-4xl',
-      '5xl': 'text-5xl',
-      '6xl': 'text-6xl',
+      xs: "text-xs",
+      sm: "text-sm",
+      md: "text-base",
+      lg: "text-lg",
+      xl: "text-xl",
+      "2xl": "text-2xl",
+      "3xl": "text-3xl",
+      "4xl": "text-4xl",
+      "5xl": "text-5xl",
+      "6xl": "text-6xl",
     };
-    return sizeMap[size] || 'text-lg';
+    return sizeMap[size] || "text-lg";
   };
 
   return (
-    <View className={`flex flex-row gap-2 items-center justify-center ${className}`}>
+    <View
+      className={`flex flex-row gap-2 items-center justify-center ${className}`}
+    >
       {showSpinner && !isCompleted && !isExpired && (
-          <Spinner size="small" />
-        )}
-        
-        <Text 
-          className={`font-mono font-semibold ${getTextSizeClass(textSize)} ${textColor}`}
-        >
-          {isExpired ? expiredText : formatTime(timeLeft)}
+        <Icon as={Clock} size="sm" />
+      )}
+
+      <Text
+        className={`font-mono font-semibold ${getTextSizeClass(
+          textSize
+        )} ${textColor}`}
+      >
+        {isExpired ? expiredText : formatTime(timeLeft)}
+      </Text>
+
+      {isCompleted && !isExpired && (
+        <Text className="text-sm text-gray-500 dark:text-gray-400">
+          {completedText}
         </Text>
-        
-        {isCompleted && !isExpired && (
-          <Text className="text-sm text-gray-500 dark:text-gray-400">
-            {completedText}
-          </Text>
-        )}
+      )}
     </View>
   );
 };

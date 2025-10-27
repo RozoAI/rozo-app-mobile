@@ -12,7 +12,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalHeader
+  ModalHeader,
 } from "@/components/ui/modal";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
@@ -29,10 +29,52 @@ import { useApp } from "@/providers/app.provider";
 import { Countdown } from "@/components/ui/countdown";
 import { useToast } from "@/hooks/use-toast";
 import { useCreateOrderPayment } from "@/modules/api/api/merchant/orders";
-import { type PaymentMethodId } from "./payment-method-config";
+import { PAYMENT_METHODS, type PaymentMethodId } from "./payment-method-config";
 import PaymentMethodSelector from "./payment-method-selector";
 import { PaymentSuccess } from "./payment-success";
 import { type DynamicStyles } from "./types";
+
+// Helper function to generate EVM deeplink URL
+const generateEVMDeepLink = (
+  tokenAddress: string,
+  chainId: number,
+  recipientAddress: string,
+  amountUnits: string
+): string => {
+  return `ethereum:${tokenAddress}@${chainId}/transfer?address=${recipientAddress}&uint256=${amountUnits}`;
+};
+
+// Helper function to generate Solana deeplink URL
+const generateSolanaDeepLink = (
+  recipientAddress: string,
+  amount: string,
+  tokenMint: string,
+  memo: string
+): string => {
+  return `solana:${recipientAddress}?amount=${amount}&spl-token=${tokenMint}&memo=${memo}`;
+};
+
+// Helper function to convert USD amount to token units (assuming 6 decimals for USDC)
+const convertAmountToUnits = (amount: string): string => {
+  const numericAmount = parseFloat(amount);
+  // Convert to units (multiply by 1,000,000 for 6 decimal places)
+  return Math.floor(numericAmount * 1000000).toString();
+};
+
+// Helper function to determine payment method from order data
+const getPaymentMethodFromOrder = (order?: OrderResponse): PaymentMethodId => {
+  const chainId = order?.paymentDetail?.metadata?.payinchainid;
+  switch (chainId) {
+    case "8453":
+      return "base";
+    case "900":
+      return "solana";
+    case "137":
+      return "polygon";
+    default:
+      return "rozo";
+  }
+};
 
 type PaymentModalProps = {
   isOpen: boolean;
@@ -58,12 +100,17 @@ export function PaymentModal({
   const { t } = useTranslation();
   const { defaultCurrency, merchant } = useApp();
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [qrCodeDeeplink, setQrCodeDeeplink] = useState<string | null>(null);
+  const [memo, setMemo] = useState<string | null>(null);
   const [isSuccessPayment, setIsSuccessPayment] = useState(false);
+  const [isChangingPaymentMethod, setIsChangingPaymentMethod] = useState(false);
   const { language } = useSelectedLanguage();
   const isDeposit = useMemo(() => !!deposit?.deposit_id, [deposit]);
-  const { error } = useToast();
+  const { error: toastError } = useToast();
 
-  const [currentOrder, setCurrentOrder] = useState<OrderResponse | undefined>(order);
+  const [currentOrder, setCurrentOrder] = useState<OrderResponse | undefined>(
+    order
+  );
 
   const { mutateAsync: createOrderPayment } = useCreateOrderPayment();
 
@@ -106,6 +153,7 @@ export function PaymentModal({
     // Reset states when modal opens
     if (isOpen) {
       setIsSuccessPayment(false);
+      setIsChangingPaymentMethod(false);
     }
   }, [isOpen, currentOrder, deposit]);
 
@@ -119,7 +167,7 @@ export function PaymentModal({
         refetch();
       }
     }
-  }, [status, depositStatus]);
+  }, [status, depositStatus, isDeposit, refetch, refetchDeposit]);
 
   useEffect(() => {
     if (
@@ -138,36 +186,118 @@ export function PaymentModal({
         language,
       });
     }
-  }, [fetchData, dataDeposit]);
+  }, [
+    fetchData,
+    dataDeposit,
+    amount,
+    defaultCurrency?.voice,
+    isDeposit,
+    language,
+  ]);
 
   // Handle payment method selection
-  const handlePaymentMethodSelected = useCallback(async (methodId: PaymentMethodId, preferredToken?: string) => {
-    if (!currentOrder?.order_id) return;
+  const handlePaymentMethodSelected = useCallback(
+    async (methodId: PaymentMethodId, preferredToken?: string) => {
+      if (!currentOrder?.order_id) return;
 
-    try {
-      // Simple if condition by id for Rozo payment
-      if (methodId === 'rozo') {
-        // Use existing payment data for Rozo
-        if (currentOrder) {
-          console.log("Using existing Rozo payment:", JSON.stringify(order, null, 2));
-          setQrCodeUrl(currentOrder.qrcode);
-        }
-      } else {
-        // API call for other payment methods
+      setIsChangingPaymentMethod(true);
+
+      try {
+        // Always re-create order payment first
         const response = await createOrderPayment({
           id: currentOrder.order_id,
           preferredToken,
         });
-        
+
         console.log("New payment created:", JSON.stringify(response, null, 2));
-        setQrCodeUrl(response.qrcode);
+
+        // Process deeplink strategy only if selected option is not Rozo
+        if (methodId !== "rozo") {
+          const paymentMethod = PAYMENT_METHODS.find(
+            (method) => method.id === methodId
+          );
+
+          console.log("Payment method found:", paymentMethod);
+          console.log("Response payment details:", response.paymentDetail);
+
+          if (paymentMethod?.tokenAddress) {
+            // Get recipient address and memo from new payment details
+            const recipientAddress =
+              response.paymentDetail?.metadata?.receivingAddress;
+            const memo = response.paymentDetail?.metadata?.memo;
+
+            console.log(
+              "Chain",
+              response.paymentDetail?.metadata?.payinchainid
+            );
+            console.log("Recipient address:", recipientAddress);
+            console.log("Memo:", memo);
+
+            if (recipientAddress) {
+              let deeplinkUrl: string;
+
+              if (methodId === "solana" && memo) {
+                // Generate Solana deeplink
+                deeplinkUrl = generateSolanaDeepLink(
+                  recipientAddress,
+                  amount, // Use original amount for Solana
+                  paymentMethod.tokenAddress, // token mint address
+                  memo // memo is required
+                );
+                setMemo(memo);
+                console.log("Generated Solana deeplink:", deeplinkUrl);
+              } else if (paymentMethod.chainId) {
+                // Generate EVM deeplink for Base and Polygon
+                const amountUnits = convertAmountToUnits(amount);
+                deeplinkUrl = generateEVMDeepLink(
+                  paymentMethod.tokenAddress,
+                  paymentMethod.chainId,
+                  recipientAddress,
+                  amountUnits
+                );
+                setMemo(null);
+                console.log("Generated EVM deeplink:", deeplinkUrl);
+              } else {
+                throw new Error(
+                  `Chain ID not found for payment method: ${methodId}`
+                );
+              }
+
+              setQrCodeDeeplink(deeplinkUrl);
+            } else {
+              throw new Error(
+                `Recipient address not found in payment details. ${JSON.stringify(
+                  response,
+                  null,
+                  2
+                )}`
+              );
+            }
+          } else {
+            console.log(
+              "Payment method not found or missing tokenAddress, falling back to API QR code"
+            );
+            // Fallback to using QR code from API response
+            setQrCodeUrl(response.qrcode);
+          }
+        } else {
+          // For Rozo, use the QR code from API response
+          setQrCodeUrl(response.qrcode);
+          setQrCodeDeeplink(null);
+          setMemo(null);
+        }
+
+        // Update current order with new payment data AFTER setting QR code
         setCurrentOrder(response);
+      } catch (error: any) {
+        console.error("Payment creation error:", error);
+        toastError(error.message || "Failed to create payment");
+      } finally {
+        setIsChangingPaymentMethod(false);
       }
-    } catch (error: any) {
-      console.error('Payment creation error:', error);
-      error(error.message || 'Failed to create payment');
-    }
-  }, [currentOrder, createOrderPayment, error]);
+    },
+    [currentOrder, amount]
+  );
 
   // Handle back to home
   const handleBackToHome = useCallback(() => {
@@ -200,7 +330,10 @@ export function PaymentModal({
             </ModalCloseButton>
           </ModalHeader>
         )}
-        <ModalBody className={isSuccessPayment ? "!m-0" : ""}>
+        <ModalBody
+          className={isSuccessPayment ? "!m-0" : ""}
+          style={{ padding: 0 }}
+        >
           {isSuccessPayment ? (
             <PaymentSuccess
               defaultCurrency={defaultCurrency}
@@ -214,7 +347,19 @@ export function PaymentModal({
             <View className="items-center justify-center flex flex-col gap-4">
               {/* QR Code */}
               <View className="size-80 items-center justify-center rounded-xl border bg-white p-2">
-                {qrCodeUrl ? (
+                {isChangingPaymentMethod ? (
+                  <View
+                    className="items-center justify-center"
+                    style={{ width: 200, height: 200 }}
+                  >
+                    <Spinner size="large" />
+                    <Text className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+                      {t("general.loading")}
+                    </Text>
+                  </View>
+                ) : qrCodeDeeplink ? (
+                  <QRCode value={qrCodeDeeplink} size={200} />
+                ) : qrCodeUrl ? (
                   <QRCode value={qrCodeUrl} size={200} />
                 ) : (
                   <View className="mb-4 items-center justify-center">
@@ -261,20 +406,33 @@ export function PaymentModal({
                   <Text className=" text-gray-500 dark:text-gray-400">
                     {t("general.expiredAt")}
                   </Text>
-                  <Countdown targetDate={new Date(currentOrder.expired_at)} textSize="xl" className="text-center text-lg font-bold text-gray-800 dark:text-gray-200"
-                  onComplete={() => {
-                    error("Order expired");
-                    handleBackToHome();
-                  }} />
+                  <Countdown
+                    targetDate={new Date(currentOrder.expired_at)}
+                    textSize="xl"
+                    className="text-center text-lg font-bold text-gray-800 dark:text-gray-200"
+                    onComplete={() => {
+                      toastError("Order expired");
+                      handleBackToHome();
+                    }}
+                  />
                 </View>
               )}
 
-              <View className="w-full items-center flex flex-col gap-1">
+              <View
+                className="w-full items-center flex flex-col gap-1"
+                style={{
+                  borderWidth: 1,
+                  borderColor: "#e5e7eb", // light gray border, adjust as needed
+                  borderRadius: 8,
+                  padding: 12,
+                }}
+              >
                 <PaymentMethodSelector
-                  orderId={currentOrder?.order_id || ''}
                   existingPayment={currentOrder}
                   onPaymentMethodSelected={handlePaymentMethodSelected}
                   className="px-4"
+                  isLoading={isChangingPaymentMethod}
+                  currentPaymentMethod={getPaymentMethodFromOrder(currentOrder)}
                 />
               </View>
             </View>

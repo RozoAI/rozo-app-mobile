@@ -11,7 +11,6 @@ import { ActionSheetLanguageSwitcher } from "@/features/settings/select-language
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
-import { useToast } from "@/hooks/use-toast";
 import { usePrivy, type PrivyEmbeddedWalletAccount } from "@privy-io/expo";
 import { useLogin } from "@privy-io/expo/ui";
 import * as Application from "expo-application";
@@ -33,7 +32,6 @@ export default function LoginScreen() {
   const { handleCreateWallet, isCreating } = useEVMWallet();
   const { language, setLanguage } = useSelectedLanguage();
   const { t } = useTranslation();
-  const { error } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   // const [isFreshLogin, setIsFreshLogin] = useState(false);
@@ -60,7 +58,7 @@ export default function LoginScreen() {
             (account): account is PrivyEmbeddedWalletAccount =>
               account.type === "wallet" &&
               account.wallet_client_type === "privy" &&
-              account.chain_type === "ethereum",
+              account.chain_type === "ethereum"
           ).length > 0;
 
         if (!hasEmbeddedWallet) {
@@ -71,9 +69,9 @@ export default function LoginScreen() {
           router.replace("/balance");
         }, 2000);
       }
-    } catch (error) {
+    } catch {
       setIsAuthLoading(false);
-      error(error instanceof Error ? error.message : "Failed to sign in");
+      // error(error instanceof Error ? error.message : "Failed to sign in");
     } finally {
       setIsAuthLoading(false);
     }
@@ -124,14 +122,14 @@ export default function LoginScreen() {
             updateApi={false}
             initialLanguage={language ?? "en"}
             onChange={(lang) => setLanguage(lang)}
-            trigger={(label) => (
-              <ThemedText
-                className="space-x-2 rounded-xl text-center text-sm border border-neutral-200 dark:border-neutral-700 p-1.5 px-3 max-w-64 m-auto"
-                style={{ fontSize: 14 }}
-              >
-                {label}
-              </ThemedText>
-            )}
+            // trigger={(label) => (
+            //   <ThemedText
+            //     className="space-x-2 rounded-xl text-center text-sm border border-neutral-200 dark:border-neutral-700 p-1.5 px-3 max-w-64 m-auto"
+            //     style={{ fontSize: 14 }}
+            //   >
+            //     {label}
+            //   </ThemedText>
+            // )}
           />
         </HStack>
 

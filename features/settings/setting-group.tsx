@@ -29,6 +29,7 @@ export function SettingGroup({
           <Text
             size="sm"
             className="font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400"
+            style={{ paddingVertical: 6 }}
           >
             {title}
           </Text>
@@ -42,4 +43,3 @@ export function SettingGroup({
     </Card>
   );
 }
-

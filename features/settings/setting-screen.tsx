@@ -27,70 +27,69 @@ export function SettingScreen() {
   const { language } = useSelectedLanguage();
 
   return (
-      <ScrollView className="py-6 flex-1">
-        {/* Header */}
-        <VStack className="flex flex-row items-start justify-between">
-          <View className="mb-6">
-            <ThemedText style={{ fontSize: 24, fontWeight: "bold" }}>
+    <ScrollView className="py-6 flex-1">
+      {/* Header */}
+      <VStack className="flex flex-row items-start justify-between">
+        <View className="mb-6">
+          <ThemedText style={{ fontSize: 24, fontWeight: "bold" }}>
             {t("settings.title")}
-            </ThemedText>
-            <ThemedText style={{ fontSize: 14, color: "#6B7280" }} type="default">
+          </ThemedText>
+          <ThemedText style={{ fontSize: 14, color: "#6B7280" }} type="default">
             {t("settings.description")}
-            </ThemedText>
-          </View>
-
+          </ThemedText>
+        </View>
       </VStack>
 
-        <View className="flex-1 flex flex-col gap-4">
-          {/* Account Section */}
-          <Card className="rounded-xl border border-background-300 bg-background-0 px-4 py-2">
-            <AccountSection />
-          </Card>
+      <View className="flex-1 flex flex-col gap-4">
+        {/* Account Section */}
+        <Card className="rounded-xl border border-background-300 bg-background-0 px-4 py-2">
+          <AccountSection />
+        </Card>
 
-          {/* Wallet Section */}
-          <View className="rounded-xl border border-background-300 bg-background-0 flex flex-col gap-4">
-            <WalletAddressCard />
-            <Alert action="info" variant="solid" className="rounded-xl">
-              <AlertIcon as={InfoIcon} />
-              <AlertText className="text-xs pr-4">
-                {t("settings.gaslessInfo")}
-              </AlertText>
-            </Alert>
-          </View>
-
-          {/* Security Settings */}
-          <SettingGroup title={t("settings.groups.security")}>
-            <PINSettings />
-          </SettingGroup>
-
-          {/* App Preferences */}
-          <SettingGroup title={t("settings.groups.preferences")}>
-            <POSToggleSetting />
-            <ActionSheetCurrencySwitcher />
-            <ActionSheetLanguageSwitcher initialLanguage={language} />
-            <ActionSheetThemeSwitcher />
-          </SettingGroup>
-
-          {/* Logout Button */}
-          <Button
-            variant="link"
-            size="sm"
-            action="negative"
-            onPress={logout}
-            className="rounded-xl"
-          >
-            <ButtonText>{t("settings.logout")}</ButtonText>
-          </Button>
-
-          {/* App Version */}
-          {Application.nativeApplicationVersion && (
-            <VStack space="sm">
-              <Text className="text-center text-xs text-gray-500 dark:text-gray-400">
-                {t("settings.version")} - {Application.nativeApplicationVersion}
-              </Text>
-            </VStack>
-          )}
+        {/* Wallet Section */}
+        <View className="rounded-xl border border-background-300 bg-background-0 flex flex-col gap-4">
+          <WalletAddressCard />
+          <Alert action="info" variant="solid" className="rounded-xl">
+            <AlertIcon as={InfoIcon} />
+            <AlertText className="text-xs pr-4">
+              {t("settings.gaslessInfo")}
+            </AlertText>
+          </Alert>
         </View>
-      </ScrollView>
+
+        {/* Security Settings */}
+        <SettingGroup title={t("settings.groups.security")}>
+          <PINSettings />
+        </SettingGroup>
+
+        {/* App Preferences */}
+        <SettingGroup title={t("settings.groups.preferences")}>
+          <POSToggleSetting />
+          <ActionSheetCurrencySwitcher />
+          <ActionSheetLanguageSwitcher initialLanguage={language} />
+          <ActionSheetThemeSwitcher />
+        </SettingGroup>
+
+        {/* Logout Button */}
+        <Button
+          variant="link"
+          size="sm"
+          action="negative"
+          onPress={logout}
+          className="rounded-xl"
+        >
+          <ButtonText>{t("settings.logout")}</ButtonText>
+        </Button>
+
+        {/* App Version */}
+        {Application.nativeApplicationVersion && (
+          <VStack space="sm">
+            <Text className="text-center text-xs text-gray-500 dark:text-gray-400">
+              {t("settings.version")} - {Application.nativeApplicationVersion}
+            </Text>
+          </VStack>
+        )}
+      </View>
+    </ScrollView>
   );
 }

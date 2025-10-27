@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/themed-text";
 import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Spinner } from "@/components/ui/spinner";
@@ -34,34 +33,36 @@ export function SettingItem({
   className,
 }: SettingItemProps) {
   const content = (
-    <View className="w-full flex-1 flex-row items-center justify-between gap-4 px-4 py-3">
-      <View className="flex-row items-center gap-3 flex-1">
+    <View className="w-full flex-row items-center justify-between gap-4 px-4 py-3">
+      <View className="flex-row items-center gap-3 flex-1 min-w-0">
         <Icon
           as={icon}
           className="mt-1 shrink-0"
           style={{ stroke: iconColor }}
         />
-        <View className="flex-col items-start gap-1 flex-1">
-          <Text size="md" className="shrink">
+        <View className="flex-col items-start gap-1 flex-1 min-w-0">
+          <Text
+            size="md"
+            className="text-typography-950 dark:text-typography-50"
+          >
             {title}
           </Text>
           {description && (
-            <Text size="sm" className="shrink text-gray-600 dark:text-gray-400">
+            <Text size="sm" className="text-gray-600 dark:text-gray-400">
               {description}
             </Text>
           )}
-          {value && typeof value === "string" ? (
-            <ThemedText style={{ fontSize: 14 }} type="default">
-              {value}
-            </ThemedText>
-          ) : (
-            value
+          {value && (
+            <Text size="sm" className="text-gray-500 dark:text-gray-400">
+              {typeof value === "string" ? value : value}
+            </Text>
           )}
         </View>
       </View>
 
       <View className="shrink-0">
-        {rightElement || (onPress && !disabled && <Icon as={ChevronRightIcon} />)}
+        {rightElement ||
+          (onPress && !disabled && <Icon as={ChevronRightIcon} />)}
       </View>
 
       {loading && (
@@ -75,19 +76,11 @@ export function SettingItem({
   // If there's an onPress handler, wrap in Pressable; otherwise use plain View
   if (onPress && !disabled) {
     return (
-      <Pressable
-        onPress={onPress}
-        className={cn("relative w-full", className)}
-      >
+      <Pressable onPress={onPress} className={cn("relative w-full", className)}>
         {content}
       </Pressable>
     );
   }
 
-  return (
-    <View className={cn("relative w-full", className)}>
-      {content}
-    </View>
-  );
+  return <View className={cn("relative w-full", className)}>{content}</View>;
 }
-

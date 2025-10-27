@@ -21,7 +21,7 @@ import { useDynamicStyles } from "./style";
 
 export function PaymentScreen() {
   const { defaultCurrency, merchant } = useApp();
-  const { error } = useToast();
+  const { error: toastError } = useToast();
   // Get screen dimensions
   const { height } = useWindowDimensions();
   const [amount, setAmount] = useState("0");
@@ -35,6 +35,7 @@ export function PaymentScreen() {
 
   const isSmallHeight = height <= 667; // iPhone SE and similar small height devices
   const dynamicStyles = useDynamicStyles();
+  const minAmount = 0.1;
 
   // Handle numpad button press
   const handlePress = useCallback(
@@ -51,11 +52,15 @@ export function PaymentScreen() {
             return "0";
           }
 
-          // Check if the new value would be less than 0.1 (but not exactly 0)
+          // Check if the new value would be less than minAmount (but not exactly 0)
           const numericValue = parseFloat(
             newValue.replace(decimalSeparator, ".")
           );
-          if (!isNaN(numericValue) && numericValue > 0 && numericValue < 0.1) {
+          if (
+            !isNaN(numericValue) &&
+            numericValue > 0 &&
+            numericValue < minAmount
+          ) {
             return "0";
           }
 
@@ -96,9 +101,13 @@ export function PaymentScreen() {
             newValue.replace(decimalSeparator, ".")
           );
 
-          // Allow exactly 0 or values >= 0.11
-          if (!isNaN(numericValue) && numericValue > 0 && numericValue < 0.1) {
-            // Don't update if the value would be between 0 and 0.1 (exclusive)
+          // Allow exactly 0 or values >= minAmount
+          if (
+            !isNaN(numericValue) &&
+            numericValue > 0 &&
+            numericValue < minAmount
+          ) {
+            // Don't update if the value would be between 0 and minAmount (exclusive)
             return prev;
           }
 
@@ -117,11 +126,6 @@ export function PaymentScreen() {
     [defaultCurrency?.decimalSeparator]
   );
 
-  // Handle quick amount selection
-  // const handleQuickAmount = useCallback((value: string) => {
-  //   setAmount(value);
-  // }, []);
-
   const resetPayment = useCallback(() => {
     setAmount("0");
     setDescription("");
@@ -137,7 +141,7 @@ export function PaymentScreen() {
       });
 
       if (!response.success) {
-        error(response.error ?? "Error creating order");
+        toastError(response.error ?? "Error creating order");
         return;
       }
 
@@ -147,7 +151,7 @@ export function PaymentScreen() {
       setIsPaymentModalOpen(true);
     } catch (error: any) {
       console.error("Error creating order:", error);
-      error(error.message as string);
+      toastError(error.message as string);
     }
   };
 
