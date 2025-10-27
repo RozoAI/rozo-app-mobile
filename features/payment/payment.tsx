@@ -136,13 +136,14 @@ export function PaymentScreen() {
         redirect_uri: getRedirectUri("/orders"),
       });
 
+      if (!response.success) {
+        error(response.error ?? "Error creating order");
+        return;
+      }
+
       resetPayment();
       setAmount(amount);
-      setCreatedOrder({
-        qrcode: response.qrcode,
-        order_id: response.order_id,
-        order_number: response.order_number,
-      });
+      setCreatedOrder(response.data!);
       setIsPaymentModalOpen(true);
     } catch (error: any) {
       console.error("Error creating order:", error);

@@ -52,7 +52,7 @@ export function SettingScreen() {
             <WalletAddressCard />
             <Alert action="info" variant="solid" className="rounded-xl">
               <AlertIcon as={InfoIcon} />
-              <AlertText className="text-xs">
+              <AlertText className="text-xs pr-4">
                 {t("settings.gaslessInfo")}
               </AlertText>
             </Alert>

@@ -1,10 +1,10 @@
 import { format } from "date-fns";
 import React, {
-    forwardRef,
-    useCallback,
-    useEffect,
-    useImperativeHandle,
-    useState,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
 } from "react";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,14 +13,15 @@ import QRCode from "react-qr-code";
 import CheckSvg from "@/components/svg/check";
 import { ThemedText } from "@/components/themed-text";
 import {
-    Actionsheet,
-    ActionsheetBackdrop,
-    ActionsheetContent,
-    ActionsheetDragIndicator,
-    ActionsheetDragIndicatorWrapper,
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
 } from "@/components/ui/actionsheet";
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Countdown } from "@/components/ui/countdown";
 import { Heading } from "@/components/ui/heading";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
@@ -196,6 +197,25 @@ export const OrderDetailActionSheet = forwardRef<
 
                 <View className="flex-row justify-between gap-2">
                   <Text className="text-sm text-gray-500 dark:text-gray-400">
+                    {t("general.description")}
+                  </Text>
+                  <Text className="text-right text-sm">
+                    {order.description === "" ? "-" : order.description}
+                  </Text>
+                </View>
+
+{order.expired_at && (
+                <View className="flex-row justify-between gap-2">
+                  <Text className="text-sm text-gray-500 dark:text-gray-400">
+                    {t("general.expiredAt")}
+                  </Text>
+                  <Countdown targetDate={new Date(order.expired_at)} textSize="sm" />
+                </View>
+)}
+
+
+                <View className="flex-row justify-between gap-2">
+                  <Text className="text-sm text-gray-500 dark:text-gray-400">
                     {t("general.createdAt")}
                   </Text>
                   <Text className="text-right text-sm">
@@ -203,14 +223,6 @@ export const OrderDetailActionSheet = forwardRef<
                   </Text>
                 </View>
 
-                <View className="flex-row justify-between gap-2">
-                  <Text className="text-sm text-gray-500 dark:text-gray-400">
-                    {t("general.description")}
-                  </Text>
-                  <Text className="text-right text-sm">
-                    {order.description === "" ? "-" : order.description}
-                  </Text>
-                </View>
 
                 {/* <View className="flex-row justify-between gap-2">
                     <Text className="text-sm text-gray-500 dark:text-gray-400">{t('general.merchantId')}</Text>

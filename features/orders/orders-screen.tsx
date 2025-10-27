@@ -32,6 +32,7 @@ export function OrdersScreen() {
   });
 
   useEffect(() => {
+    console.log("data", data);
     setOrders(data ?? []);
     setRefreshing(false);
   }, [data]);

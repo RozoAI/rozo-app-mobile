@@ -46,7 +46,8 @@
     "updating": "Updating",
     "walletAddress": "Wallet Address",
     "walletBalance": "Wallet Balance",
-    "withdraw": "Withdraw"
+    "withdraw": "Withdraw",
+    "expiredAt": "Expired At"
   },
   "common": {
     "cancel": "Cancel",
@@ -188,7 +189,13 @@
     },
     "pointOfSales": {
       "description": "Enable home tab for point of sale features",
-      "title": "Show Point of Sales"
+      "title": "Show Point of Sales",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "enableMessage": "Enable point of sale features to access POS functionality in the home tab.",
+      "disableMessage": "Disable point of sale features to hide POS functionality from the home tab."
     },
     "privacy": "Privacy Policy",
     "rate": "Rate",

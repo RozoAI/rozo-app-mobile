@@ -149,7 +149,7 @@ export const PINActionSheet: React.FC<PINActionSheetProps> = ({
           {hasPin ? (
             // PIN Management Content
             <>
-              <View className="relative w-full items-center space-y-4">
+              <View className="relative w-full items-center">
                 <Alert action="info" variant="solid">
                   <AlertIcon as={Shield} />
                   <AlertText>
