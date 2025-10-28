@@ -89,7 +89,51 @@
     "paymentSuccessfulDesc": "تم إتمام معاملتك بنجاح",
     "scanToPay": "مسح للدفع",
     "verifyPayment": "تحقق من الدفع",
-    "voiceSuccess": "تم استلام {{amount}} {{currency}} من Rozo"
+    "voiceSuccess": "تم استلام {{amount}} {{currency}} من Rozo",
+    "checkingOrder": "جارٍ التحقق من حالة الطلب..."
+  },
+  "pin": {
+    "setup": {
+      "title": "إعداد رمز PIN",
+      "description": "أنشئ رمز PIN مكون من 6 أرقام لأمان محسن",
+      "placeholder": "أدخل رمز PIN الخاص بك",
+      "confirm": "تعيين رمز PIN",
+      "success": "تم تعيين رمز PIN بنجاح",
+      "error": "فشل في تعيين رمز PIN. حاول مرة أخرى",
+      "invalidLength": "يجب أن يكون رمز PIN مكون من 6 أرقام بالضبط"
+    },
+    "management": {
+      "title": "إدارة رمز PIN",
+      "description": "إدارة إعدادات أمان رمز PIN الخاص بك",
+      "status": "رمز PIN الخاص بك نشط حالياً ويحمي حسابك",
+      "change": "تغيير رمز PIN",
+      "revoke": "إلغاء رمز PIN"
+    },
+    "validation": {
+      "blocked": "الحساب محظور",
+      "blockedDescription": "تم حظر حسابك بسبب محاولات كثيرة فاشلة لرمز PIN. اتصل بالدعم.",
+      "attemptsRemaining": "{{count}} محاولة متبقية",
+      "attemptsRemaining_other": "{{count}} محاولات متبقية",
+      "validating": "التحقق من رمز PIN...",
+      "wrongPin": "رمز PIN خاطئ",
+      "error": "فشل في التحقق من رمز PIN"
+    },
+    "revoke": {
+      "title": "إلغاء رمز PIN",
+      "confirmationMessage": "سيؤدي هذا إلى إزالة أمان رمز PIN نهائياً. يمكنك تعيين رمز PIN جديد في أي وقت في الإعدادات.",
+      "enterPin": "أدخل رمز PIN للإلغاء",
+      "success": "تم إلغاء رمز PIN بنجاح",
+      "error": "فشل في إلغاء رمز PIN",
+      "processing": "جاري إلغاء رمز PIN..."
+    },
+    "change": {
+      "title": "تغيير رمز PIN",
+      "confirmationMessage": "ستحتاج إلى إدخال رمز PIN الحالي وتعيين رمز جديد.",
+      "enterCurrentPin": "أدخل رمز PIN الحالي",
+      "enterNewPin": "أدخل رمز PIN الجديد",
+      "success": "تم تغيير رمز PIN بنجاح",
+      "error": "فشل في تغيير رمز PIN"
+    }
   },
   "pos": {
     "title": "نقاط البيع"

@@ -1,36 +1,31 @@
 import { t } from "i18next";
-import { CheckIcon, ChevronRightIcon, DollarSign } from "lucide-react-native";
+import { CheckIcon, DollarSign } from "lucide-react-native";
 import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ThemedText } from "@/components/themed-text";
 import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetItem,
-  ActionsheetItemText,
+    Actionsheet,
+    ActionsheetBackdrop,
+    ActionsheetContent,
+    ActionsheetDragIndicator,
+    ActionsheetDragIndicatorWrapper,
+    ActionsheetItem,
+    ActionsheetItemText,
 } from "@/components/ui/actionsheet";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
-import { Icon } from "@/components/ui/icon";
-import { Pressable } from "@/components/ui/pressable";
-import { Spinner } from "@/components/ui/spinner";
-import { Text } from "@/components/ui/text";
-import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
+import { SettingItem } from "@/features/settings/setting-item";
+import { useToast } from "@/hooks/use-toast";
 import { currencies as currencyList, defaultCurrency } from "@/libs/currencies";
-import { showToast } from "@/libs/utils";
+import { useCreateProfile } from "@/modules/api/api";
 import { useApp } from "@/providers/app.provider";
-import { useCreateProfile } from "@/resources/api";
 
 type CurrencyOption = {
   code: string;
@@ -41,6 +36,7 @@ export function ActionSheetCurrencySwitcher(): React.ReactElement {
   const insets = useSafeAreaInsets();
   const { mutate: updateProfile, data, error } = useCreateProfile();
   const { merchant, setMerchant } = useApp();
+  const { success, error: showError } = useToast();
 
   const [showActionsheet, setShowActionsheet] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -83,19 +79,13 @@ export function ActionSheetCurrencySwitcher(): React.ReactElement {
         setCurrentCurrency(data.default_currency.toUpperCase());
       }
 
-      showToast({
-        message: "Currency updated successfully",
-        type: "success",
-      });
+      success("Currency updated successfully");
       setIsLoading(false);
     } else if (error) {
-      showToast({
-        message: "Failed to update currency",
-        type: "danger",
-      });
+      showError("Failed to update currency");
       setIsLoading(false);
     }
-  }, [data, error, setMerchant]);
+  }, [data, error, setMerchant, success, showError]);
 
   // Get the currency label based on the current code
   const currencyLabel = useMemo(() => {
@@ -157,27 +147,13 @@ export function ActionSheetCurrencySwitcher(): React.ReactElement {
 
   return (
     <>
-      <Pressable onPress={handleOpen} className="relative w-full">
-        <View>
-          <View className="w-full flex-1 flex-row items-center justify-between gap-4 px-2 py-3">
-            <View className="flex-row items-center gap-2">
-              <Icon as={DollarSign} className="mb-auto mt-1 stroke-[#747474]" />
-              <View className="flex-col items-start gap-1">
-                <Text size="md">{t("settings.currency.title")}</Text>
-                <ThemedText style={{ fontSize: 14 }} type="default">
-                  {currencyLabel}
-                </ThemedText>
-              </View>
-            </View>
-            <Icon as={ChevronRightIcon} />
-          </View>
-          {isLoading && (
-            <View className="absolute inset-x-0 top-0 z-10 flex size-full items-center justify-center bg-white/50 py-2">
-              <Spinner />
-            </View>
-          )}
-        </View>
-      </Pressable>
+      <SettingItem
+        icon={DollarSign}
+        title={t("settings.currency.title")}
+        value={currencyLabel}
+        onPress={handleOpen}
+        loading={isLoading}
+      />
 
       <Actionsheet
         isOpen={showActionsheet}

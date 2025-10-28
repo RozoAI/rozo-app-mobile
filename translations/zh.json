@@ -89,7 +89,51 @@
     "paymentSuccessfulDesc": "您的交易已成功完成",
     "scanToPay": "扫码支付",
     "verifyPayment": "验证付款",
-    "voiceSuccess": "您已通过 Rozo 收到 {{amount}} {{currency}}"
+    "voiceSuccess": "您已通过 Rozo 收到 {{amount}} {{currency}}",
+    "checkingOrder": "正在检查订单状态..."
+  },
+  "pin": {
+    "setup": {
+      "title": "设置PIN码",
+      "description": "创建6位数字PIN码以增强安全性",
+      "placeholder": "输入您的PIN码",
+      "confirm": "设置PIN码",
+      "success": "PIN码设置成功",
+      "error": "PIN码设置失败，请重试",
+      "invalidLength": "PIN码必须恰好为6位数字"
+    },
+    "management": {
+      "title": "PIN码管理",
+      "description": "管理您的PIN码安全设置",
+      "status": "您的PIN码当前处于活动状态并保护您的账户",
+      "change": "更改PIN码",
+      "revoke": "撤销PIN码"
+    },
+    "validation": {
+      "blocked": "账户已锁定",
+      "blockedDescription": "由于PIN码尝试失败次数过多，您的账户已被锁定。请联系客服。",
+      "attemptsRemaining": "{{count}} 次尝试剩余",
+      "attemptsRemaining_other": "{{count}} 次尝试剩余",
+      "validating": "验证PIN码中...",
+      "wrongPin": "PIN码错误",
+      "error": "PIN码验证失败"
+    },
+    "revoke": {
+      "title": "撤销PIN码",
+      "confirmationMessage": "这将永久删除您的PIN码安全保护。您可以随时在设置中设置新的PIN码。",
+      "enterPin": "输入要撤销的PIN码",
+      "success": "PIN码撤销成功",
+      "error": "PIN码撤销失败",
+      "processing": "撤销PIN码中..."
+    },
+    "change": {
+      "title": "更改PIN码",
+      "confirmationMessage": "您需要输入当前PIN码并设置新的PIN码。",
+      "enterCurrentPin": "输入当前PIN码",
+      "enterNewPin": "输入新PIN码",
+      "success": "PIN码更改成功",
+      "error": "PIN码更改失败"
+    }
   },
   "pos": {
     "title": "pos"

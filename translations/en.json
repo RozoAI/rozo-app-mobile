@@ -15,6 +15,7 @@
     "checkConnection": "Please check your connection and try again",
     "close": "Close",
     "confirm": "Confirm",
+    "confirmAndProceed": "Confirm & Proceed",
     "copiedToClipboard": "Coppied to Clipboard",
     "copiedWalletAddressDescription": "Only USDC base can be sent. Otherwise, deposit with our Payment Link.",
     "createdAt": "Created at",
@@ -45,7 +46,15 @@
     "updating": "Updating",
     "walletAddress": "Wallet Address",
     "walletBalance": "Wallet Balance",
-    "withdraw": "Withdraw"
+    "withdraw": "Withdraw",
+    "expiredAt": "Expired At"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading",
+    "error": "Error",
+    "success": "Success"
   },
   "home": {
     "title": "Home"
@@ -89,7 +98,51 @@
     "paymentSuccessfulDesc": "Your transaction has been completed successfully",
     "scanToPay": "Scan to Pay",
     "verifyPayment": "Verify Payment",
-    "voiceSuccess": "You have received {{amount}} {{currency}} by Rozo"
+    "voiceSuccess": "You have received {{amount}} {{currency}} by Rozo",
+    "checkingOrder": "Checking order status..."
+  },
+  "pin": {
+    "setup": {
+      "title": "Set Up PIN",
+      "description": "Create a 6-digit PIN for enhanced security",
+      "placeholder": "Enter your PIN",
+      "confirm": "Set PIN",
+      "success": "PIN has been set successfully",
+      "error": "Failed to set PIN. Please try again",
+      "invalidLength": "PIN must be exactly 6 digits"
+    },
+    "management": {
+      "title": "PIN Management",
+      "description": "Manage your PIN security settings",
+      "status": "Your PIN is currently active and protecting your account",
+      "change": "Change PIN",
+      "revoke": "Revoke PIN"
+    },
+    "validation": {
+      "blocked": "Account Blocked",
+      "blockedDescription": "Your account has been blocked due to too many failed PIN attempts. Please contact support.",
+      "attemptsRemaining": "{{count}} attempt remaining",
+      "attemptsRemaining_other": "{{count}} attempts remaining",
+      "validating": "Validating PIN...",
+      "wrongPin": "Wrong PIN",
+      "error": "Failed to validate PIN"
+    },
+    "revoke": {
+      "title": "Revoke PIN",
+      "confirmationMessage": "This will permanently remove your PIN security. You can set a new PIN anytime in settings.",
+      "enterPin": "Enter PIN to Revoke",
+      "success": "PIN has been revoked successfully",
+      "error": "Failed to revoke PIN",
+      "processing": "Revoking PIN..."
+    },
+    "change": {
+      "title": "Change PIN",
+      "confirmationMessage": "You will need to enter your current PIN and set a new one.",
+      "enterCurrentPin": "Enter Current PIN",
+      "enterNewPin": "Enter New PIN",
+      "success": "PIN has been changed successfully",
+      "error": "Failed to change PIN"
+    }
   },
   "pos": {
     "title": "POS"
@@ -118,6 +171,10 @@
     "gaslessInfo": "You can send tokens without network fees using Privy. Gasless transfers are supported!",
     "general": "General",
     "github": "Github",
+    "groups": {
+      "security": "Security",
+      "preferences": "Preferences"
+    },
     "indonesia": "Indonesia",
     "language": {
       "title": "Language"
@@ -126,9 +183,20 @@
     "login": "Login",
     "logout": "Logout",
     "more": "More",
+    "pin": {
+      "title": "PIN Security",
+      "enabled": "PIN is enabled",
+      "disabled": "PIN is disabled"
+    },
     "pointOfSales": {
       "description": "Enable home tab for point of sale features",
-      "title": "Show Point of Sales"
+      "title": "Show Point of Sales",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enable": "Enable",
+      "disable": "Disable",
+      "enableMessage": "Enable point of sale features to access POS functionality in the home tab.",
+      "disableMessage": "Disable point of sale features to hide POS functionality from the home tab."
     },
     "privacy": "Privacy Policy",
     "rate": "Rate",

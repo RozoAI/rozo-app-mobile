@@ -89,7 +89,51 @@
     "paymentSuccessfulDesc": "आपका लेन-देन सफलतापूर्वक पूरा हो गया है",
     "scanToPay": "भुगतान करने के लिए स्कैन करें",
     "verifyPayment": "भुगतान सत्यापित करें",
-    "voiceSuccess": "आपको Rozo के माध्यम से {{amount}} {{currency}} प्राप्त हुए हैं"
+    "voiceSuccess": "आपको Rozo के माध्यम से {{amount}} {{currency}} प्राप्त हुए हैं",
+    "checkingOrder": "ऑर्डर की स्थिति जांची जा रही है..."
+  },
+  "pin": {
+    "setup": {
+      "title": "PIN सेटअप",
+      "description": "बेहतर सुरक्षा के लिए 6-अंकीय PIN बनाएं",
+      "placeholder": "अपना PIN दर्ज करें",
+      "confirm": "PIN सेट करें",
+      "success": "PIN सफलतापूर्वक सेट किया गया",
+      "error": "PIN सेट करने में विफल। कृपया पुनः प्रयास करें",
+      "invalidLength": "PIN ठीक 6 अंकों का होना चाहिए"
+    },
+    "management": {
+      "title": "PIN प्रबंधन",
+      "description": "अपनी PIN सुरक्षा सेटिंग्स प्रबंधित करें",
+      "status": "आपका PIN वर्तमान में सक्रिय है और आपके खाते की सुरक्षा कर रहा है",
+      "change": "PIN बदलें",
+      "revoke": "PIN रद्द करें"
+    },
+    "validation": {
+      "blocked": "खाता अवरुद्ध",
+      "blockedDescription": "बहुत सारे असफल PIN प्रयासों के कारण आपका खाता अवरुद्ध कर दिया गया है। कृपया सहायता से संपर्क करें।",
+      "attemptsRemaining": "{{count}} प्रयास शेष",
+      "attemptsRemaining_other": "{{count}} प्रयास शेष",
+      "validating": "PIN सत्यापित कर रहे हैं...",
+      "wrongPin": "गलत PIN",
+      "error": "PIN सत्यापित करने में विफल"
+    },
+    "revoke": {
+      "title": "PIN रद्द करें",
+      "confirmationMessage": "यह आपकी PIN सुरक्षा को स्थायी रूप से हटा देगा। आप किसी भी समय सेटिंग्स में एक नया PIN सेट कर सकते हैं।",
+      "enterPin": "रद्द करने के लिए PIN दर्ज करें",
+      "success": "PIN सफलतापूर्वक रद्द किया गया",
+      "error": "PIN रद्द करने में विफल",
+      "processing": "PIN रद्द कर रहे हैं..."
+    },
+    "change": {
+      "title": "PIN बदलें",
+      "confirmationMessage": "आपको अपना वर्तमान PIN दर्ज करना होगा और एक नया सेट करना होगा।",
+      "enterCurrentPin": "वर्तमान PIN दर्ज करें",
+      "enterNewPin": "नया PIN दर्ज करें",
+      "success": "PIN सफलतापूर्वक बदला गया",
+      "error": "PIN बदलने में विफल"
+    }
   },
   "pos": {
     "title": "पीओ"

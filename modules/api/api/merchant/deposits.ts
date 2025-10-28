@@ -2,8 +2,8 @@ import { type AxiosError } from "axios";
 import { createMutation, createQuery } from "react-query-kit";
 
 import { getItem, setItem } from "@/libs/storage";
+import { type DepositResponse } from "@/modules/api/schema/deposit";
 import { client } from "@/modules/axios/client";
-import { type DepositResponse } from "@/resources/schema/deposit";
 
 type MerchantDeposit = {
   id: string;

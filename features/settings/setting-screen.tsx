@@ -2,25 +2,19 @@ import { ThemedText } from "@/components/themed-text";
 import { Alert, AlertIcon, AlertText } from "@/components/ui/alert";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Divider } from "@/components/ui/divider";
-import type { ModeType } from "@/components/ui/gluestack-ui-provider";
-import { Icon } from "@/components/ui/icon";
-import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { AccountSection } from "@/features/settings/account-section";
+import { SettingGroup } from "@/features/settings/setting-group";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
 import { useApp } from "@/providers/app.provider";
 import * as Application from "expo-application";
-import {
-  ChevronRightIcon,
-  InfoIcon,
-  Languages,
-  Palette,
-} from "lucide-react-native";
+import { InfoIcon } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
-import { ScrollView } from "react-native-gesture-handler";
+
+import { ScrollView } from "react-native";
+import { PINSettings } from "./pin";
 import { POSToggleSetting } from "./pos-toggle-setting";
 import { ActionSheetCurrencySwitcher } from "./select-currency";
 import { ActionSheetLanguageSwitcher } from "./select-language";
@@ -33,8 +27,9 @@ export function SettingScreen() {
   const { language } = useSelectedLanguage();
 
   return (
-    <SafeAreaView className="flex-1">
-      <ScrollView className="flex-1">
+    <ScrollView className="py-6 flex-1">
+      {/* Header */}
+      <VStack className="flex flex-row items-start justify-between">
         <View className="mb-6">
           <ThemedText style={{ fontSize: 24, fontWeight: "bold" }}>
             {t("settings.title")}
@@ -43,94 +38,58 @@ export function SettingScreen() {
             {t("settings.description")}
           </ThemedText>
         </View>
-        <VStack space="lg">
-          <Card className="items-start justify-between rounded-xl border border-background-300 bg-background-0 px-4 py-2">
-            <AccountSection />
-          </Card>
+      </VStack>
 
-          <VStack className="items-center justify-between rounded-xl border border-background-300 bg-background-0 px-4 pt-2 pb-0 dark:divide-[#2b2b2b]">
-            <WalletAddressCard />
-            <Alert action="info" variant="solid" style={{ marginInline: -1 }}>
-              <AlertIcon as={InfoIcon} />
-              <AlertText className="text-xs">
-                {t("settings.gaslessInfo")}
-              </AlertText>
-            </Alert>
+      <View className="flex-1 flex flex-col gap-4">
+        {/* Account Section */}
+        <Card className="rounded-xl border border-background-300 bg-background-0 px-4 py-2">
+          <AccountSection />
+        </Card>
+
+        {/* Wallet Section */}
+        <View className="rounded-xl border border-background-300 bg-background-0 flex flex-col gap-4">
+          <WalletAddressCard />
+          <Alert action="info" variant="solid" className="rounded-xl">
+            <AlertIcon as={InfoIcon} />
+            <AlertText className="text-xs pr-4">
+              {t("settings.gaslessInfo")}
+            </AlertText>
+          </Alert>
+        </View>
+
+        {/* Security Settings */}
+        <SettingGroup title={t("settings.groups.security")}>
+          <PINSettings />
+        </SettingGroup>
+
+        {/* App Preferences */}
+        <SettingGroup title={t("settings.groups.preferences")}>
+          <POSToggleSetting />
+          <ActionSheetCurrencySwitcher />
+          <ActionSheetLanguageSwitcher initialLanguage={language} />
+          <ActionSheetThemeSwitcher />
+        </SettingGroup>
+
+        {/* Logout Button */}
+        <Button
+          variant="link"
+          size="sm"
+          action="negative"
+          onPress={logout}
+          className="rounded-xl"
+        >
+          <ButtonText>{t("settings.logout")}</ButtonText>
+        </Button>
+
+        {/* App Version */}
+        {Application.nativeApplicationVersion && (
+          <VStack space="sm">
+            <Text className="text-center text-xs text-gray-500 dark:text-gray-400">
+              {t("settings.version")} - {Application.nativeApplicationVersion}
+            </Text>
           </VStack>
-
-          {/* List Settings */}
-          <View className="flex flex-col items-center justify-between divide-y divide-gray-200 rounded-xl border border-background-300 bg-background-0 px-4 py-2 dark:divide-[#2b2b2b]">
-            <POSToggleSetting />
-
-            <Divider />
-
-            <ActionSheetCurrencySwitcher />
-
-            <Divider />
-
-            <ActionSheetLanguageSwitcher
-              initialLanguage={language}
-              trigger={(lg) => (
-                <View className="w-full flex-1 flex-row items-center justify-between gap-4 px-2 py-3">
-                  <View className="flex-row items-center gap-2">
-                    <Icon
-                      as={Languages}
-                      className="mb-auto mt-1 stroke-[#747474]"
-                    />
-                    <View className="flex-col items-start gap-1">
-                      <Text size="md">{t("settings.language.title")}</Text>
-                      <ThemedText style={{ fontSize: 14 }} type="default">
-                        {lg}
-                      </ThemedText>
-                    </View>
-                  </View>
-                  <Icon as={ChevronRightIcon} />
-                </View>
-              )}
-            />
-
-            <Divider />
-
-            <ActionSheetThemeSwitcher
-              trigger={(selectedTheme: ModeType) => (
-                <View className="w-full flex-1 flex-row items-center justify-between gap-4 px-2 py-3">
-                  <View className="flex-row items-center gap-2">
-                    <Icon
-                      as={Palette}
-                      className="mb-auto mt-1 stroke-[#747474]"
-                    />
-                    <View className="flex-col items-start gap-1">
-                      <Text size="md">{t("settings.theme.title")}</Text>
-                      <ThemedText style={{ fontSize: 14 }} type="default">
-                        {t(`settings.theme.${selectedTheme}`)}
-                      </ThemedText>
-                    </View>
-                  </View>
-                  <Icon as={ChevronRightIcon} />
-                </View>
-              )}
-            />
-          </View>
-
-          <Button
-            variant="link"
-            size="sm"
-            action="negative"
-            onPress={logout}
-            className="rounded-xl"
-          >
-            <ButtonText>{t("settings.logout")}</ButtonText>
-          </Button>
-
-          {Application.nativeApplicationVersion && (
-            <VStack space="sm">
-              <Text className="text-center text-xs">
-                {t("settings.version")} - {Application.nativeApplicationVersion}
-              </Text>
-            </VStack>
-          )}
-        </VStack>
-      </ScrollView>
-    </SafeAreaView>
+        )}
+      </View>
+    </ScrollView>
   );
 }

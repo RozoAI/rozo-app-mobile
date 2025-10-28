@@ -89,7 +89,51 @@
     "paymentSuccessfulDesc": "Votre transaction a été complétée avec succès",
     "scanToPay": "Scanner pour payer",
     "verifyPayment": "Vérifier le paiement",
-    "voiceSuccess": "Vous avez reçu {{amount}} {{currency}} par Rozo"
+    "voiceSuccess": "Vous avez reçu {{amount}} {{currency}} par Rozo",
+    "checkingOrder": "Vérification de l'état de la commande..."
+  },
+  "pin": {
+    "setup": {
+      "title": "Configurer le PIN",
+      "description": "Créez un PIN à 6 chiffres pour une sécurité renforcée",
+      "placeholder": "Entrez votre PIN",
+      "confirm": "Définir le PIN",
+      "success": "Le PIN a été défini avec succès",
+      "error": "Échec de la définition du PIN. Veuillez réessayer",
+      "invalidLength": "Le PIN doit contenir exactement 6 chiffres"
+    },
+    "management": {
+      "title": "Gestion du PIN",
+      "description": "Gérez vos paramètres de sécurité PIN",
+      "status": "Votre PIN est actuellement actif et protège votre compte",
+      "change": "Modifier le PIN",
+      "revoke": "Révoquer le PIN"
+    },
+    "validation": {
+      "blocked": "Compte Bloqué",
+      "blockedDescription": "Votre compte a été bloqué en raison de trop nombreuses tentatives de PIN échouées. Veuillez contacter le support.",
+      "attemptsRemaining": "{{count}} tentative restante",
+      "attemptsRemaining_other": "{{count}} tentatives restantes",
+      "validating": "Validation du PIN...",
+      "wrongPin": "PIN incorrect",
+      "error": "Échec de la validation du PIN"
+    },
+    "revoke": {
+      "title": "Révoquer le PIN",
+      "confirmationMessage": "Cela supprimera définitivement votre sécurité PIN. Vous pouvez définir un nouveau PIN à tout moment dans les paramètres.",
+      "enterPin": "Entrez le PIN à révoquer",
+      "success": "Le PIN a été révoqué avec succès",
+      "error": "Échec de la révocation du PIN",
+      "processing": "Révocation du PIN..."
+    },
+    "change": {
+      "title": "Modifier le PIN",
+      "confirmationMessage": "Vous devrez entrer votre PIN actuel et en définir un nouveau.",
+      "enterCurrentPin": "Entrez le PIN actuel",
+      "enterNewPin": "Entrez le nouveau PIN",
+      "success": "Le PIN a été modifié avec succès",
+      "error": "Échec de la modification du PIN"
+    }
   },
   "pos": {
     "title": "Point de point"

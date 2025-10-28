@@ -17,23 +17,21 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { getShortId, showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
+import { getShortId } from "@/libs/utils";
 import { useApp } from "@/providers/app.provider";
 
 export const WalletAddressCard = () => {
   const { t } = useTranslation();
   const { primaryWallet } = useApp();
+  const { success } = useToast();
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(primaryWallet?.address ?? "");
-    showToast({
-      message: `${t("general.copiedToClipboard")} - ${t(
-        "general.copiedWalletAddressDescription"
-      )}`,
-      type: "success",
-      duration: 6000,
-    });
+    success(`${t("general.copiedToClipboard")} - ${t(
+      "general.copiedWalletAddressDescription"
+    )}`);
   };
 
   const handleQrCodePress = () => {
@@ -41,7 +39,7 @@ export const WalletAddressCard = () => {
   };
 
   return (
-    <View className="w-full flex-row items-center justify-between px-2 py-3">
+    <View className="w-full flex-row items-center justify-between px-4 py-3">
       <HStack className="items-center" space="md">
         <Icon as={Wallet} className="mb-auto mt-1 stroke-[#747474]" />
         <VStack className="items-start" space="xs">

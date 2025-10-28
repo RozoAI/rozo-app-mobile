@@ -11,8 +11,8 @@ import { type Address } from "viem";
 
 import { type TokenTransferResult } from "@/libs/tokens";
 import { getShortId } from "@/libs/utils";
+import { useWalletTransfer } from "@/modules/api/api/merchant/wallets";
 import { useApp } from "@/providers/app.provider";
-import { useWalletTransfer } from "@/resources/api/merchant/wallets";
 
 import { useEVMWallet } from "./use-evm-wallet";
 
@@ -29,6 +29,7 @@ type TransferOptions = {
   amount: string;
   useGasless?: boolean;
   customMessage?: string;
+  pinCode?: string; // Optional PIN code for authorization
 };
 
 type UseTokenTransferResult = {
@@ -138,6 +139,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
           recipientAddress: toAddress,
           amount: parseFloat(amount),
           signature,
+          pinCode: options.pinCode, // Pass PIN code if provided
         });
 
         console.log("[useTokenTransfer] walletTransfer response:", response);

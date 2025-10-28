@@ -4,7 +4,7 @@ import { RefreshControl, ScrollView } from "react-native";
 
 import { VStack } from "@/components/ui/vstack";
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
-import { showToast } from "@/libs/utils";
+import { useToast } from "@/hooks/use-toast";
 
 import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "../settings/withdraw-sheet";
@@ -16,6 +16,7 @@ import { BalanceTransactions } from "./balance-transactions";
 export function BalanceScreen() {
   const { t } = useTranslation();
   const { balance, refetch, isLoading } = useWalletBalance();
+  const { success } = useToast();
 
   const depositDialogRef = useRef<DepositDialogRef>(null);
   const withdrawDialogRef = useRef<WithdrawDialogRef>(null);
@@ -32,10 +33,7 @@ export function BalanceScreen() {
   };
 
   const handleTopUpConfirm = (amount: string) => {
-    showToast({
-      message: t("deposit.topUpInitiated", { amount }),
-      type: "success",
-    });
+    success(t("deposit.topUpInitiated", { amount }));
   };
 
   const onRefresh = useCallback(() => {

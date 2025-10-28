@@ -1,6 +1,6 @@
 import { Spinner } from "@/components/ui/spinner";
 import { useSelectedTheme } from "@/hooks/use-selected-theme";
-import { MerchantProfile } from "@/resources/schema/merchant";
+import { MerchantProfile } from "@/modules/api/schema/merchant";
 import { Image } from "react-native";
 import LogoSvg from "./svg/logo";
 import LogoWhiteSvg from "./svg/logo-white";

@@ -2,7 +2,7 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
 
 import { TOKEN_KEY } from "@/libs/constants";
-import { AppError } from "@/libs/error";
+import { AppError } from "@/libs/error/error";
 import { storage } from "@/libs/storage";
 
 export const client = axios.create({
@@ -31,6 +31,18 @@ client.interceptors.response.use(
     const errorMessage =
       error.response?.data?.error || error.message || "Something went wrong";
     const errorData = error.response?.data;
+
+    // Don't wrap merchant status errors (403 with PIN_BLOCKED/INACTIVE codes)
+    // Let the profile API handle them directly
+    if (statusCode === 403 && errorData?.code && ['PIN_BLOCKED', 'INACTIVE'].includes(errorData.code)) {
+      return Promise.reject(error); // Preserve original error
+    }
+
+    // Don't wrap PIN validation errors (401 with attempts_remaining)
+    // Preserve the validation response data for PIN operations
+    if (statusCode === 401 && errorData && 'attempts_remaining' in errorData) {
+      return Promise.reject(error); // Preserve original error
+    }
 
     throw new AppError(errorMessage, statusCode, errorData);
   }

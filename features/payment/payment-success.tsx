@@ -8,7 +8,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { type CurrencyConfig } from "@/libs/currencies";
-import { type OrderResponse } from "@/resources/schema/order";
+import { type OrderResponse } from "@/modules/api/schema/order";
 
 import { type DynamicStyles } from "./types";
 

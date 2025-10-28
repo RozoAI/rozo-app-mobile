@@ -89,7 +89,51 @@
     "paymentSuccessfulDesc": "Su transacción se ha completado con éxito",
     "scanToPay": "Escanear para pagar",
     "verifyPayment": "Verificar pago",
-    "voiceSuccess": "Ha recibido {{amount}} {{currency}} por Rozo"
+    "voiceSuccess": "Ha recibido {{amount}} {{currency}} por Rozo",
+    "checkingOrder": "Comprobando el estado del pedido..."
+  },
+  "pin": {
+    "setup": {
+      "title": "Configurar PIN",
+      "description": "Crea un PIN de 6 dígitos para mayor seguridad",
+      "placeholder": "Ingresa tu PIN",
+      "confirm": "Establecer PIN",
+      "success": "El PIN se ha establecido exitosamente",
+      "error": "Error al establecer el PIN. Inténtalo de nuevo",
+      "invalidLength": "El PIN debe tener exactamente 6 dígitos"
+    },
+    "management": {
+      "title": "Gestión de PIN",
+      "description": "Gestiona tu configuración de seguridad PIN",
+      "status": "Tu PIN está actualmente activo y protegiendo tu cuenta",
+      "change": "Cambiar PIN",
+      "revoke": "Revocar PIN"
+    },
+    "validation": {
+      "blocked": "Cuenta Bloqueada",
+      "blockedDescription": "Tu cuenta ha sido bloqueada debido a demasiados intentos fallidos de PIN. Contacta al soporte.",
+      "attemptsRemaining": "{{count}} intento restante",
+      "attemptsRemaining_other": "{{count}} intentos restantes",
+      "validating": "Validando PIN...",
+      "wrongPin": "PIN incorrecto",
+      "error": "Error al validar PIN"
+    },
+    "revoke": {
+      "title": "Revocar PIN",
+      "confirmationMessage": "Esto eliminará permanentemente tu seguridad PIN. Puedes establecer un nuevo PIN en cualquier momento en configuración.",
+      "enterPin": "Ingresa PIN para revocar",
+      "success": "El PIN ha sido revocado exitosamente",
+      "error": "Error al revocar PIN",
+      "processing": "Revocando PIN..."
+    },
+    "change": {
+      "title": "Cambiar PIN",
+      "confirmationMessage": "Necesitarás ingresar tu PIN actual y establecer uno nuevo.",
+      "enterCurrentPin": "Ingresa PIN actual",
+      "enterNewPin": "Ingresa nuevo PIN",
+      "success": "El PIN ha sido cambiado exitosamente",
+      "error": "Error al cambiar PIN"
+    }
   },
   "pos": {
     "title": "Pajita"

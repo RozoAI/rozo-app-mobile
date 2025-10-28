@@ -3,11 +3,11 @@ import { createMutation, createQuery } from "react-query-kit";
 
 import { getItem, setItem } from "@/libs/storage";
 
-import { client } from "@/modules/axios/client";
 import {
   type MerchantOrder,
   type OrderResponse,
-} from "@/resources/schema/order";
+} from "@/modules/api/schema/order";
+import { client } from "@/modules/axios/client";
 
 type Payload = {
   display_amount: number;
@@ -73,7 +73,7 @@ export const useGetOrder = createQuery<
 });
 
 export const useCreateOrder = createMutation<
-  OrderResponse,
+  { success: boolean; data?: OrderResponse; error?: string; message?: string },
   Payload,
   AxiosError
 >({
@@ -82,5 +82,20 @@ export const useCreateOrder = createMutation<
       url: "functions/v1/orders",
       method: "POST",
       data: payload,
+    }).then((response) => response.data),
+});
+
+export const useRegeneratePayment = createMutation<
+  OrderResponse,
+  { id: string; preferredToken?: string },
+  AxiosError
+>({
+  mutationFn: async ({ id, preferredToken }) =>
+    client({
+      url: `functions/v1/orders/${id}/regenerate-payment`,
+      method: "POST",
+      data: {
+        preferred_token_id: preferredToken,
+      },
     }).then((response) => response.data),
 });

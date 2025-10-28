@@ -4,11 +4,11 @@ import { FlatList, RefreshControl, ScrollView, View } from "react-native";
 
 import { Spinner } from "@/components/ui/spinner";
 import { VStack } from "@/components/ui/vstack";
-import { useGetOrders } from "@/resources/api/merchant/orders";
+import { useGetOrders } from "@/modules/api/api/merchant/orders";
 import {
   type MerchantOrder,
   type MerchantOrderStatus,
-} from "@/resources/schema/order";
+} from "@/modules/api/schema/order";
 
 import { ThemedText } from "@/components/themed-text";
 import EmptyOrdersState from "./empty-orders";
@@ -32,6 +32,7 @@ export function OrdersScreen() {
   });
 
   useEffect(() => {
+    console.log("data", data);
     setOrders(data ?? []);
     setRefreshing(false);
   }, [data]);
@@ -56,7 +57,8 @@ export function OrdersScreen() {
   }, [refetch]);
 
   return (
-    <ScrollView className="my-6 flex-1">
+    
+    <ScrollView className="py-6 flex-1">
       {/* Header */}
       <VStack className="flex flex-row items-start justify-between">
         <View className="mb-6">
@@ -108,5 +110,6 @@ export function OrdersScreen() {
 
       <OrderDetailActionSheet ref={orderDetailRef} />
     </ScrollView>
+    
   );
 }

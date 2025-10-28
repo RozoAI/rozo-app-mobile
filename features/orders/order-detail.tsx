@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/actionsheet";
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Button, ButtonText } from "@/components/ui/button";
+import { Countdown } from "@/components/ui/countdown";
 import { Heading } from "@/components/ui/heading";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
@@ -28,8 +29,8 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { usePaymentStatus } from "@/hooks/use-payment-status";
 import { getShortId, getStatusActionType } from "@/libs/utils";
+import { useGetOrder } from "@/modules/api/api/merchant/orders";
 import { useApp } from "@/providers/app.provider";
-import { useGetOrder } from "@/resources/api/merchant/orders";
 
 export type OrderDetailActionSheetRef = {
   openOrder: (orderId: string) => void;
@@ -196,6 +197,25 @@ export const OrderDetailActionSheet = forwardRef<
 
                 <View className="flex-row justify-between gap-2">
                   <Text className="text-sm text-gray-500 dark:text-gray-400">
+                    {t("general.description")}
+                  </Text>
+                  <Text className="text-right text-sm">
+                    {order.description === "" ? "-" : order.description}
+                  </Text>
+                </View>
+
+{order.expired_at && (
+                <View className="flex-row justify-between gap-2">
+                  <Text className="text-sm text-gray-500 dark:text-gray-400">
+                    {t("general.expiredAt")}
+                  </Text>
+                  <Countdown targetDate={new Date(order.expired_at)} textSize="sm" />
+                </View>
+)}
+
+
+                <View className="flex-row justify-between gap-2">
+                  <Text className="text-sm text-gray-500 dark:text-gray-400">
                     {t("general.createdAt")}
                   </Text>
                   <Text className="text-right text-sm">
@@ -203,14 +223,6 @@ export const OrderDetailActionSheet = forwardRef<
                   </Text>
                 </View>
 
-                <View className="flex-row justify-between gap-2">
-                  <Text className="text-sm text-gray-500 dark:text-gray-400">
-                    {t("general.description")}
-                  </Text>
-                  <Text className="text-right text-sm">
-                    {order.description === "" ? "-" : order.description}
-                  </Text>
-                </View>
 
                 {/* <View className="flex-row justify-between gap-2">
                     <Text className="text-sm text-gray-500 dark:text-gray-400">{t('general.merchantId')}</Text>

@@ -6,7 +6,7 @@ import { ThemedText } from "@/components/themed-text";
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { getShortId } from "@/libs/utils";
-import { type Transaction } from "@/resources/schema/transaction";
+import { type Transaction } from "@/modules/api/schema/transaction";
 
 interface TransactionCardProps {
   transaction: Transaction;

@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { useGetDeposit } from "@/modules/api/api/merchant/deposits";
 import type { PaymentCompletedEvent } from "@/modules/pusher/pusher";
 import {
-  subscribeToChannel,
-  unsubscribeFromChannel,
+    subscribeToChannel,
+    unsubscribeFromChannel,
 } from "@/modules/pusher/pusher";
-import { useGetDeposit } from "@/resources/api/merchant/deposits";
 
 type PaymentStatus = "pending" | "completed" | "failed";
 

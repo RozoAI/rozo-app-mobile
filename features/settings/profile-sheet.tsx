@@ -35,13 +35,13 @@ import { Pressable } from "@/components/ui/pressable";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import useKeyboardBottomInset from "@/hooks/use-keyboard-bottom-inset";
-import { showToast } from "@/libs/utils";
-import { useApp } from "@/providers/app.provider";
-import { useUpdateProfile } from "@/resources/api";
+import { useToast } from "@/hooks/use-toast";
+import { useUpdateProfile } from "@/modules/api/api";
 import {
   type UpdateMerchantProfile,
   UpdateMerchantProfileSchema,
-} from "@/resources/schema/merchant";
+} from "@/modules/api/schema/merchant";
+import { useApp } from "@/providers/app.provider";
 
 // Define the ProfileSheet ref interface
 export type ProfileSheetRefType = {
@@ -54,6 +54,7 @@ export type ProfileSheetRefType = {
 export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
   const { merchant, setMerchant } = useApp();
   const { t } = useTranslation();
+  const { success, error: showError } = useToast();
   const insets = useSafeAreaInsets();
   const bottomInset = useKeyboardBottomInset();
   const { mutateAsync: updateProfile } = useUpdateProfile();
@@ -112,10 +113,7 @@ export const ProfileSheet = forwardRef<ProfileSheetRefType>((_, ref) => {
       })
       .catch((err) => {
         console.log("error", { err });
-        showToast({
-          message: err.message,
-          type: "danger",
-        });
+        showError(err.message);
       })
       .finally(() => {
         setIsSubmitting(false);

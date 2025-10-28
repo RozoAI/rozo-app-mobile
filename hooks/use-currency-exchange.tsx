@@ -4,7 +4,7 @@ import { storage } from "@/libs/storage";
 import { isToday } from "@/libs/utils";
 import { useApp } from "@/providers/app.provider";
 
-import { fetchExchangeRates } from "@/resources/api/merchant/exchange";
+import { fetchExchangeRates } from "@/modules/api/api/merchant/exchange";
 
 type ExchangeRates = Record<string, number>;
 

@@ -13,6 +13,9 @@ export const MerchantProfileSchema = z.object({
   logo_url: z.string().url().nullable(),
   merchant_id: z.string().uuid(),
   wallet_address: z.string(),
+  // PIN-related fields
+  status: z.enum(['ACTIVE', 'INACTIVE', 'PIN_BLOCKED']),
+  has_pin: z.boolean(),
 });
 
 export const UpdateMerchantProfileSchema = z.object({

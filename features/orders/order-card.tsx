@@ -7,7 +7,7 @@ import { ThemedText } from "@/components/themed-text";
 import { Badge, BadgeText } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { getShortId, getStatusActionType } from "@/libs/utils";
-import { type MerchantOrder } from "@/resources/schema/order";
+import { type MerchantOrder } from "@/modules/api/schema/order";
 
 interface OrderCardProps {
   order: MerchantOrder;

@@ -6,8 +6,8 @@ import { ThemedText } from "@/components/themed-text";
 import { Spinner } from "@/components/ui/spinner";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
+import { useBaseUSDCTransactions } from "@/modules/api/api/transactions";
 import { useApp } from "@/providers/app.provider";
-import { useBaseUSDCTransactions } from "@/resources/api/transactions";
 
 import { HStack } from "@/components/ui/hstack";
 import EmptyTransactionsState from "../transactions/empty-transactions";
