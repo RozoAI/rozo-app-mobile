@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "您的交易已成功完成",
     "scanToPay": "扫码支付",
     "verifyPayment": "验证付款",
-    "voiceSuccess": "您已通过 Rozo 收到 {{amount}} {{currency}}"
+    "voiceSuccess": "您已通过 Rozo 收到 {{amount}} {{currency}}",
+    "checkingOrder": "正在检查订单状态..."
   },
   "pin": {
     "setup": {

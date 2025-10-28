@@ -98,7 +98,8 @@
     "paymentSuccessfulDesc": "Your transaction has been completed successfully",
     "scanToPay": "Scan to Pay",
     "verifyPayment": "Verify Payment",
-    "voiceSuccess": "You have received {{amount}} {{currency}} by Rozo"
+    "voiceSuccess": "You have received {{amount}} {{currency}} by Rozo",
+    "checkingOrder": "Checking order status..."
   },
   "pin": {
     "setup": {

@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
+import { useSelectedTheme } from "@/hooks/use-selected-theme";
 import { type OrderResponse } from "@/modules/api/schema/order";
 import React, { useEffect, useState } from "react";
 import { PAYMENT_METHODS, type PaymentMethodId } from "./payment-method-config";
@@ -30,6 +31,8 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   isLoading = false,
   currentPaymentMethod = "rozo",
 }) => {
+  const { selectedTheme } = useSelectedTheme();
+
   const [selectedMethod, setSelectedMethod] =
     useState<PaymentMethodId>(currentPaymentMethod);
   const [loadingMethod, setLoadingMethod] = useState<PaymentMethodId | null>(
@@ -45,6 +48,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
     const iconProps = {
       width: size,
       height: size,
+      color: selectedTheme === "dark" ? "#FFFFFF" : "#000000",
     };
 
     switch (methodId) {
@@ -110,7 +114,6 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
           fontWeight: "600",
           marginBottom: 12,
           textAlign: "center",
-          color: "#111827",
         }}
       >
         Payment Method
@@ -119,7 +122,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
       {/* Selected Method Display */}
       <View
         style={{
-          backgroundColor: "#f8fafc",
+          backgroundColor: selectedTheme === "dark" ? "#1a1a1a" : "#f8fafc",
           marginBottom: 12,
           paddingHorizontal: 10,
           paddingVertical: 8,
@@ -151,7 +154,6 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
               <Text
                 style={{
                   fontSize: 11,
-                  color: "#6b7280",
                 }}
               >
                 {selectedMethodData?.description}
@@ -197,11 +199,11 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
             onPress={() => handleMethodSelect(method.id)}
             disabled={loadingMethod === method.id || isLoading}
             style={{
-              backgroundColor: "white",
+              backgroundColor: selectedTheme === "dark" ? "#18181b" : "white",
               borderRadius: 6,
               padding: 8,
               borderWidth: 1,
-              borderColor: "#e5e7eb",
+              borderColor: selectedTheme === "dark" ? "#27272a" : "#e5e7eb",
               minWidth: 60,
               alignItems: "center",
               opacity: loadingMethod === method.id || isLoading ? 0.5 : 1,
@@ -217,7 +219,6 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
                 style={{
                   fontSize: 10,
                   fontWeight: "500",
-                  color: "#374151",
                   textAlign: "center",
                 }}
               >

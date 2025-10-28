@@ -27,8 +27,9 @@ import { type OrderResponse } from "@/modules/api/schema/order";
 import { useApp } from "@/providers/app.provider";
 
 import { Countdown } from "@/components/ui/countdown";
+import { useSelectedTheme } from "@/hooks/use-selected-theme";
 import { useToast } from "@/hooks/use-toast";
-import { useCreateOrderPayment } from "@/modules/api/api/merchant/orders";
+import { useRegeneratePayment } from "@/modules/api/api/merchant/orders";
 import { PAYMENT_METHODS, type PaymentMethodId } from "./payment-method-config";
 import PaymentMethodSelector from "./payment-method-selector";
 import { PaymentSuccess } from "./payment-success";
@@ -62,7 +63,14 @@ const convertAmountToUnits = (amount: string): string => {
 };
 
 // Helper function to determine payment method from order data
-const getPaymentMethodFromOrder = (order?: OrderResponse): PaymentMethodId => {
+const getPaymentMethodFromOrder = (
+  order?: OrderResponse,
+  isFirstTime: boolean = true
+): PaymentMethodId => {
+  if (isFirstTime) {
+    return "rozo";
+  }
+
   const chainId = order?.paymentDetail?.metadata?.payinchainid;
   switch (chainId) {
     case "8453":
@@ -98,25 +106,32 @@ export function PaymentModal({
   onBackToHome,
 }: PaymentModalProps): React.ReactElement {
   const { t } = useTranslation();
+  const { selectedTheme } = useSelectedTheme();
+
   const { defaultCurrency, merchant } = useApp();
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [qrCodeDeeplink, setQrCodeDeeplink] = useState<string | null>(null);
-  const [memo, setMemo] = useState<string | null>(null);
   const [isSuccessPayment, setIsSuccessPayment] = useState(false);
   const [isChangingPaymentMethod, setIsChangingPaymentMethod] = useState(false);
   const { language } = useSelectedLanguage();
   const isDeposit = useMemo(() => !!deposit?.deposit_id, [deposit]);
   const { error: toastError } = useToast();
 
+  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
   const [currentOrder, setCurrentOrder] = useState<OrderResponse | undefined>(
     order
   );
 
-  const { mutateAsync: createOrderPayment } = useCreateOrderPayment();
+  const { mutateAsync: createOrderPayment } = useRegeneratePayment();
 
-  const { data: fetchData, refetch } = useGetOrder({
-    variables: { id: order?.order_id ?? "" },
-    enabled: !!order?.order_id,
+  const {
+    data: fetchData,
+    refetch,
+    isPending: isOrderPending,
+  } = useGetOrder({
+    variables: { id: currentOrder?.order_id ?? "" },
+    enabled: isEnabled,
   });
 
   const { data: dataDeposit, refetch: refetchDeposit } = useGetDeposit({
@@ -125,9 +140,9 @@ export function PaymentModal({
   });
 
   // Use our custom hook to handle payment status updates
-  const { status, speakPaymentStatus } = usePaymentStatus(
+  const { status, speakPaymentStatus, unsubscribe } = usePaymentStatus(
     merchant?.merchant_id,
-    order?.order_id
+    currentOrder?.order_id
   );
 
   // Use deposit status hook
@@ -160,14 +175,20 @@ export function PaymentModal({
   // Watch for payment status changes
   useEffect(() => {
     if (status === "completed" || depositStatus === "completed") {
-      // Show success view after a brief delay
       if (isDeposit) {
         refetchDeposit();
       } else {
-        refetch();
+        console.log("Order Success, refetching", !!currentOrder?.order_id);
+        setIsEnabled(true);
       }
     }
-  }, [status, depositStatus, isDeposit, refetch, refetchDeposit]);
+  }, [status, depositStatus, isDeposit]);
+
+  useEffect(() => {
+    if (isEnabled) {
+      refetch();
+    }
+  }, [isEnabled]);
 
   useEffect(() => {
     if (
@@ -176,9 +197,11 @@ export function PaymentModal({
       dataDeposit?.status === "COMPLETED"
     ) {
       setIsSuccessPayment(true);
+      setIsEnabled(false);
     }
 
     if (fetchData?.status === "COMPLETED" && !isDeposit && Number(amount) > 0) {
+      unsubscribe();
       // Speak the amount
       speakPaymentStatus({
         amount: Number(amount),
@@ -244,7 +267,6 @@ export function PaymentModal({
                   paymentMethod.tokenAddress, // token mint address
                   memo // memo is required
                 );
-                setMemo(memo);
                 console.log("Generated Solana deeplink:", deeplinkUrl);
               } else if (paymentMethod.chainId) {
                 // Generate EVM deeplink for Base and Polygon
@@ -255,7 +277,6 @@ export function PaymentModal({
                   recipientAddress,
                   amountUnits
                 );
-                setMemo(null);
                 console.log("Generated EVM deeplink:", deeplinkUrl);
               } else {
                 throw new Error(
@@ -284,11 +305,12 @@ export function PaymentModal({
           // For Rozo, use the QR code from API response
           setQrCodeUrl(response.qrcode);
           setQrCodeDeeplink(null);
-          setMemo(null);
         }
 
         // Update current order with new payment data AFTER setting QR code
+        console.log("Current Order Updated", response);
         setCurrentOrder(response);
+        setIsFirstTime(false);
       } catch (error: any) {
         console.error("Payment creation error:", error);
         toastError(error.message || "Failed to create payment");
@@ -305,7 +327,7 @@ export function PaymentModal({
     setIsSuccessPayment(false);
     onClose();
     onBackToHome?.();
-  }, [onClose, onBackToHome]);
+  }, []);
 
   return (
     <Modal
@@ -347,7 +369,7 @@ export function PaymentModal({
             <View className="items-center justify-center flex flex-col gap-4">
               {/* QR Code */}
               <View className="size-80 items-center justify-center rounded-xl border bg-white p-2">
-                {isChangingPaymentMethod ? (
+                {isChangingPaymentMethod || (isOrderPending && isEnabled) ? (
                   <View
                     className="items-center justify-center"
                     style={{ width: 200, height: 200 }}
@@ -418,23 +440,35 @@ export function PaymentModal({
                 </View>
               )}
 
-              <View
-                className="w-full items-center flex flex-col gap-1"
-                style={{
-                  borderWidth: 1,
-                  borderColor: "#e5e7eb", // light gray border, adjust as needed
-                  borderRadius: 8,
-                  padding: 12,
-                }}
-              >
-                <PaymentMethodSelector
-                  existingPayment={currentOrder}
-                  onPaymentMethodSelected={handlePaymentMethodSelected}
-                  className="px-4"
-                  isLoading={isChangingPaymentMethod}
-                  currentPaymentMethod={getPaymentMethodFromOrder(currentOrder)}
-                />
-              </View>
+              {isOrderPending && isEnabled ? (
+                <View className="w-full items-center flex flex-col gap-1">
+                  <Text className="text-gray-500 dark:text-gray-400 text-center font-medium">
+                    {t("payment.checkingOrder")}
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  className="w-full items-center flex flex-col gap-1"
+                  style={{
+                    borderWidth: 1,
+                    borderColor:
+                      selectedTheme === "dark" ? "#374151" : "#e5e7eb",
+                    borderRadius: 8,
+                    padding: 12,
+                  }}
+                >
+                  <PaymentMethodSelector
+                    existingPayment={currentOrder}
+                    onPaymentMethodSelected={handlePaymentMethodSelected}
+                    className="px-4"
+                    isLoading={isChangingPaymentMethod}
+                    currentPaymentMethod={getPaymentMethodFromOrder(
+                      currentOrder,
+                      isFirstTime
+                    )}
+                  />
+                </View>
+              )}
             </View>
           )}
         </ModalBody>

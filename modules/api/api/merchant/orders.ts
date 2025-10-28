@@ -73,7 +73,7 @@ export const useGetOrder = createQuery<
 });
 
 export const useCreateOrder = createMutation<
-  {success: boolean, data?: OrderResponse, error?: string, message?: string},
+  { success: boolean; data?: OrderResponse; error?: string; message?: string },
   Payload,
   AxiosError
 >({
@@ -85,7 +85,7 @@ export const useCreateOrder = createMutation<
     }).then((response) => response.data),
 });
 
-export const useCreateOrderPayment = createMutation<
+export const useRegeneratePayment = createMutation<
   OrderResponse,
   { id: string; preferredToken?: string },
   AxiosError

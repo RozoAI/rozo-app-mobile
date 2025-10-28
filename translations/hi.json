@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "आपका लेन-देन सफलतापूर्वक पूरा हो गया है",
     "scanToPay": "भुगतान करने के लिए स्कैन करें",
     "verifyPayment": "भुगतान सत्यापित करें",
-    "voiceSuccess": "आपको Rozo के माध्यम से {{amount}} {{currency}} प्राप्त हुए हैं"
+    "voiceSuccess": "आपको Rozo के माध्यम से {{amount}} {{currency}} प्राप्त हुए हैं",
+    "checkingOrder": "ऑर्डर की स्थिति जांची जा रही है..."
   },
   "pin": {
     "setup": {

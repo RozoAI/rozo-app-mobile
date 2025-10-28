@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "Ваша транзакция успешно завершена",
     "scanToPay": "Сканировать для оплаты",
     "verifyPayment": "Проверить оплату",
-    "voiceSuccess": "Вы получили {{amount}} {{currency}} через Rozo"
+    "voiceSuccess": "Вы получили {{amount}} {{currency}} через Rozo",
+    "checkingOrder": "Проверяем статус заказа..."
   },
   "pin": {
     "setup": {

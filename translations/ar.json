@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "تم إتمام معاملتك بنجاح",
     "scanToPay": "مسح للدفع",
     "verifyPayment": "تحقق من الدفع",
-    "voiceSuccess": "تم استلام {{amount}} {{currency}} من Rozo"
+    "voiceSuccess": "تم استلام {{amount}} {{currency}} من Rozo",
+    "checkingOrder": "جارٍ التحقق من حالة الطلب..."
   },
   "pin": {
     "setup": {

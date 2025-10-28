@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "Votre transaction a été complétée avec succès",
     "scanToPay": "Scanner pour payer",
     "verifyPayment": "Vérifier le paiement",
-    "voiceSuccess": "Vous avez reçu {{amount}} {{currency}} par Rozo"
+    "voiceSuccess": "Vous avez reçu {{amount}} {{currency}} par Rozo",
+    "checkingOrder": "Vérification de l'état de la commande..."
   },
   "pin": {
     "setup": {

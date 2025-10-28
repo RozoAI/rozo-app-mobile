@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "আপনার লেনদেন সফলভাবে সম্পন্ন হয়েছে",
     "scanToPay": "স্ক্যান করতে স্ক্যান করুন",
     "verifyPayment": "পেমেন্ট যাচাই করুন",
-    "voiceSuccess": "আপনি Rozo-এর মাধ্যমে {{amount}} {{currency}} পেয়েছেন"
+    "voiceSuccess": "আপনি Rozo-এর মাধ্যমে {{amount}} {{currency}} পেয়েছেন",
+    "checkingOrder": "অর্ডার স্থিতি পরীক্ষা করা হচ্ছে..."
   },
   "pin": {
     "setup": {

@@ -89,7 +89,8 @@
     "paymentSuccessfulDesc": "Transaksi Anda telah berhasil diselesaikan",
     "scanToPay": "Pindai untuk Membayar",
     "verifyPayment": "Verifikasi Pembayaran",
-    "voiceSuccess": "Anda telah menerima {{amount}} {{currency}} dari Rozo"
+    "voiceSuccess": "Anda telah menerima {{amount}} {{currency}} dari Rozo",
+    "checkingOrder": "Memeriksa status pesanan..."
   },
   "pin": {
     "setup": {

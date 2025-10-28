@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 
+import { useToast } from "@/hooks/use-toast";
 import { TOKEN_KEY } from "@/libs/constants";
 import { storage } from "@/libs/storage";
 
@@ -36,6 +37,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { user, getAccessToken } = usePrivy();
+  const { error: toastError } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
@@ -93,7 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } catch (error) {
         console.error("Auth initialization error:", error);
         if (isMounted) {
-          error("Failed to initialize authentication");
+          toastError("Failed to initialize authentication");
           hasInitialized.current = false; // Reset on error
         }
       } finally {
@@ -108,7 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       isMounted = false;
     };
-  }, [user, getAccessToken]);
+  }, [user]);
 
   // Reset initialization when user changes
   useEffect(() => {

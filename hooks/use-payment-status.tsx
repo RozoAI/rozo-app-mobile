@@ -6,8 +6,8 @@ import { Platform } from "react-native";
 import { useGetOrder } from "@/modules/api/api/merchant/orders";
 import type { PaymentCompletedEvent } from "@/modules/pusher/pusher";
 import {
-    subscribeToChannel,
-    unsubscribeFromChannel,
+  subscribeToChannel,
+  unsubscribeFromChannel,
 } from "@/modules/pusher/pusher";
 
 type PaymentStatus = "pending" | "completed" | "failed";
@@ -30,6 +30,18 @@ export function usePaymentStatus(merchantId?: string, orderId?: string) {
   const checkPaymentStatus = () => {
     if (orderId) {
       refetch();
+    }
+  };
+
+  const unsubscribe = async () => {
+    try {
+      if (!merchantId) return;
+
+      const channelName = merchantId;
+      await unsubscribeFromChannel(channelName);
+      console.log(`Unsubscribed from ${channelName} channel`);
+    } catch (error) {
+      console.error("Error cleaning up Pusher:", error);
     }
   };
 
@@ -122,6 +134,7 @@ export function usePaymentStatus(merchantId?: string, orderId?: string) {
       isLoading: isLoading,
       checkPaymentStatus,
       speakPaymentStatus,
+      unsubscribe,
       isPending: status === "pending",
       isCompleted: status === "completed",
       isFailed: status === "failed",

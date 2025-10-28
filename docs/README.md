@@ -126,8 +126,9 @@ docs/
 3. See integration examples
 
 **Quick implementation:**
+
 ```typescript
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
 const { success, error } = useToast();
 success("Operation completed!");
@@ -201,18 +202,53 @@ error("Something went wrong");
 
 ## 🎯 Common Tasks
 
+### Task: Re-subscribe payment status for a specific order
+
+The `usePaymentStatus(merchantId, orderId)` hook automatically unsubscribes the previous channel and subscribes to the new one when `orderId` changes.
+
+```typescript
+import { useState } from "react";
+import { usePaymentStatus } from "@/hooks/use-payment-status";
+
+export const PaymentWatcher = ({ merchantId }: { merchantId: string }) => {
+  const [orderId, setOrderId] = useState<string | undefined>(undefined);
+
+  const {
+    status,
+    checkPaymentStatus, // optional manual re-check via API
+    speakPaymentStatus,
+    isPending,
+    isCompleted,
+  } = usePaymentStatus(merchantId, orderId);
+
+  // Switch to a new order – hook will unsubscribe old and subscribe new
+  const handleNewOrder = (nextOrderId: string) => {
+    setOrderId(nextOrderId);
+    // Optional: manually re-check current status from API after switching
+    checkPaymentStatus();
+  };
+
+  return null;
+};
+```
+
+Notes:
+
+- Changing `orderId` triggers automatic re-subscription to the `merchantId` channel and listens for `payment_completed` for that specific order.
+- Call `checkPaymentStatus()` if you want a one-off API refresh in addition to the realtime subscription.
+
 ### Task: Add toast notifications
 
 **File:** Any component file
 
 ```typescript
 // 1. Import the hook
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from "@/hooks/use-toast";
 
 // 2. Use in component
 const MyComponent = () => {
   const { success, error, warning, info } = useToast();
-  
+
   const handleAction = () => {
     try {
       // Your logic here
@@ -288,9 +324,9 @@ const protectionRules: RouteProtectionRule[] = [
 
 | I want to...                    | Go to...                                                                                               |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Add toast notifications         | [TOAST_SYSTEM.md](./TOAST_SYSTEM.md)                                                                 |
-| Understand toast architecture  | [TOAST_SYSTEM.md#architecture](./TOAST_SYSTEM.md#architecture)                                        |
-| See toast examples              | [TOAST_SYSTEM.md#usage](./TOAST_SYSTEM.md#usage)                                                      |
+| Add toast notifications         | [TOAST_SYSTEM.md](./TOAST_SYSTEM.md)                                                                   |
+| Understand toast architecture   | [TOAST_SYSTEM.md#architecture](./TOAST_SYSTEM.md#architecture)                                         |
+| See toast examples              | [TOAST_SYSTEM.md#usage](./TOAST_SYSTEM.md#usage)                                                       |
 | Understand overall architecture | [ROUTE_PROTECTION.md](./ROUTE_PROTECTION.md)                                                           |
 | See code examples               | [ROUTE_PROTECTION_EXAMPLES.md](./ROUTE_PROTECTION_EXAMPLES.md)                                         |
 | Learn the API                   | [FLEXIBLE_ROUTE_PROTECTION.md](./FLEXIBLE_ROUTE_PROTECTION.md)                                         |
