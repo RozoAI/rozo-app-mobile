@@ -18,11 +18,12 @@ import { PINSettings } from "./pin";
 import { POSToggleSetting } from "./pos-toggle-setting";
 import { ActionSheetCurrencySwitcher } from "./select-currency";
 import { ActionSheetLanguageSwitcher } from "./select-language";
+import { SwitchPrimaryWallet } from "./switch-primary-wallet";
 import { ActionSheetThemeSwitcher } from "./theme-switcher";
 import { WalletAddressCard } from "./wallet-address-card";
 
 export function SettingScreen() {
-  const { logout } = useApp();
+  const { logout, preferredPrimaryChain } = useApp();
   const { t } = useTranslation();
   const { language } = useSelectedLanguage();
 
@@ -47,15 +48,18 @@ export function SettingScreen() {
         </Card>
 
         {/* Wallet Section */}
-        <View className="rounded-xl border border-background-300 bg-background-0 flex flex-col gap-4">
+        <SettingGroup title={"Wallet"}>
           <WalletAddressCard />
-          <Alert action="info" variant="solid" className="rounded-xl">
-            <AlertIcon as={InfoIcon} />
-            <AlertText className="text-xs pr-4">
-              {t("settings.gaslessInfo")}
-            </AlertText>
-          </Alert>
-        </View>
+          {preferredPrimaryChain === "ethereum" && (
+            <Alert action="info" variant="solid" className="rounded-b-xl">
+              <AlertIcon as={InfoIcon} />
+              <AlertText className="text-xs" style={{ paddingRight: 20 }}>
+                {t("settings.gaslessInfo")}
+              </AlertText>
+            </Alert>
+          )}
+          <SwitchPrimaryWallet />
+        </SettingGroup>
 
         {/* Security Settings */}
         <SettingGroup title={t("settings.groups.security")}>
@@ -83,7 +87,7 @@ export function SettingScreen() {
 
         {/* App Version */}
         {Application.nativeApplicationVersion && (
-          <VStack space="sm">
+          <VStack space="sm" style={{ paddingBottom: 12 }}>
             <Text className="text-center text-xs text-gray-500 dark:text-gray-400">
               {t("settings.version")} - {Application.nativeApplicationVersion}
             </Text>

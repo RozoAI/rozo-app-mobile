@@ -33,6 +33,10 @@ interface IContextProps {
   // Wallet state
   wallets: GenericWallet[];
   primaryWallet: GenericWallet | null;
+  preferredPrimaryChain: "ethereum" | "stellar";
+
+  // Wallet actions
+  setPreferredPrimaryChain: (chain: "ethereum" | "stellar") => Promise<void>;
 
   // POS Toggle state
   showPOS: boolean;
@@ -57,11 +61,13 @@ export const AppContext = createContext<IContextProps>({
   merchantToken: undefined,
   wallets: [],
   primaryWallet: null,
+  preferredPrimaryChain: "ethereum",
   showPOS: false,
-  setToken: () => { },
-  setMerchant: () => { },
-  logout: async () => { },
-  togglePOS: async () => { },
+  setToken: () => {},
+  setMerchant: () => {},
+  logout: async () => {},
+  togglePOS: async () => {},
+  setPreferredPrimaryChain: async () => {},
   getAccessToken: undefined,
 });
 
@@ -120,15 +126,17 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       // Wallet state
       wallets: wallet.wallets,
       primaryWallet: wallet.primaryWallet,
+      preferredPrimaryChain: wallet.preferredPrimaryChain,
 
       // POS Toggle state
       showPOS: preferences.showPOS,
 
       // Actions
-      setToken: () => { }, // Not used in this simplified approach
+      setToken: () => {}, // Not used in this simplified approach
       setMerchant: merchant.setMerchant,
       logout,
       togglePOS: preferences.togglePOS,
+      setPreferredPrimaryChain: wallet.setPreferredPrimaryChain,
 
       // Additional Privy-specific functionality
       getAccessToken: auth.refreshAccessToken,
@@ -145,8 +153,10 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       merchant.setMerchant,
       wallet.wallets,
       wallet.primaryWallet,
+      wallet.preferredPrimaryChain,
       preferences.showPOS,
       preferences.togglePOS,
+      wallet.setPreferredPrimaryChain,
       logout,
     ]
   );

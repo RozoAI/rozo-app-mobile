@@ -45,7 +45,9 @@
     "updating": "Atualizando",
     "walletAddress": "Endereço da carteira",
     "walletBalance": "Balanço da carteira",
-    "withdraw": "Retirar"
+    "withdraw": "Retirar",
+    "address": "Endereço",
+    "confirmAndProceed": "Confirmar"
   },
   "home": {
     "title": "Início"
@@ -159,7 +161,7 @@
     },
     "description": "Gerencie as preferências da sua conta e as configurações de aplicativos",
     "english": "Inglês",
-    "gaslessInfo": "Você pode enviar tokens sem taxas de rede usando privy. \nAs transferências sem gás são suportadas!",
+    "gaslessInfo": "Envie tokens instantaneamente sem taxas de rede usando o Privy — aproveite transferências sem gás, exclusivamente no Base!",
     "general": "Geral",
     "github": "GitHub",
     "indonesia": "Indonésio",
@@ -189,7 +191,15 @@
     },
     "title": "Configurações",
     "version": "Versão",
-    "website": "Website"
+    "website": "Website",
+    "switchWallet": {
+      "baseDescription": "Aproveite a transferência sem gás com Base",
+      "confirmMessageToStellar": "Você está prestes a definir Stellar como sua carteira principal. \nIsso mudará sua rede padrão para pagamentos e depósitos.",
+      "confirmMessageToBase": "Você está prestes a definir a Base como sua carteira principal. \nIsto mudará sua rede padrão para pagamentos e depósitos.",
+      "stellarDescription": "Pagamento rápido e seguro com taxas baixas",
+      "toStellar": "Mudar para estelar",
+      "toBase": "Mudar para base"
+    }
   },
   "toast": {
     "danger": "Erro",

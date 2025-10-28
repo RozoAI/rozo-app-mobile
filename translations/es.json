@@ -45,7 +45,9 @@
     "updating": "Actualizando",
     "walletAddress": "Dirección de la billetera",
     "walletBalance": "Saldo de billetera",
-    "withdraw": "Retirar"
+    "withdraw": "Retirar",
+    "address": "DIRECCIÓN",
+    "confirmAndProceed": "Confirmar"
   },
   "home": {
     "title": "Inicio"
@@ -159,7 +161,7 @@
     },
     "description": "Administre las preferencias de su cuenta y la configuración de la aplicación",
     "english": "Inglés",
-    "gaslessInfo": "Puede enviar tokens sin tarifas de red utilizando Privy. \n¡Se admiten transferencias sin gas!",
+    "gaslessInfo": "Envíe tokens al instante sin cargos de red usando Privy: ¡disfrute de transferencias sin gas, exclusivamente en Base!",
     "general": "General",
     "github": "GitHub",
     "indonesia": "Indonesio",
@@ -189,7 +191,15 @@
     },
     "title": "Configuración",
     "version": "Versión",
-    "website": "Sitio web"
+    "website": "Sitio web",
+    "switchWallet": {
+      "baseDescription": "Disfrute de una transferencia sin gas con Base",
+      "confirmMessageToStellar": "Estás a punto de configurar Stellar como tu billetera principal. \nEsto cambiará su red predeterminada para pagos y depósitos.",
+      "confirmMessageToBase": "Estás a punto de configurar Base como tu billetera principal. \nEsto cambiará su red predeterminada para pagos y depósitos.",
+      "stellarDescription": "Pago rápido y seguro con tarifa baja",
+      "toStellar": "Cambiar a estelar",
+      "toBase": "Cambiar a base"
+    }
   },
   "toast": {
     "danger": "Error",

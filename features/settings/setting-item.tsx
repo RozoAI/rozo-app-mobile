@@ -8,7 +8,8 @@ import { ChevronRightIcon } from "lucide-react-native";
 import type React from "react";
 
 interface SettingItemProps {
-  icon: React.ComponentType<any>;
+  icon?: React.ComponentType<any>;
+  customIcon?: React.ReactNode;
   title: string;
   description?: string;
   value?: string | React.ReactNode;
@@ -22,6 +23,7 @@ interface SettingItemProps {
 
 export function SettingItem({
   icon,
+  customIcon,
   title,
   description,
   value,
@@ -35,11 +37,14 @@ export function SettingItem({
   const content = (
     <View className="w-full flex-row items-center justify-between gap-4 px-4 py-3">
       <View className="flex-row items-center gap-3 flex-1 min-w-0">
-        <Icon
-          as={icon}
-          className="mt-1 shrink-0"
-          style={{ stroke: iconColor }}
-        />
+        {icon && !customIcon && (
+          <Icon
+            as={icon}
+            className="mt-1 shrink-0"
+            style={{ stroke: iconColor }}
+          />
+        )}
+        {!icon && customIcon}
         <View className="flex-col items-start gap-1 flex-1 min-w-0">
           <Text
             size="md"

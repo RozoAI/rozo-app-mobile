@@ -47,7 +47,8 @@
     "walletAddress": "Wallet Address",
     "walletBalance": "Wallet Balance",
     "withdraw": "Withdraw",
-    "expiredAt": "Expired At"
+    "expiredAt": "Expired At",
+    "address": "Address"
   },
   "common": {
     "cancel": "Cancel",
@@ -168,7 +169,7 @@
     },
     "description": "Manage your account preferences and app settings",
     "english": "English",
-    "gaslessInfo": "You can send tokens without network fees using Privy. Gasless transfers are supported!",
+    "gaslessInfo": "Send tokens instantly with no network fees using Privy — enjoy gasless transfers, exclusively on Base!",
     "general": "General",
     "github": "Github",
     "groups": {
@@ -213,7 +214,15 @@
     },
     "title": "Settings",
     "version": "Version",
-    "website": "Website"
+    "website": "Website",
+    "switchWallet": {
+      "baseDescription": "Enjoy gasless transfer with Base",
+      "stellarDescription": "Fast and secure payment with low fee",
+      "toBase": "Switch to Base",
+      "toStellar": "Switch to Stellar",
+      "confirmMessageToBase": "You are about to set Base as your primary wallet. This will change your default network for payments and deposits.",
+      "confirmMessageToStellar": "You are about to set Stellar as your primary wallet. This will change your default network for payments and deposits."
+    }
   },
   "toast": {
     "danger": "Error",

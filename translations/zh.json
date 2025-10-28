@@ -45,7 +45,9 @@
     "updating": "更新中",
     "walletAddress": "钱包地址",
     "walletBalance": "钱包余额",
-    "withdraw": "提现"
+    "withdraw": "提现",
+    "address": "地址",
+    "confirmAndProceed": "确认"
   },
   "home": {
     "title": "首页"
@@ -159,7 +161,7 @@
     },
     "description": "管理您的账户首选项和应用程序设置",
     "english": "英语",
-    "gaslessInfo": "您可以使用Privy发送无网络费用的令牌。\n支持无气接收！",
+    "gaslessInfo": "使用 Privy 立即发送代币，无需支付网络费用 - 享受 Base 独有的无 Gas 转账！",
     "general": "常规",
     "github": "GitHub",
     "indonesia": "印尼语",
@@ -189,7 +191,15 @@
     },
     "title": "设置",
     "version": "版本",
-    "website": "网站"
+    "website": "网站",
+    "switchWallet": {
+      "baseDescription": "使用 Base 享受无气传输",
+      "confirmMessageToStellar": "您即将将 Stellar 设置为您的主要钱包。\n这将更改您的默认付款和存款网络。",
+      "confirmMessageToBase": "您即将将 Base 设置为您的主要钱包。\n这将更改您的默认付款和存款网络。",
+      "stellarDescription": "支付快速、安全、费用低廉",
+      "toStellar": "切换到恒星",
+      "toBase": "切换到基地"
+    }
   },
   "toast": {
     "danger": "错误",

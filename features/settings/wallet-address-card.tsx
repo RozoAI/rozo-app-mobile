@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import QRCode from "react-qr-code";
 
+import BaseIcon from "@/components/svg/base-icon";
+import StellarIcon from "@/components/svg/stellar-icon";
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -29,9 +31,19 @@ export const WalletAddressCard = () => {
 
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(primaryWallet?.address ?? "");
-    success(`${t("general.copiedToClipboard")} - ${t(
-      "general.copiedWalletAddressDescription"
-    )}`);
+    success(
+      `${t("general.copiedToClipboard")} - ${t(
+        "general.copiedWalletAddressDescription"
+      )}`
+    );
+  };
+
+  const getChainIcon = (chain: "ethereum" | "stellar") => {
+    return chain === "ethereum" ? (
+      <BaseIcon width={14} height={14} />
+    ) : (
+      <StellarIcon width={14} height={14} />
+    );
   };
 
   const handleQrCodePress = () => {
@@ -41,14 +53,17 @@ export const WalletAddressCard = () => {
   return (
     <View className="w-full flex-row items-center justify-between px-4 py-3">
       <HStack className="items-center" space="md">
-        <Icon as={Wallet} className="mb-auto mt-1 stroke-[#747474]" />
+        <Icon as={Wallet} className="mb-auto mt-1" />
         <VStack className="items-start" space="xs">
-          <Text size="md">{t("general.walletAddress")}</Text>
-          <View className="flex-row items-center space-x-1">
-            <Text className="text-primary-500" size="sm">
-              {getShortId(primaryWallet?.address ?? "", 6, 4)}
-            </Text>
-          </View>
+          <Text size="md">{t("general.address")}</Text>
+          {primaryWallet && (
+            <View className="flex-row items-center space-x-1 gap-1">
+              {primaryWallet.chain && getChainIcon(primaryWallet.chain)}
+              <Text className="text-primary-500" size="sm">
+                {getShortId(primaryWallet.address ?? "", 6, 4)}
+              </Text>
+            </View>
+          )}
         </VStack>
       </HStack>
 

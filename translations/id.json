@@ -45,7 +45,9 @@
     "updating": "Memperbarui",
     "walletAddress": "Alamat dompet",
     "walletBalance": "Saldo dompet",
-    "withdraw": "Tarik"
+    "withdraw": "Tarik",
+    "address": "Alamat",
+    "confirmAndProceed": "Mengonfirmasi"
   },
   "home": {
     "title": "Beranda"
@@ -159,7 +161,7 @@
     },
     "description": "Kelola Preferensi Akun Anda dan Pengaturan Aplikasi",
     "english": "Inggris",
-    "gaslessInfo": "Anda dapat mengirim token tanpa biaya jaringan menggunakan Privy. \nTransfer tanpa gas didukung!",
+    "gaslessInfo": "Kirim token secara instan tanpa biaya jaringan menggunakan Privy — nikmati transfer tanpa gas, eksklusif di Base!",
     "general": "Umum",
     "github": "GitHub",
     "indonesia": "Indonesia",
@@ -189,7 +191,15 @@
     },
     "title": "Pengaturan",
     "version": "Versi",
-    "website": "Situs Web"
+    "website": "Situs Web",
+    "switchWallet": {
+      "baseDescription": "Nikmati transfer tanpa gas dengan Base",
+      "confirmMessageToStellar": "Anda akan menetapkan Stellar sebagai dompet utama Anda. \nIni akan mengubah jaringan default Anda untuk pembayaran dan penyetoran.",
+      "confirmMessageToBase": "Anda akan menetapkan Base sebagai dompet utama Anda. \nIni akan mengubah jaringan default Anda untuk pembayaran dan penyetoran.",
+      "stellarDescription": "Pembayaran cepat dan aman dengan biaya rendah",
+      "toStellar": "Beralih ke Bintang",
+      "toBase": "Beralih ke Basis"
+    }
   },
   "toast": {
     "danger": "Kesalahan",
