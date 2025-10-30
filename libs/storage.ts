@@ -1,5 +1,19 @@
 import { MMKV } from "react-native-mmkv";
 
+/**
+ * Encrypted MMKV storage instance
+ *
+ * Storage Keys Used:
+ * - auth.token: JWT authentication token
+ * - merchant.*: Merchant profile and settings
+ * - preferences.*: User preferences (theme, language, POS toggle)
+ * - notification.fcmToken: Firebase Cloud Messaging token
+ * - notification.tokenTimestamp: FCM token creation timestamp
+ * - notification.tokenRegistered: Whether FCM token is registered with backend
+ * - notification.deviceId: Unique device identifier for notifications
+ * - notification.notifications: Array of received notifications
+ * - notification.unreadCount: Count of unread notifications
+ */
 export const storage = new MMKV({
   id: "rozo-pos",
   encryptionKey: process.env.EXPO_PUBLIC_MMKV_ENCRYPTION_KEY,

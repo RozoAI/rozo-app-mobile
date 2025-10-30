@@ -27,6 +27,7 @@ import { View } from "@/components/ui/view";
 import { AppProvider } from "@/providers/app.provider";
 import { usePOSToggle } from "@/providers/preferences.provider";
 import { QueryProvider } from "@/providers/query.provider";
+import { NotificationProvider } from "@/modules/notifications";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -105,9 +106,10 @@ export default function RootLayout() {
               >
                 <PrivyReady>
                   <AppProvider>
-                    <KeyboardProvider>
-                      <RouteProtectionWrapper>
-                        <Stack>
+                    <NotificationProvider>
+                      <KeyboardProvider>
+                        <RouteProtectionWrapper>
+                          <Stack>
                           <Stack.Screen
                             name="(main)"
                             options={{ headerShown: false }}
@@ -136,9 +138,10 @@ export default function RootLayout() {
                             name="settings"
                             options={{ headerShown: false }}
                           />
-                        </Stack>
-                      </RouteProtectionWrapper>
-                    </KeyboardProvider>
+                          </Stack>
+                        </RouteProtectionWrapper>
+                      </KeyboardProvider>
+                    </NotificationProvider>
                   </AppProvider>
 
                   <StatusBar style="auto" />
