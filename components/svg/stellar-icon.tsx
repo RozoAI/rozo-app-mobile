@@ -8,7 +8,7 @@ export interface StellarIconProps {
   [key: string]: any;
 }
 
-export const StellarIcon: React.FC<StellarIconProps> = ({
+const StellarIcon: React.FC<StellarIconProps> = ({
   width = 44,
   height = 44,
   style,

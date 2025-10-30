@@ -13,6 +13,7 @@ import { usePrivy } from "@privy-io/expo";
 import { AuthProvider, useAuth } from "./auth.provider";
 import { MerchantProvider, useMerchant } from "./merchant.provider";
 import { PreferencesProvider, usePreferences } from "./preferences.provider";
+import { StellarProvider } from "./stellar.provider";
 import { WalletProvider, useWallet } from "./wallet.provider";
 
 // Re-export GenericWallet type for backward compatibility
@@ -174,11 +175,13 @@ export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
     <ToastProvider>
       <AuthProvider>
         <MerchantProvider>
-          <WalletProvider>
-            <PreferencesProvider>
-              <AppProviderInternal>{children}</AppProviderInternal>
-            </PreferencesProvider>
-          </WalletProvider>
+          <StellarProvider>
+            <WalletProvider>
+              <PreferencesProvider>
+                <AppProviderInternal>{children}</AppProviderInternal>
+              </PreferencesProvider>
+            </WalletProvider>
+          </StellarProvider>
         </MerchantProvider>
       </AuthProvider>
     </ToastProvider>

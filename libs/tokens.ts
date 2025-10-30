@@ -40,7 +40,7 @@ export type Token = BaseToken & {
  */
 export type TokenBalanceResult = {
   balance: string;
-  balanceRaw: bigint;
+  balanceRaw?: bigint;
   formattedBalance: string;
   token?: Token;
 };

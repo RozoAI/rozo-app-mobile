@@ -1,4 +1,4 @@
-import { PrivyUser, usePrivy } from "@privy-io/expo";
+import { PrivyUser, usePrivy, usePrivyClient } from "@privy-io/expo";
 import React, {
   createContext,
   useCallback,
@@ -18,7 +18,8 @@ interface AuthContextProps {
   token: string | undefined;
   isAuthLoading: boolean;
   user?: PrivyUser | null;
-  getAccessToken?: () => Promise<string | null>;
+  refreshUser: () => Promise<void>;
+  getAccessToken: () => Promise<string | null>;
   refreshAccessToken: () => Promise<string | null>;
 }
 
@@ -26,8 +27,9 @@ const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
   token: undefined,
   isAuthLoading: false,
-  user: undefined,
-  getAccessToken: undefined,
+  user: null,
+  refreshUser: async () => {},
+  getAccessToken: async () => null,
   refreshAccessToken: async () => null,
 });
 
@@ -36,11 +38,16 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const client = usePrivyClient();
+
   const { user, getAccessToken } = usePrivy();
   const { error: toastError } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
+  const [userState, setUserState] = useState<PrivyUser | null>(user);
+
+  console.log({ user });
 
   // Track initialization to prevent multiple runs
   const hasInitialized = useRef(false);
@@ -66,6 +73,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [getAccessToken]);
 
+  const refreshUser = useCallback(async () => {
+    const fetchedUser = await client.user.get();
+    if (fetchedUser) {
+      setUserState(fetchedUser.user);
+    }
+  }, [client]);
+
   // Main authentication effect
   useEffect(() => {
     let isMounted = true;
@@ -90,6 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         setAccessToken(token);
+        setUserState(user);
         // Store token as plain string, not JSON
         storage.set(TOKEN_KEY, token);
       } catch (error) {
@@ -125,8 +140,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isAuthenticated,
       token: accessToken,
       isAuthLoading,
-      user,
+      user: userState,
       getAccessToken,
+      refreshUser,
       refreshAccessToken,
     }),
     [
@@ -135,6 +151,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       isAuthLoading,
       user,
       getAccessToken,
+      refreshUser,
       refreshAccessToken,
     ]
   );

@@ -14,19 +14,30 @@ import {
   ActionsheetDragIndicator,
   ActionsheetDragIndicatorWrapper,
 } from "@/components/ui/actionsheet";
-import { Button, ButtonIcon } from "@/components/ui/button";
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useActivateTrustlineWithPin } from "@/features/settings/pin/use-activate-trustline-with-pin";
 import { useToast } from "@/hooks/use-toast";
 import { getShortId } from "@/libs/utils";
+import { useWallet } from "@/providers";
 import { useApp } from "@/providers/app.provider";
+import { useStellar } from "@/providers/stellar.provider";
 
 export const WalletAddressCard = () => {
   const { t } = useTranslation();
   const { primaryWallet } = useApp();
   const { success } = useToast();
+  const { preferredPrimaryChain } = useWallet();
+  const { account, hasUsdcTrustline, refreshAccount } = useStellar();
+  const activateTrustlineWithPin = useActivateTrustlineWithPin({
+    onSuccess: () => {
+      refreshAccount();
+    },
+  });
+
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   const copyToClipboard = async () => {
@@ -40,15 +51,17 @@ export const WalletAddressCard = () => {
 
   const getChainIcon = (chain: "ethereum" | "stellar") => {
     return chain === "ethereum" ? (
-      <BaseIcon width={14} height={14} />
+      <BaseIcon width={20} height={20} />
     ) : (
-      <StellarIcon width={14} height={14} />
+      <StellarIcon width={20} height={20} />
     );
   };
 
   const handleQrCodePress = () => {
     setIsQrModalOpen(true);
   };
+
+  // Activation handled via PIN validation hook
 
   return (
     <View className="w-full flex-row items-center justify-between px-4 py-3">
@@ -68,6 +81,15 @@ export const WalletAddressCard = () => {
       </HStack>
 
       <View className="flex flex-row items-center gap-3">
+        {preferredPrimaryChain === "stellar" &&
+          (!account || !hasUsdcTrustline) && (
+            <Button
+              onPress={activateTrustlineWithPin.initiateActivate}
+              size="xs"
+            >
+              <ButtonText>{"Activate"}</ButtonText>
+            </Button>
+          )}
         <Button
           onPress={handleQrCodePress}
           size="xs"
@@ -115,6 +137,7 @@ export const WalletAddressCard = () => {
           </VStack>
         </ActionsheetContent>
       </Actionsheet>
+      {activateTrustlineWithPin.renderPinValidationInput()}
     </View>
   );
 };

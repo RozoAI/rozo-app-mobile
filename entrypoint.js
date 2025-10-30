@@ -3,6 +3,8 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import 'fast-text-encoding';
 
+import "./shim";
+
 // Configure crypto polyfill properly
 import { v4 as uuidv4 } from 'uuid';
 

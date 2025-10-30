@@ -9,8 +9,9 @@ import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { ActionSheetLanguageSwitcher } from "@/features/settings/select-language";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { useSelectedLanguage } from "@/hooks/use-selected-language";
+import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@/providers";
 import { usePrivy, type PrivyEmbeddedWalletAccount } from "@privy-io/expo";
 import { useLogin } from "@privy-io/expo/ui";
 import * as Application from "expo-application";
@@ -29,9 +30,11 @@ export default function LoginScreen() {
   // Privy
   const { isReady: ready } = usePrivy();
   const { login } = useLogin();
-  const { handleCreateWallet, isCreating } = useEVMWallet();
+  const { createWallet, isCreating } = useWallet();
   const { language, setLanguage } = useSelectedLanguage();
   const { t } = useTranslation();
+
+  const { error: toastError } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   // const [isFreshLogin, setIsFreshLogin] = useState(false);
@@ -62,16 +65,16 @@ export default function LoginScreen() {
           ).length > 0;
 
         if (!hasEmbeddedWallet) {
-          await handleCreateWallet();
+          await createWallet("ethereum");
         }
 
         setTimeout(() => {
           router.replace("/balance");
         }, 2000);
       }
-    } catch {
+    } catch (error) {
       setIsAuthLoading(false);
-      // error(error instanceof Error ? error.message : "Failed to sign in");
+      toastError(error instanceof Error ? error.message : "Failed to sign in");
     } finally {
       setIsAuthLoading(false);
     }

@@ -18,6 +18,7 @@ import { PINSettings } from "./pin";
 import { POSToggleSetting } from "./pos-toggle-setting";
 import { ActionSheetCurrencySwitcher } from "./select-currency";
 import { ActionSheetLanguageSwitcher } from "./select-language";
+import { StellarWalletStatusInformation } from "./stellar-wallet-status-information";
 import { SwitchPrimaryWallet } from "./switch-primary-wallet";
 import { ActionSheetThemeSwitcher } from "./theme-switcher";
 import { WalletAddressCard } from "./wallet-address-card";
@@ -50,13 +51,15 @@ export function SettingScreen() {
         {/* Wallet Section */}
         <SettingGroup title={"Wallet"}>
           <WalletAddressCard />
-          {preferredPrimaryChain === "ethereum" && (
+          {preferredPrimaryChain === "ethereum" ? (
             <Alert action="info" variant="solid" className="rounded-b-xl">
               <AlertIcon as={InfoIcon} />
               <AlertText className="text-xs" style={{ paddingRight: 20 }}>
                 {t("settings.gaslessInfo")}
               </AlertText>
             </Alert>
+          ) : (
+            <StellarWalletStatusInformation />
           )}
           <SwitchPrimaryWallet />
         </SettingGroup>

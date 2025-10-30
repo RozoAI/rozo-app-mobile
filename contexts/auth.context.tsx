@@ -2,6 +2,7 @@ import React, { createContext, useContext } from "react";
 
 // Define a generic wallet type that can work with both Dynamic and Privy
 export interface GenericWallet {
+  id: string;
   address: string;
   chain?: "ethereum" | "stellar";
   isConnected: boolean;

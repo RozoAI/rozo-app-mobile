@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import BaseIcon from "@/components/svg/base-icon";
-import { StellarIcon } from "@/components/svg/stellar-icon";
+import StellarIcon from "@/components/svg/stellar-icon";
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -17,15 +17,18 @@ import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@/providers";
 import { useApp } from "@/providers/app.provider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SettingItem } from "./setting-item";
 
 export const SwitchPrimaryWallet: React.FC = () => {
+  const insets = useSafeAreaInsets();
+
   const { t } = useTranslation();
   const { preferredPrimaryChain, setPreferredPrimaryChain } = useApp();
   const { error: toastError } = useToast();
-  const insets = useSafeAreaInsets();
+  const { switchWallet, isCreating } = useWallet();
 
   const [showActionsheet, setShowActionsheet] = useState<boolean>(false);
 
@@ -64,7 +67,11 @@ export const SwitchPrimaryWallet: React.FC = () => {
 
   const handleSwitch = async () => {
     try {
-      setPreferredPrimaryChain(isEth ? "stellar" : "ethereum");
+      await switchWallet();
+      handleClose();
+      setTimeout(() => {
+        setPreferredPrimaryChain(isEth ? "stellar" : "ethereum");
+      }, 300);
     } catch (error) {
       toastError(error instanceof Error ? error.message : (error as string));
     }
@@ -75,9 +82,9 @@ export const SwitchPrimaryWallet: React.FC = () => {
       <SettingItem
         customIcon={
           isEth ? (
-            <StellarIcon width={16} height={16} />
+            <StellarIcon width={20} height={20} />
           ) : (
-            <BaseIcon width={16} height={16} />
+            <BaseIcon width={20} height={20} />
           )
         }
         title={title}
@@ -116,8 +123,13 @@ export const SwitchPrimaryWallet: React.FC = () => {
                 action="primary"
                 className="w-full rounded-xl"
                 onPress={handleSwitch}
+                disabled={isCreating}
               >
-                <ButtonText>{t("general.confirmAndProceed")}</ButtonText>
+                <ButtonText>
+                  {isCreating
+                    ? `Creating ${isEth ? "Stellar" : "Ethereum"}`
+                    : t("general.confirmAndProceed")}
+                </ButtonText>
               </Button>
 
               <Button
@@ -125,6 +137,7 @@ export const SwitchPrimaryWallet: React.FC = () => {
                 variant="outline"
                 onPress={handleClose}
                 className="w-full rounded-xl"
+                disabled={isCreating}
               >
                 <ButtonText>{t("general.cancel")}</ButtonText>
               </Button>

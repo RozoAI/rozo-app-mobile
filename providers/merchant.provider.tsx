@@ -7,7 +7,7 @@ import type { AppError } from "@/libs/error/error";
 import {
   MerchantStatusError,
   isMerchantStatusError,
-  logMerchantStatusError
+  logMerchantStatusError,
 } from "@/libs/error/merchant-status-error";
 import { privyClient } from "@/libs/privy-client";
 import { getItem, removeItem, setItem } from "@/libs/storage";
@@ -37,7 +37,10 @@ interface MerchantContextProps {
   merchantToken: Token | undefined;
   isMerchantLoading: boolean;
   setMerchant: (merchant: MerchantProfile | undefined) => void;
-  refetchMerchant: (options?: { force?: boolean; showToast?: boolean }) => Promise<void>;
+  refetchMerchant: (options?: {
+    force?: boolean;
+    showToast?: boolean;
+  }) => Promise<void>;
 }
 
 const MerchantContext = createContext<MerchantContextProps>({
@@ -45,8 +48,8 @@ const MerchantContext = createContext<MerchantContextProps>({
   defaultCurrency: undefined,
   merchantToken: undefined,
   isMerchantLoading: false,
-  setMerchant: () => { },
-  refetchMerchant: async () => { },
+  setMerchant: () => {},
+  refetchMerchant: async () => {},
 });
 
 interface MerchantProviderProps {
@@ -62,7 +65,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
   const { success, error: showError } = useToast();
 
   const [merchant, setMerchant] = useState<MerchantProfile | undefined>(
-    undefined,
+    undefined
   );
   const [isMerchantLoading, setIsMerchantLoading] = useState(false);
 
@@ -92,39 +95,73 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
   }, [merchant]);
 
   // Centralized refetch merchant function
-  const refetchMerchant = useCallback(async (options: { force?: boolean; showToast?: boolean } = {}) => {
-    const { force = true, showToast = false } = options;
-    
-    try {
-      console.log('[MerchantProvider] refetchMerchant called with options:', options);
-      setIsMerchantLoading(true);
+  const refetchMerchant = useCallback(
+    async (options: { force?: boolean; showToast?: boolean } = {}) => {
+      const { force = true, showToast = false } = options;
 
-      // Clear AsyncStorage cache to force fresh fetch
-      if (force) {
-        console.log('[MerchantProvider] Clearing profile cache to force fresh fetch');
-        removeItem('profile');
-      }
-      
-      // Refetch profile (will fetch fresh data since cache is cleared)
-      const result = await fetchProfile();
-      
-      if (result.data) {
-        console.log('[MerchantProvider] Profile refetched successfully:', result.data);
-        setMerchant(result.data);
-        setItem(MERCHANT_KEY, result.data);
-        
-        if (showToast) {
-          success('Profile updated successfully');
+      try {
+        console.log(
+          "[MerchantProvider] refetchMerchant called with options:",
+          options
+        );
+        setIsMerchantLoading(true);
+
+        // Clear AsyncStorage cache to force fresh fetch
+        if (force) {
+          console.log(
+            "[MerchantProvider] Clearing profile cache to force fresh fetch"
+          );
+          removeItem("profile");
         }
-      } else if (result.error) {
-        console.error('[MerchantProvider] Error refetching profile:', result.error);
-        
-        // Check if it's a merchant status error
-        if (isMerchantStatusError(result.error)) {
-          const statusError = result.error as MerchantStatusError;
-          console.error('[MerchantProvider] Merchant status error during refetch:', statusError.statusErrorType);
-          
-          // Handle the status error with toast and logout
+
+        // Refetch profile (will fetch fresh data since cache is cleared)
+        const result = await fetchProfile();
+
+        if (result.data) {
+          console.log(
+            "[MerchantProvider] Profile refetched successfully:",
+            result.data
+          );
+          setMerchant(result.data);
+          setItem(MERCHANT_KEY, result.data);
+
+          if (showToast) {
+            success("Profile updated successfully");
+          }
+        } else if (result.error) {
+          console.error(
+            "[MerchantProvider] Error refetching profile:",
+            result.error
+          );
+
+          // Check if it's a merchant status error
+          if (isMerchantStatusError(result.error)) {
+            const statusError = result.error as MerchantStatusError;
+            console.error(
+              "[MerchantProvider] Merchant status error during refetch:",
+              statusError.statusErrorType
+            );
+
+            // Handle the status error with toast and logout
+            await handleMerchantStatusError(statusError, async () => {
+              await logoutPrivy();
+              removeItem(TOKEN_KEY);
+              removeItem(MERCHANT_KEY);
+              hasInitialized.current = false;
+              setMerchant(undefined);
+            });
+          } else if (showToast) {
+            showError("Failed to update profile");
+          }
+        }
+      } catch (error) {
+        console.error(
+          "[MerchantProvider] Exception during refetchMerchant:",
+          error
+        );
+
+        if (isMerchantStatusError(error)) {
+          const statusError = error as MerchantStatusError;
           await handleMerchantStatusError(statusError, async () => {
             await logoutPrivy();
             removeItem(TOKEN_KEY);
@@ -133,28 +170,14 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
             setMerchant(undefined);
           });
         } else if (showToast) {
-          showError('Failed to update profile');
+          showError("Failed to update profile");
         }
+      } finally {
+        setIsMerchantLoading(false);
       }
-    } catch (error) {
-      console.error('[MerchantProvider] Exception during refetchMerchant:', error);
-      
-      if (isMerchantStatusError(error)) {
-        const statusError = error as MerchantStatusError;
-        await handleMerchantStatusError(statusError, async () => {
-          await logoutPrivy();
-          removeItem(TOKEN_KEY);
-          removeItem(MERCHANT_KEY);
-          hasInitialized.current = false;
-          setMerchant(undefined);
-        });
-      } else if (showToast) {
-        showError('Failed to update profile');
-      }
-    } finally {
-      setIsMerchantLoading(false);
-    }
-  }, [fetchProfile, handleMerchantStatusError, logoutPrivy, showError, success]);
+    },
+    [fetchProfile, handleMerchantStatusError, logoutPrivy, showError, success]
+  );
 
   // Main merchant initialization effect
   useEffect(() => {
@@ -173,7 +196,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
       if (!isAuthenticated || !user || !token || !isMounted) {
         console.log(
           "[MerchantProvider] Skipping: Not authenticated or not mounted or no user or no token.",
-          { isAuthenticated, user: !!user, token: !!token, isMounted },
+          { isAuthenticated, user: !!user, token: !!token, isMounted }
         );
         return;
       }
@@ -194,7 +217,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
         if (cachedMerchant && isMounted) {
           console.log(
             "[MerchantProvider] Using cached merchant:",
-            cachedMerchant,
+            cachedMerchant
           );
           setMerchant(cachedMerchant);
           setIsMerchantLoading(false);
@@ -206,24 +229,24 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
 
         if (profileResult.data && isMounted) {
           console.log(
-            "[MerchantProvider] Profile fetch success, setting merchant.",
+            "[MerchantProvider] Profile fetch success, setting merchant."
           );
 
           if (!profileResult.data.email) {
             console.log(
-              "[MerchantProvider] No email found, creating new profile.",
+              "[MerchantProvider] No email found, creating new profile."
             );
 
             const privyUser = await privyClient.user.get();
             const email = privyUser.user.linked_accounts.find(
-              (account) => account.type === "email",
+              (account) => account.type === "email"
             )?.address;
 
             if (email) {
               profileResult.data.email = email;
               console.log(
                 "[MerchantProvider] Updating profile with payload:",
-                JSON.stringify(profileResult.data, null, 2),
+                JSON.stringify(profileResult.data, null, 2)
               );
               const newProfile = await updateProfile({
                 email: email,
@@ -234,7 +257,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
               setItem(MERCHANT_KEY, newProfile);
             } else {
               console.error(
-                "[MerchantProvider] No email found, skipping profile creation.",
+                "[MerchantProvider] No email found, skipping profile creation."
               );
               setMerchant(profileResult.data);
               setItem(MERCHANT_KEY, profileResult.data);
@@ -253,7 +276,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           const error = profileResult.error as unknown as AppError;
           if (error.statusCode === 404) {
             console.log(
-              "[MerchantProvider] No profile found (404), creating new profile.",
+              "[MerchantProvider] No profile found (404), creating new profile."
             );
 
             // Create profile
@@ -262,12 +285,12 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
             const privyUser = await privyClient.user.get();
             console.log(
               "[MerchantProvider] privyUser for profile creation:",
-              privyUser,
+              privyUser
             );
 
             let email = privyUser.user.id;
             const userEmail = privyUser.user.linked_accounts.find(
-              (account) => account.type === "email",
+              (account) => account.type === "email"
             )?.address;
 
             if (userEmail) {
@@ -286,7 +309,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
 
             console.log(
               "[MerchantProvider] Creating profile with payload:",
-              profilePayload,
+              profilePayload
             );
 
             const newProfile = await createProfile(profilePayload);
@@ -298,39 +321,42 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
             }
           } else {
             console.error("Profile fetch error:", error);
-            
+
             // Check if it's a merchant status error first
             if (isMerchantStatusError(error)) {
               const statusError = error as MerchantStatusError;
-              console.error("[MerchantProvider] Merchant status error detected:", statusError.statusErrorType);
-              
+              console.error(
+                "[MerchantProvider] Merchant status error detected:",
+                statusError.statusErrorType
+              );
+
               // Log the error for analytics
-              logMerchantStatusError(statusError, 'profile_fetch');
-              
+              logMerchantStatusError(statusError, "profile_fetch");
+
               // Handle the status error with toast and logout
               await handleMerchantStatusError(statusError, async () => {
                 // Logout Privy
                 await logoutPrivy();
-                
+
                 // Clear storage
                 removeItem(TOKEN_KEY);
                 removeItem(MERCHANT_KEY);
-                
+
                 // Reset initialization
                 hasInitialized.current = false;
                 setMerchant(undefined);
               });
-              
+
               setIsMerchantLoading(false);
               return; // Exit early for status errors
             }
-            
+
             const appError = error as unknown as AppError;
 
             // Don't show error toast for authentication issues if we have cached data
             if (appError.statusCode === 401 || appError.statusCode === 403) {
               console.warn(
-                "Authentication error during profile fetch, using cached data if available",
+                "Authentication error during profile fetch, using cached data if available"
               );
             } else {
               showError("Failed to load merchant profile");
@@ -344,28 +370,31 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           // Check if it's a merchant status error
           if (isMerchantStatusError(error)) {
             const statusError = error as MerchantStatusError;
-            console.error("[MerchantProvider] Merchant status error detected:", statusError.statusErrorType);
-            
+            console.error(
+              "[MerchantProvider] Merchant status error detected:",
+              statusError.statusErrorType
+            );
+
             // Log the error for analytics
-            logMerchantStatusError(statusError, 'merchant_initialization');
-            
+            logMerchantStatusError(statusError, "merchant_initialization");
+
             // Handle the status error with toast and logout
             await handleMerchantStatusError(statusError, async () => {
               // Logout Privy
               await logoutPrivy();
-              
+
               // Clear storage
               removeItem(TOKEN_KEY);
               removeItem(MERCHANT_KEY);
-              
+
               // Reset initialization
               hasInitialized.current = false;
               setMerchant(undefined);
             });
-            
+
             return; // Exit early for status errors
           }
-          
+
           // Handle other errors
           const appError = error as unknown as AppError;
 
@@ -389,7 +418,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           setIsMerchantLoading(false);
           console.log(
             "[MerchantProvider] Finished initializeMerchant, loading:",
-            false,
+            false
           );
         }
       }
@@ -400,7 +429,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, user, token, language, fetchProfile, createProfile, updateProfile, handleMerchantStatusError, logoutPrivy, showError, success]);
+  }, [isAuthenticated, user, token, language]);
 
   // Reset initialization when user changes
   useEffect(() => {
@@ -413,7 +442,10 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
   // Update merchant state when profile query data changes
   useEffect(() => {
     if (profileQuery.data && profileQuery.data !== merchant) {
-      console.log('[MerchantProvider] Profile query data changed, updating merchant state:', profileQuery.data);
+      console.log(
+        "[MerchantProvider] Profile query data changed, updating merchant state:",
+        profileQuery.data
+      );
       setMerchant(profileQuery.data);
       setItem(MERCHANT_KEY, profileQuery.data);
     }
@@ -428,7 +460,14 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
       setMerchant,
       refetchMerchant,
     }),
-    [merchant, defaultCurrency, merchantToken, isMerchantLoading, setMerchant, refetchMerchant],
+    [
+      merchant,
+      defaultCurrency,
+      merchantToken,
+      isMerchantLoading,
+      setMerchant,
+      refetchMerchant,
+    ]
   );
 
   return (

@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { RefreshControl, ScrollView } from "react-native";
 
 import { VStack } from "@/components/ui/vstack";
-import { useWalletBalance } from "@/hooks/use-wallet-balance";
 import { useToast } from "@/hooks/use-toast";
+import { useWalletBalance } from "@/hooks/use-wallet-balance";
 
+import { useWallet } from "@/providers";
 import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "../settings/withdraw-sheet";
 import { BalanceActions } from "./balance-actions";
@@ -17,6 +18,7 @@ export function BalanceScreen() {
   const { t } = useTranslation();
   const { balance, refetch, isLoading } = useWalletBalance();
   const { success } = useToast();
+  const { preferredPrimaryChain } = useWallet();
 
   const depositDialogRef = useRef<DepositDialogRef>(null);
   const withdrawDialogRef = useRef<WithdrawDialogRef>(null);
@@ -87,7 +89,9 @@ export function BalanceScreen() {
           />
 
           {/* Transaction List */}
-          <BalanceTransactions ref={transactionsRef} />
+          {preferredPrimaryChain === "ethereum" && (
+            <BalanceTransactions ref={transactionsRef} />
+          )}
         </VStack>
       </ScrollView>
 
