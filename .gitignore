@@ -42,8 +42,18 @@ app-example
 /ios
 /android
 
+# But keep important configuration files
+!/android/app/src/main/AndroidManifest.xml
+!/android/app/src/debug/AndroidManifest.xml
+!/ios/Podfile
+!/ios/Rozo/Info.plist
+
 .env
 credentials.json
+
+# Firebase config files (contain API keys - do not commit)
+google-services.json
+GoogleService-Info.plist
 
 *.apk
 *.aab

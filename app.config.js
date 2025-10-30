@@ -33,7 +33,7 @@ module.exports = {
     version: packageJson.version,
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "rozoappmobile",
+    scheme: "rozo",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
@@ -42,7 +42,9 @@ module.exports = {
       buildNumber: getBuildNumber(packageJson.version),
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
+        UIBackgroundModes: ["remote-notification"],
       },
+      googleServicesFile: "./GoogleService-Info.plist",
     },
     android: {
       adaptiveIcon: {
@@ -55,6 +57,19 @@ module.exports = {
       predictiveBackGestureEnabled: false,
       package: packageId,
       playStoreUrl: `https://play.google.com/store/apps/details?id=${packageId}`,
+      googleServicesFile: "./google-services.json",
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [
+            {
+              scheme: "rozo",
+            },
+          ],
+          category: ["BROWSABLE", "DEFAULT"],
+        },
+      ],
     },
     web: {
       output: "static",
@@ -82,6 +97,26 @@ module.exports = {
             "The app needs access to your photos to allow you to upload merchant logo.",
           cameraPermission:
             "The app needs access to your camera to allow you to upload merchant logo.",
+        },
+      ],
+      [
+        "@react-native-firebase/app",
+        {
+          android: {
+            googleServicesFile: "./google-services.json",
+          },
+          ios: {
+            googleServicesFile: "./GoogleService-Info.plist",
+          },
+        },
+      ],
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/images/notification-icon.png",
+          color: "#FF6C44",
+          defaultChannel: "rozo-notifications",
+          sounds: [],
         },
       ],
       "expo-secure-store",
