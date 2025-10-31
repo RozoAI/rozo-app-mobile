@@ -335,10 +335,14 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
    * Initialize notification system
    */
   const initializeNotifications = useCallback(async () => {
-    if (isInitialized.current) return;
+    if (isInitialized.current) {
+      console.log('⚠️ Notification system already initialized, skipping...');
+      return;
+    }
 
     try {
       setIsLoading(true);
+      console.log('🚀 Initializing notification system...');
 
       // Load notifications from storage
       loadNotificationsFromStorage();
@@ -358,7 +362,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       // Get FCM token
       const token = await getFCMToken();
 
-      // Setup notification listeners
+      // Setup notification listeners (has built-in duplicate prevention)
       const cleanup = setupNotificationListeners();
       cleanupListeners.current = cleanup;
 
@@ -368,9 +372,9 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       }
 
       isInitialized.current = true;
-      console.log('Notification system initialized successfully');
+      console.log('✅ Notification system initialized successfully');
     } catch (err) {
-      console.error('Error initializing notifications:', err);
+      console.error('❌ Error initializing notifications:', err);
       setError(err as Error);
     } finally {
       setIsLoading(false);
@@ -406,17 +410,21 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   }, [checkPermission, getFCMToken]);
 
   /**
-   * Initialize on mount
+   * Initialize on mount (only once)
    */
   useEffect(() => {
     initializeNotifications();
 
     return () => {
       if (cleanupListeners.current) {
+        console.log('🧹 NotificationProvider unmounting, cleaning up...');
         cleanupListeners.current();
+        isInitialized.current = false;
       }
     };
-  }, [initializeNotifications]);
+    // Empty deps array - only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
    * Handle authentication changes

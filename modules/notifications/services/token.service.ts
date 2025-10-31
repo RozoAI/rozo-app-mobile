@@ -166,7 +166,7 @@ export const getCurrentToken = async (): Promise<string | null> => {
 };
 
 /**
- * Register device token with backend
+ * Register device token with backend (Supabase Edge Function)
  * This should be called after successful authentication
  */
 export const registerDeviceToken = async (
@@ -190,9 +190,17 @@ export const registerDeviceToken = async (
       platform: deviceInfo.platform,
     });
 
-    // Make API call to register token
-    // This should match your backend API endpoint
-    await apiClient.post('/merchant/devices', deviceInfo);
+    // Prepare payload matching backend schema (snake_case)
+    const payload = {
+      device_id: deviceInfo.deviceId,
+      fcm_token: deviceInfo.token,
+      platform: deviceInfo.platform,
+      device_name: deviceInfo.deviceName,
+      app_version: deviceInfo.appVersion,
+    };
+
+    // Make API call to Supabase Edge Function
+    await apiClient.post('/functions/v1/devices/register', payload);
 
     // Mark token as registered
     storeToken(token, true);
@@ -210,7 +218,7 @@ export const registerDeviceToken = async (
 };
 
 /**
- * Unregister device token from backend
+ * Unregister device token from backend (Supabase Edge Function)
  * This should be called on logout
  */
 export const unregisterDeviceToken = async (apiClient: any): Promise<boolean> => {
@@ -226,12 +234,14 @@ export const unregisterDeviceToken = async (apiClient: any): Promise<boolean> =>
 
     console.log('Unregistering device token from backend...');
 
-    // Make API call to unregister token
-    await apiClient.delete('/merchant/devices', {
-      data: {
-        deviceId,
-        token: storedToken.token,
-      },
+    // Prepare payload matching backend schema (snake_case)
+    const payload = {
+      device_id: deviceId,
+    };
+
+    // Make API call to Supabase Edge Function
+    await apiClient.delete('/functions/v1/devices/unregister', {
+      data: payload,
     });
 
     // Delete token from Firebase
