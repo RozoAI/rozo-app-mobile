@@ -61,7 +61,7 @@ export const useStellarUSDCTransactions = createInfiniteQuery<
           hash,
           from,
           to,
-          value: amount,
+          value: (Number(amount) / (10 * 7)).toFixed(2),
           tokenDecimal: "7",
           timestamp,
           url,
