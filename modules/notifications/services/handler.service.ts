@@ -250,12 +250,23 @@ export const presentLocalNotification = async (
   }
 };
 
+// Track if listeners are already setup to prevent duplicates
+let listenersSetup = false;
+let currentCleanup: (() => void) | null = null;
+
 /**
  * Setup notification listeners
  * Returns cleanup function
  */
 export const setupNotificationListeners = (): (() => void) => {
+  // Prevent duplicate listener registration
+  if (listenersSetup) {
+    console.log('⚠️ Notification listeners already setup, skipping...');
+    return currentCleanup || (() => {});
+  }
+
   console.log('Setting up notification listeners...');
+  listenersSetup = true;
 
   // Firebase: Handle messages when app is in FOREGROUND
   const unsubscribeOnMessage = messaging().onMessage(async (remoteMessage) => {
@@ -297,25 +308,9 @@ export const setupNotificationListeners = (): (() => void) => {
       }
     });
 
-  // Expo: Listener for notifications received while app is in foreground
-  const receivedListener = Notifications.addNotificationReceivedListener(
-    (notification) => {
-      console.log('📧 Expo notification received (foreground):', notification);
-
-      const receivedNotification: ReceivedNotification = {
-        id: notification.request.identifier,
-        title: notification.request.content.title || undefined,
-        body: notification.request.content.body || undefined,
-        data: notification.request.content.data as any,
-        timestamp: Date.now(),
-        isRead: false,
-      };
-
-      handlerRegistry.triggerReceived(receivedNotification);
-    }
-  );
-
   // Expo: Listener for notification tap (user interaction)
+  // NOTE: We don't use addNotificationReceivedListener because Firebase's onMessage
+  // already handles foreground notifications. Using both would cause duplicates.
   const responseListener = Notifications.addNotificationResponseReceivedListener(
     (response) => {
       console.log('📧 Expo notification tapped:', response);
@@ -335,13 +330,17 @@ export const setupNotificationListeners = (): (() => void) => {
 
   console.log('✅ Notification listeners setup complete');
 
-  // Return cleanup function
-  return () => {
+  // Store cleanup function
+  const cleanup = () => {
     console.log('Cleaning up notification listeners');
+    listenersSetup = false;
+    currentCleanup = null;
     unsubscribeOnMessage();
-    receivedListener.remove();
     responseListener.remove();
   };
+
+  currentCleanup = cleanup;
+  return cleanup;
 };
 
 /**

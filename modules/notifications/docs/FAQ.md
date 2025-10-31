@@ -4,7 +4,7 @@ Frequently asked questions about implementing and using push notifications.
 
 ---
 
-## Setup Questions
+## Setup & Configuration
 
 ### Q: Do I need `.env` Firebase variables?
 
@@ -16,28 +16,7 @@ You're using `@react-native-firebase/app` which automatically reads from:
 
 **Only add `.env` variables if you want web support.**
 
-The native config files contain everything Firebase needs. See detailed explanation below.
-
----
-
-### Q: Why both `google-services.json` AND `.env`?
-
-**A: You don't need both for mobile!**
-
-**Two different worlds**:
-
-1. **Native Code** (what you use):
-   - `google-services.json` (Android)
-   - `GoogleService-Info.plist` (iOS)
-   - Used by native build tools and Firebase native SDKs
-   - ✅ Automatically read by `@react-native-firebase/app`
-
-2. **JavaScript Code** (for web):
-   - `.env` Firebase variables
-   - Used by Firebase JavaScript SDK
-   - Only needed for React Native Web support
-
-**For mobile**: Just place the config files in project root and rebuild. Done!
+The native config files contain everything Firebase needs.
 
 ---
 
@@ -63,7 +42,7 @@ Push notifications **do not work** on:
 - ❌ iOS Simulator
 - ❌ Android Emulator (unreliable at best)
 
-**You must use physical devices**:
+**You must use physical devices:**
 - ✅ iPhone (any model)
 - ✅ Android phone (any model)
 
@@ -86,11 +65,11 @@ Native config files are included during build process, not at runtime.
 
 ---
 
-## Permission Questions
+## Permissions
 
 ### Q: Why is permission denied?
 
-**Common causes**:
+**Common causes:**
 
 1. **User denied in app**: User clicked "Don't Allow"
    - **Solution**: Guide user to device Settings → Rozo → Notifications → Enable
@@ -108,17 +87,10 @@ Native config files are included during build process, not at runtime.
 **A: You can't programmatically - must guide to Settings**
 
 ```typescript
-import { useNotificationPermissions } from '@/modules/notifications';
+import { Linking } from 'react-native';
 
-const { permissionStatus, openSettings } = useNotificationPermissions();
-
-if (permissionStatus === 'denied') {
-  // Show message
-  alert('Please enable notifications in Settings');
-
-  // Open device settings
-  openSettings();
-}
+// Open app settings
+Linking.openSettings();
 ```
 
 Once denied, only way to enable is through device settings.
@@ -127,7 +99,7 @@ Once denied, only way to enable is through device settings.
 
 ### Q: When should I request notification permission?
 
-**Best practices**:
+**Best practices:**
 
 ✅ **DO**:
 - After user completes onboarding
@@ -143,27 +115,7 @@ Once denied, only way to enable is through device settings.
 
 ---
 
-## Token Questions
-
-### Q: How do I get my FCM token?
-
-**A: Use the `useNotifications` hook**
-
-```typescript
-import { useNotifications } from '@/modules/notifications';
-
-function MyComponent() {
-  const { fcmToken } = useNotifications();
-
-  console.log('FCM Token:', fcmToken);
-
-  return <Text>{fcmToken}</Text>;
-}
-```
-
-Copy the token for testing in Firebase Console.
-
----
+## Token Management
 
 ### Q: When is the FCM token registered with backend?
 
@@ -174,7 +126,7 @@ Token registration happens automatically when:
 2. Permission is granted
 3. FCM token is available
 
-No manual registration needed!
+**No manual registration needed!** The `NotificationProvider` handles everything.
 
 ---
 
@@ -192,42 +144,37 @@ The module handles token refresh automatically and re-registers with backend.
 
 ---
 
-## Notification Questions
+### Q: How do I get my FCM token for testing?
+
+**A: Check console logs after login**
+
+```typescript
+import { useNotifications } from '@/modules/notifications';
+
+function MyComponent() {
+  const { fcmToken } = useNotifications();
+  console.log('FCM Token:', fcmToken);
+  return null;
+}
+```
+
+Copy the token from logs for testing in Firebase Console.
+
+---
+
+## Notification Behavior
 
 ### Q: Notifications work in foreground but not background?
 
-**iOS Solutions**:
+**iOS Solutions:**
 - ✅ Verify APNs key uploaded to Firebase
 - ✅ Check `UIBackgroundModes` includes `remote-notification` in `app.config.js`
 - ✅ Ensure using production APNs certificate for production builds
 
-**Android Solutions**:
+**Android Solutions:**
 - ✅ Verify notification channel created (check logs)
 - ✅ Check battery optimization isn't killing app
 - ✅ Ensure Google Play Services installed and updated
-
----
-
-### Q: How do I customize notification appearance?
-
-**Android**:
-```typescript
-// In modules/notifications/config/firebase.config.ts
-export const notificationConfig = {
-  android: {
-    channelName: 'My Custom Channel',
-    importance: 4, // IMPORTANCE_HIGH
-    sound: 'custom_sound',
-    lightColor: '#FF0000',
-  },
-};
-```
-
-**iOS**:
-Controlled by iOS system. Can customize:
-- Sound
-- Badge
-- Alert style (Settings app)
 
 ---
 
@@ -235,25 +182,59 @@ Controlled by iOS system. Can customize:
 
 **A: Yes, it's already implemented!**
 
-The module automatically shows notifications in foreground. Customize in `firebase.service.ts`:
+The module automatically shows notifications in foreground using Expo's local notification system.
 
-```typescript
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,  // Show banner
-    shouldPlaySound: true,  // Play sound
-    shouldSetBadge: true,   // Update badge
-  }),
-});
-```
+Firebase delivers the notification → Handler creates local notification → User sees banner.
 
 ---
 
-## Deep Linking Questions
+### Q: Badge count not updating (iOS)
+
+**Solutions:**
+
+1. ✅ Verify badge permission granted
+2. ✅ Check `setBadgeCount()` is called
+3. ✅ Ensure app is authorized for badges (Settings → Rozo → Allow Badges)
+
+The `NotificationProvider` automatically updates badge count when notifications are marked as read.
+
+---
+
+## Deep Linking
+
+### Q: What deep link format should I use?
+
+**A: Use `rozo://` scheme**
+
+Examples:
+- `rozo://orders` → Navigate to orders screen
+- `rozo://orders/12345` → Open specific order
+- `rozo://transactions` → Open transactions
+- `rozo://settings` → Open settings
+
+Send deep link in notification data:
+
+```json
+{
+  "notification": {
+    "title": "Order Ready",
+    "body": "Your order #12345 is ready"
+  },
+  "data": {
+    "type": "ORDER_UPDATE",
+    "orderId": "12345",
+    "deepLink": "rozo://orders/12345"
+  }
+}
+```
+
+The handler service automatically opens deep links when user taps notification.
+
+---
 
 ### Q: Deep links not working?
 
-**Check these**:
+**Check these:**
 
 1. **Scheme configured**:
    ```javascript
@@ -272,32 +253,11 @@ Notifications.setNotificationHandler({
    }
    ```
 
-3. **Handler implemented**:
-   ```typescript
-   onNotificationTapped((notification) => {
-     if (notification.data.deepLink) {
-       router.push(notification.data.deepLink);
-     }
-   });
-   ```
+3. **Navigation handler** in `handler.service.ts` processes deep links correctly
 
 ---
 
-### Q: What deep link format should I use?
-
-**A: Use `rozo://` scheme**
-
-Examples:
-- `rozo://orders` → Navigate to orders screen
-- `rozo://orders/12345` → Open specific order
-- `rozo://transactions` → Open transactions
-- `rozo://settings` → Open settings
-
-Map these in your notification tap handler to actual routes.
-
----
-
-## Backend Questions
+## Backend
 
 ### Q: Do I need a backend?
 
@@ -306,54 +266,46 @@ Map these in your notification tap handler to actual routes.
 Backend is required for:
 - Storing device FCM tokens
 - Sending notifications to users
-- Managing notification preferences
-- Tracking notification delivery
+- Managing multi-device support
 
-See **[BACKEND.md](BACKEND.md)** for Supabase implementation.
+See **[BACKEND.md](./BACKEND.md)** for Supabase implementation.
 
----
-
-### Q: Can I send notifications without a backend?
-
-**A: Only for testing**
-
-For testing, use Firebase Console to send manually.
-
-For production, you need a backend to:
-- Store user tokens
-- Send notifications automatically (e.g., on order status change)
-- Respect user notification preferences
+For testing only, you can use Firebase Console to send manual notifications.
 
 ---
 
-### Q: How do I send notifications from my backend?
+### Q: Can I use a different backend (not Supabase)?
 
-**A: Use Firebase Admin SDK**
+**A: Yes!**
 
-```javascript
-// Backend code (Node.js example)
-const admin = require('firebase-admin');
+The mobile app just needs two API endpoints:
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
-const message = {
-  notification: {
-    title: 'Order Update',
-    body: 'Your order is ready'
-  },
-  data: {
-    type: 'ORDER_UPDATE',
-    orderId: '12345'
-  },
-  token: userFCMToken
-};
-
-await admin.messaging().send(message);
+**Register device:**
+```
+POST /your-api/devices/register
+{
+  "device_id": "unique-id",
+  "fcm_token": "firebase-token",
+  "platform": "ios" | "android",
+  "device_name": "iPhone 14",
+  "app_version": "1.0.0"
+}
 ```
 
-See **[BACKEND.md](BACKEND.md)** for complete Supabase implementation with Edge Functions.
+**Unregister device:**
+```
+DELETE /your-api/devices/unregister
+{
+  "device_id": "unique-id"
+}
+```
+
+Update the endpoints in `token.service.ts`:
+
+```typescript
+await apiClient.post('/your-api/devices/register', payload);
+await apiClient.delete('/your-api/devices/unregister', { data: payload });
+```
 
 ---
 
@@ -361,7 +313,8 @@ See **[BACKEND.md](BACKEND.md)** for complete Supabase implementation with Edge 
 
 ### Q: "No FCM token" error
 
-**Solutions**:
+**Solutions:**
+
 1. ✅ Use physical device (not simulator)
 2. ✅ Verify `google-services.json` in project root
 3. ✅ Rebuild app after adding config files
@@ -372,10 +325,11 @@ See **[BACKEND.md](BACKEND.md)** for complete Supabase implementation with Edge 
 
 ### Q: "Firebase initialization failed" error
 
-**Solutions**:
+**Solutions:**
+
 1. ✅ Verify `google-services.json` format is valid JSON
 2. ✅ Ensure file is in project root
-3. ✅ Check `app.config.js` includes Firebase plugin
+3. ✅ Check `app.config.js` includes `@react-native-firebase/app` plugin
 4. ✅ Rebuild app completely
 5. ✅ Clear cache: `bun start:clear`
 
@@ -383,38 +337,91 @@ See **[BACKEND.md](BACKEND.md)** for complete Supabase implementation with Edge 
 
 ### Q: Notifications received but not appearing
 
-**iOS**:
+**iOS:**
 - Check Do Not Disturb is off
 - Verify app notification settings: Settings → Rozo → Notifications
-- Check notification preview settings
+- Check notification preview settings (Show Previews: Always/When Unlocked)
 
-**Android**:
+**Android:**
 - Check notification channel settings
 - Verify app notification settings: Settings → Apps → Rozo → Notifications
 - Check Do Not Disturb is off
+- Disable battery optimization for app
 
 ---
 
-### Q: Badge count not updating (iOS)
+### Q: Getting duplicate notifications (multiple logs)
 
-**Solutions**:
-1. ✅ Verify badge permission granted
-2. ✅ Check `setBadgeCount()` is called
-3. ✅ Ensure app is authorized for badges (Settings → Rozo → Allow Badges)
+**A: This was a bug - should be fixed**
 
-```typescript
-import { setBadgeCount } from '@/modules/notifications/services/firebase.service';
+If you're still seeing duplicates:
+1. Check `handler.service.ts` has singleton pattern (prevents duplicate listeners)
+2. Verify `NotificationProvider` only mounts once
+3. Check for React Fast Refresh issues in development
 
-// Update badge
-setBadgeCount(unreadCount);
-
-// Clear badge
-setBadgeCount(0);
-```
+The system now has built-in duplicate prevention.
 
 ---
 
-## Architecture Questions
+## Multi-Device Support
+
+### Q: Can one merchant use multiple devices?
+
+**A: Yes! This is supported by default.**
+
+- Login on iPhone → Token registered
+- Login on iPad → Token registered (separate entry)
+- Login on Android → Token registered (separate entry)
+- All devices receive notifications
+- Logout from iPhone → Only iPhone token removed
+- Other devices continue receiving notifications
+
+The `merchant_devices` table stores one row per device using `UNIQUE(device_id, merchant_id)`.
+
+---
+
+### Q: What happens if I reinstall the app?
+
+**A:**
+
+1. New FCM token is generated
+2. On login, new token is registered with backend
+3. Old token (if exists for same device) is replaced via upsert
+4. New token starts receiving notifications
+
+The system automatically handles reinstalls.
+
+---
+
+## Platform-Specific
+
+### Q: iOS notifications not working?
+
+**Checklist:**
+
+- [ ] Physical device (not simulator)
+- [ ] APNs key uploaded to Firebase
+- [ ] Production APNs for production builds
+- [ ] `UIBackgroundModes: ["remote-notification"]` in `app.config.js`
+- [ ] Notification permission granted
+- [ ] `GoogleService-Info.plist` in root
+
+---
+
+### Q: Android notifications not working?
+
+**Checklist:**
+
+- [ ] Physical device (emulator unreliable)
+- [ ] `google-services.json` in root
+- [ ] Google Play Services installed
+- [ ] Notification channel created (check logs)
+- [ ] Battery optimization disabled for app
+- [ ] Notification permission granted
+
+---
+
+## Architecture
 
 ### Q: Does this replace Pusher?
 
@@ -429,23 +436,7 @@ Both work together:
 
 ---
 
-### Q: Can I use this on web?
-
-**A: Yes, with modifications**
-
-Current implementation is for mobile (iOS/Android).
-
-For web support:
-1. Add `.env` Firebase variables
-2. Use Firebase JS SDK instead of native module
-3. Add service worker for background notifications
-4. Use `firebase/messaging` package
-
-The module is designed with reusability in mind. See `modules/notifications/docs/` for architecture.
-
----
-
-### Q: Is this module reusable in other projects?
+### Q: Can I use this module in other projects?
 
 **A: YES! That's the goal.**
 
@@ -457,86 +448,20 @@ The module is self-contained:
 
 To reuse:
 1. Copy `modules/notifications/` folder
-2. Adjust types if needed
-3. Follow setup guide
-4. Done!
+2. Install dependencies
+3. Follow [QUICKSTART.md](./QUICKSTART.md)
+4. Adjust types if needed
 
 ---
 
-## Performance Questions
+## Additional Questions?
 
-### Q: Do notifications impact battery life?
-
-**A: Minimal impact**
-
-Firebase Cloud Messaging is optimized:
-- Uses device's system-level connection
-- Batches messages efficiently
-- Minimal battery impact
-
-Users won't notice any battery drain from notifications.
-
----
-
-### Q: How many notifications can I send?
-
-**A: No hard limit**
-
-Firebase allows unlimited notification sends. However:
-
-**Best practices**:
-- Don't spam users
-- Respect user preferences
-- Send only important notifications
-- Allow users to customize frequency
-
----
-
-### Q: Are notifications secure?
-
-**A: YES**
-
-- FCM tokens stored encrypted in MMKV
-- Backend authentication required
-- HTTPS-only communication
-- Token cleanup on logout
-
----
-
-## Platform-Specific Questions
-
-### Q: iOS notifications not working?
-
-**Checklist**:
-- [ ] Physical device (not simulator)
-- [ ] APNs key uploaded to Firebase
-- [ ] Production APNs for production builds
-- [ ] `UIBackgroundModes` in `app.config.js`
-- [ ] Notification permission granted
-- [ ] `GoogleService-Info.plist` in root
-
----
-
-### Q: Android notifications not working?
-
-**Checklist**:
-- [ ] Physical device (emulator unreliable)
-- [ ] `google-services.json` in root
-- [ ] Google Play Services installed
-- [ ] Notification channel created
-- [ ] Battery optimization disabled
-- [ ] Notification permission granted
-
----
-
-## Still Have Questions?
-
-1. Check **[SETUP.md](SETUP.md)** for setup instructions
-2. Review **[USAGE.md](USAGE.md)** for code examples
-3. See **[BACKEND.md](BACKEND.md)** for backend implementation
+1. Check **[QUICKSTART.md](./QUICKSTART.md)** for setup instructions
+2. Review **[BACKEND.md](./BACKEND.md)** for backend implementation
+3. See **[EAS.md](./EAS.md)** for EAS build setup
 4. Open an issue on GitHub
 5. Contact support
 
 ---
 
-**Last Updated**: 2024-01-20
+**Last Updated**: 2025-01-31

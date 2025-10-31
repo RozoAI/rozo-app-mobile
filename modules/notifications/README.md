@@ -246,9 +246,9 @@ Use Supabase Edge Functions + Firebase Admin SDK.
 **See**: [docs/BACKEND.md](docs/BACKEND.md) for complete implementation.
 
 Quick overview:
-- **4 Edge Functions**: register-device, unregister-device, notification-settings, send-notification
-- **3 Database Tables**: merchant_devices, notification_settings, notification_logs
-- **Auto-notifications**: Database triggers for order/deposit status changes
+- **2 Edge Functions**: devices/register, devices/unregister
+- **1 Database Table**: merchant_devices (FCM token storage)
+- **Simple Setup**: No notification settings, always enabled by default
 
 ---
 
