@@ -2,7 +2,7 @@ import { LoadingScreen } from "@/components/loading-screen";
 import { ThemedText } from "@/components/themed-text";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/libs/utils";
-import { useAuth, useWallet } from "@/providers";
+import { useAuth, useMerchant, useWallet } from "@/providers";
 import { usePOSToggle } from "@/providers/preferences.provider";
 import { AuthBoundary } from "@privy-io/expo";
 import { Redirect, Tabs } from "expo-router";
@@ -154,14 +154,29 @@ export default function TabLayout() {
 
 function WalletHandler({ children }: { children: React.ReactNode }) {
   const { createWallet, hasWallet } = useWallet();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
+  const { merchant, refetchMerchant } = useMerchant();
 
   useEffect(() => {
     if (user && !hasWallet) {
-      createWallet("ethereum");
+      createWallet("USDC_BASE");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, hasWallet]);
+
+  useEffect(() => {
+    if (!merchant) {
+      refetchMerchant({ force: true, showToast: false });
+    }
+
+    if (!user) {
+      refreshUser();
+    }
+  }, [merchant, user]);
+
+  if (!merchant || !user) {
+    return <LoadingScreen />;
+  }
 
   return children;
 }

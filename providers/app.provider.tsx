@@ -4,9 +4,8 @@ import { LoadingScreen } from "@/components/loading-screen";
 import { ToastProvider } from "@/components/toast/toast-provider";
 import { type GenericWallet } from "@/contexts/auth.context";
 import { useToast } from "@/hooks/use-toast";
-import { MERCHANT_KEY, TOKEN_KEY } from "@/libs/constants";
 import { type CurrencyConfig } from "@/libs/currencies";
-import { removeItem } from "@/libs/storage";
+import { storage } from "@/libs/storage";
 import { type Token } from "@/libs/tokens";
 import { type MerchantProfile } from "@/modules/api/schema/merchant";
 import { usePrivy } from "@privy-io/expo";
@@ -34,10 +33,6 @@ interface IContextProps {
   // Wallet state
   wallets: GenericWallet[];
   primaryWallet: GenericWallet | null;
-  preferredPrimaryChain: "ethereum" | "stellar";
-
-  // Wallet actions
-  setPreferredPrimaryChain: (chain: "ethereum" | "stellar") => Promise<void>;
 
   // POS Toggle state
   showPOS: boolean;
@@ -62,13 +57,11 @@ export const AppContext = createContext<IContextProps>({
   merchantToken: undefined,
   wallets: [],
   primaryWallet: null,
-  preferredPrimaryChain: "ethereum",
   showPOS: false,
   setToken: () => {},
   setMerchant: () => {},
   logout: async () => {},
   togglePOS: async () => {},
-  setPreferredPrimaryChain: async () => {},
   getAccessToken: undefined,
 });
 
@@ -92,9 +85,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
         await logoutPrivy();
 
         // Clear storage
-        await removeItem(TOKEN_KEY);
-        await removeItem(MERCHANT_KEY);
-        await preferences.deleteTogglePOS();
+        storage.clearAll();
 
         // Reset merchant state
         merchant.setMerchant(undefined);
@@ -127,7 +118,6 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       // Wallet state
       wallets: wallet.wallets,
       primaryWallet: wallet.primaryWallet,
-      preferredPrimaryChain: wallet.preferredPrimaryChain,
 
       // POS Toggle state
       showPOS: preferences.showPOS,
@@ -137,7 +127,6 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       setMerchant: merchant.setMerchant,
       logout,
       togglePOS: preferences.togglePOS,
-      setPreferredPrimaryChain: wallet.setPreferredPrimaryChain,
 
       // Additional Privy-specific functionality
       getAccessToken: auth.refreshAccessToken,

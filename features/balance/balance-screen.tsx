@@ -6,7 +6,6 @@ import { VStack } from "@/components/ui/vstack";
 import { useToast } from "@/hooks/use-toast";
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
 
-import { useWallet } from "@/providers";
 import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "../settings/withdraw-sheet";
 import { BalanceActions } from "./balance-actions";
@@ -16,9 +15,8 @@ import { BalanceTransactions } from "./balance-transactions";
 
 export function BalanceScreen() {
   const { t } = useTranslation();
-  const { balance, refetch, isLoading } = useWalletBalance();
+  const { refetch, isLoading } = useWalletBalance();
   const { success } = useToast();
-  const { preferredPrimaryChain } = useWallet();
 
   const depositDialogRef = useRef<DepositDialogRef>(null);
   const withdrawDialogRef = useRef<WithdrawDialogRef>(null);
@@ -75,7 +73,6 @@ export function BalanceScreen() {
               space="lg"
             >
               <BalanceInfo
-                balance={balance ?? undefined}
                 isLoading={isLoading}
                 refetch={handleBalanceRefresh}
               />
@@ -89,9 +86,7 @@ export function BalanceScreen() {
           />
 
           {/* Transaction List */}
-          {preferredPrimaryChain === "ethereum" && (
-            <BalanceTransactions ref={transactionsRef} />
-          )}
+          <BalanceTransactions ref={transactionsRef} />
         </VStack>
       </ScrollView>
 
@@ -103,11 +98,7 @@ export function BalanceScreen() {
       />
 
       {/* Withdraw Sheet */}
-      <WithdrawSheet
-        ref={withdrawDialogRef}
-        onSuccess={() => refetch()}
-        balance={balance ?? undefined}
-      />
+      <WithdrawSheet ref={withdrawDialogRef} onSuccess={() => refetch()} />
     </>
   );
 }

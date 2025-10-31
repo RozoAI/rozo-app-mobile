@@ -4,10 +4,13 @@ import { createMutation, createQuery } from "react-query-kit";
 import {
   detectMerchantStatusError,
   MerchantStatusError,
-  shouldTriggerLogout
+  shouldTriggerLogout,
 } from "@/libs/error/merchant-status-error";
 import { getItem, setItem } from "@/libs/storage";
-import { type MerchantProfile } from "@/modules/api/schema/merchant";
+import {
+  MerchantDefaultTokenID,
+  type MerchantProfile,
+} from "@/modules/api/schema/merchant";
 import { client } from "@/modules/axios/client";
 
 type Payload = {
@@ -26,6 +29,7 @@ type UpdateProfilePayload = {
   email: string;
   display_name?: string;
   logo?: string | null;
+  default_token_id?: MerchantDefaultTokenID;
 };
 
 export const useCreateProfile = createMutation<Response, Payload, AxiosError>({
@@ -80,26 +84,33 @@ export const useGetProfile = createQuery<
       });
 
       const data = response.data.profile;
-      
+
       // Check for merchant status errors in the response data
-      if (data.status === 'PIN_BLOCKED' || data.status === 'INACTIVE') {
-        const errorType = data.status === 'PIN_BLOCKED' ? 'PIN_BLOCKED' : 'INACTIVE';
+      if (data.status === "PIN_BLOCKED" || data.status === "INACTIVE") {
+        const errorType =
+          data.status === "PIN_BLOCKED" ? "PIN_BLOCKED" : "INACTIVE";
         throw new MerchantStatusError(errorType, data);
       }
-      
+
       await setItem(cacheKey, data, CACHE_DURATION);
       console.log("[useGetProfile] Fetched profile from API and cached:", data);
       return data;
     } catch (error: any) {
       // Check if it's a merchant status error
       const statusErrorType = detectMerchantStatusError(error);
-      
+
       if (statusErrorType && shouldTriggerLogout(statusErrorType)) {
         // Don't use cached data for status errors that require logout
-        console.error("[useGetProfile] Merchant status error detected:", statusErrorType);
-        throw new MerchantStatusError(statusErrorType, error.response?.data?.profile);
+        console.error(
+          "[useGetProfile] Merchant status error detected:",
+          statusErrorType
+        );
+        throw new MerchantStatusError(
+          statusErrorType,
+          error.response?.data?.profile
+        );
       }
-      
+
       // Handle other 401/403 errors with cached fallback
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         const cached = getItem<Response>(cacheKey);
@@ -110,7 +121,7 @@ export const useGetProfile = createQuery<
           return cached;
         }
       }
-      
+
       console.error("[useGetProfile] Error fetching profile:", error);
       throw error;
     }

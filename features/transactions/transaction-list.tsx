@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { FlatList, Linking, RefreshControl, Text } from "react-native";
 
 import { Spinner } from "@/components/ui/spinner";
-import { useBaseUSDCTransactions } from "@/modules/api/api/transactions";
+import { useBaseUSDCTransactions } from "@/modules/api/api/base-transaction";
 import { useApp } from "@/providers/app.provider";
 
 import EmptyTransactionsState from "./empty-transactions";

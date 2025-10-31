@@ -65,7 +65,7 @@ export default function LoginScreen() {
           ).length > 0;
 
         if (!hasEmbeddedWallet) {
-          await createWallet("ethereum");
+          await createWallet("USDC_BASE");
         }
 
         setTimeout(() => {

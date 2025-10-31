@@ -13,13 +13,13 @@ type UseWalletBalanceResult = {
 };
 
 export function useWalletBalance(): UseWalletBalanceResult {
-  const { primaryWallet, preferredPrimaryChain, merchantToken } = useApp();
+  const { primaryWallet, merchantToken } = useApp();
 
   const [balance, setBalance] = useState<TokenBalanceResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { getBalance } = useWallet();
+  const { getBalance, preferredPrimaryChain } = useWallet();
 
   const fetchBalance = useCallback(async () => {
     if (!primaryWallet) {
@@ -30,7 +30,7 @@ export function useWalletBalance(): UseWalletBalanceResult {
     setError(null);
     try {
       const balances = await getBalance();
-      console.log({ balances });
+
       const usdcBalance = balances?.find((balance) => balance.asset === "usdc");
 
       setBalance({
@@ -43,7 +43,7 @@ export function useWalletBalance(): UseWalletBalanceResult {
     } finally {
       setIsLoading(false);
     }
-  }, [primaryWallet, merchantToken]);
+  }, [primaryWallet, preferredPrimaryChain, merchantToken]);
 
   // Fetch balance on component mount and when dependencies change
   useEffect(() => {

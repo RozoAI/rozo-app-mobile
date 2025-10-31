@@ -24,7 +24,7 @@ type StellarContextProviderValue = {
   isConnected: boolean;
   disconnect: () => void;
   convertXlmToUsdc: (amount: string) => Promise<string>;
-  refreshAccount: () => Promise<void>;
+  refreshAccount: () => Promise<WalletBalanceInfo[]>;
 };
 
 const initialContext = {
@@ -37,7 +37,7 @@ const initialContext = {
   isConnected: false,
   disconnect: () => {},
   convertXlmToUsdc: () => Promise.resolve(""),
-  refreshAccount: () => Promise.resolve(),
+  refreshAccount: () => Promise.resolve([] as WalletBalanceInfo[]),
 };
 
 export const StellarContext =
@@ -56,46 +56,26 @@ export const StellarProvider = ({
 
   const [publicKey, setPublicKey] = useState<string | undefined>(undefined);
   const [accountInfo, setAccountInfo] = useState<
-    Horizon.AccountResponse | undefined | null
+    Horizon.AccountResponse | undefined
   >(undefined);
 
   const formattedBalances = useMemo(() => {
-    if (!accountInfo?.balances) return [];
+    if (!accountInfo || !accountInfo.balances) return [];
     return formatStellarBalancesAsWalletInfo(
       accountInfo.balances as StellarBalance[]
     );
-  }, [accountInfo?.balances]);
+  }, [accountInfo]);
 
   const hasUsdcTrustline = useMemo(() => {
-    if (!accountInfo?.balances) return false;
+    if (!accountInfo || !accountInfo.balances) return false;
     return accountInfo.balances.some(
       (balance: any) =>
         balance.asset_code === StellarConfig.USDC_ASSET.code &&
         balance.asset_issuer === StellarConfig.USDC_ASSET.issuer
     );
-  }, [accountInfo?.balances]);
+  }, [accountInfo]);
 
-  const getAccountInfo = async (publicKey: string) => {
-    try {
-      const data = await server.loadAccount(publicKey);
-      console.log(JSON.stringify(data, null, 2));
-      setAccountInfo(data);
-    } catch (error: any) {
-      // Handle 404 error specifically - account doesn't exist (not funded)
-      if (isAccountNotFound(error)) {
-        console.log(
-          `Account ${publicKey} not found - needs activation/funding`
-        );
-        // Set account info to null to indicate unfunded account
-        setAccountInfo(null);
-        return;
-      }
-
-      // For other errors, show toast and log
-      toastError(error.message || "Failed to get account info");
-      console.error("Error loading account:", error);
-    }
-  };
+  // removed separate getAccountInfo; logic is in refreshAccount to return latest balances
 
   const convertXlmToUsdc = async (amount: string) => {
     try {
@@ -121,8 +101,26 @@ export const StellarProvider = ({
   };
 
   const refreshAccount = async () => {
-    if (publicKey) {
-      await getAccountInfo(publicKey);
+    if (!publicKey) return [] as WalletBalanceInfo[];
+
+    try {
+      const data = await server.loadAccount(publicKey);
+      setAccountInfo(data);
+      const latest = formatStellarBalancesAsWalletInfo(
+        (data.balances as StellarBalance[]) ?? []
+      );
+      return latest;
+    } catch (error: any) {
+      if (isAccountNotFound(error)) {
+        console.log(
+          `Account ${publicKey} not found - needs activation/funding`
+        );
+        setAccountInfo(undefined);
+        return [] as WalletBalanceInfo[];
+      }
+      toastError(error.message || "Failed to get account info");
+      console.error("Error loading account:", error);
+      return [] as WalletBalanceInfo[];
     }
   };
 

@@ -11,12 +11,15 @@ import React, {
 import { type GenericWallet } from "@/contexts/auth.context";
 import { useToast } from "@/hooks/use-toast";
 import { getItem, setItem } from "@/libs/storage";
+import { useUpdateProfile } from "@/modules/api/api";
+import { MerchantDefaultTokenID } from "@/modules/api/schema/merchant";
 import {
   PrivyEmbeddedWalletAccount,
   useEmbeddedEthereumWallet,
 } from "@privy-io/expo";
 import axios from "axios";
 import { useAuth } from "./auth.provider";
+import { useMerchant } from "./merchant.provider";
 import { useStellar } from "./stellar.provider";
 
 export type WalletBalanceInfo = {
@@ -40,18 +43,17 @@ export type Wallet = {
   created_at: number;
 };
 
-export type AvailableChain = "ethereum" | "stellar";
-
 interface WalletContextProps {
   isCreating: boolean;
   isBalanceLoading: boolean;
+  isSwitching: boolean;
   hasWallet: boolean;
   wallets: GenericWallet[];
   balances: WalletBalanceInfo[];
   primaryWallet: GenericWallet | null;
-  preferredPrimaryChain: AvailableChain;
-  setPreferredPrimaryChain: (chain: AvailableChain) => Promise<void>;
-  createWallet: (chain: AvailableChain) => Promise<void>;
+  preferredPrimaryChain: MerchantDefaultTokenID | undefined;
+  setPreferredPrimaryChain: (chain: MerchantDefaultTokenID) => Promise<void>;
+  createWallet: (chain: MerchantDefaultTokenID) => Promise<void>;
   switchWallet: () => Promise<void>;
   getBalance: () => Promise<WalletBalanceInfo[] | undefined>;
 }
@@ -59,11 +61,12 @@ interface WalletContextProps {
 const WalletContext = createContext<WalletContextProps>({
   isCreating: false,
   isBalanceLoading: false,
+  isSwitching: false,
   hasWallet: false,
   wallets: [],
   balances: [],
   primaryWallet: null,
-  preferredPrimaryChain: "ethereum",
+  preferredPrimaryChain: undefined,
   setPreferredPrimaryChain: async () => {},
   createWallet: async () => {},
   switchWallet: async () => {},
@@ -82,6 +85,8 @@ function generateBasicAuthHeader(username: string, password: string): string {
 
 export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const { user, refreshUser } = useAuth();
+  const { merchant, refetchMerchant } = useMerchant();
+
   const { error: toastError, success: toastSuccess } = useToast();
   const { create: createWallet } = useEmbeddedEthereumWallet(); // EVM
   const { createWallet: createOtherChainWallet } = useCreateWallet(); // Stellar
@@ -93,20 +98,22 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     setPublicKey,
   } = useStellar();
 
+  const { mutateAsync: updateProfile } = useUpdateProfile();
+
   const [isCreating, setIsCreating] = useState(false);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
-
+  const [isSwitching, setIsSwitching] = useState(false);
   const [balances, setBalances] = useState<WalletBalanceInfo[]>([]);
-
-  const [preferredPrimaryChain, setPreferredPrimaryChainState] =
-    useState<AvailableChain>("ethereum");
+  const [preferredPrimaryChain, setPreferredPrimaryChainState] = useState<
+    MerchantDefaultTokenID | undefined
+  >();
 
   // Computed values
   const wallets = useMemo<
     {
       id: string;
       address: string;
-      chain: AvailableChain;
+      chain: "ethereum" | "stellar";
       isConnected: boolean;
     }[]
   >(() => {
@@ -122,7 +129,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       .map((account) => ({
         id: account.id as string,
         address: account.address,
-        chain: account.chain_type as AvailableChain,
+        chain: account.chain_type as "ethereum" | "stellar",
         isConnected: true,
       }));
   }, [user]);
@@ -141,24 +148,27 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
   const primaryWallet = useMemo(() => {
     if (wallets.length === 0) return null;
-    const match = wallets.find((w) => w && w.chain === preferredPrimaryChain);
+
+    const chain =
+      preferredPrimaryChain === "USDC_BASE" ? "ethereum" : "stellar";
+    const match = wallets.find((w) => w && w.chain === chain);
     return match ?? wallets[0] ?? null;
   }, [wallets, preferredPrimaryChain]);
 
   // Load preferred chain once wallets are known
   useEffect(() => {
-    const stored = getItem<"ethereum" | "stellar">(preferredChainStorageKey);
+    const stored = getItem<MerchantDefaultTokenID>(preferredChainStorageKey);
 
-    if (stored === "ethereum" || stored === "stellar") {
+    if (stored === "USDC_BASE" || stored === "USDC_XLM") {
       setPreferredPrimaryChainState(stored);
     } else {
       // default to ethereum (Base)
-      setPreferredPrimaryChainState("ethereum");
+      setPreferredPrimaryChainState("USDC_BASE");
     }
   }, [preferredChainStorageKey]);
 
   const handleCreateWallet = useCallback(
-    async (chain: AvailableChain) => {
+    async (chain: "ethereum" | "stellar") => {
       if (!user) {
         return;
       }
@@ -207,7 +217,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       // Check if user has any embedded wallets at all
       const hasAnyEmbeddedWallet =
         (user?.linked_accounts ?? []).filter(
-          (account): account is PrivyEmbeddedWalletAccount =>
+          (account) =>
             account.type === "wallet" && account.wallet_client_type === "privy"
         ).length > 0;
 
@@ -225,20 +235,30 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   }, [user, isCreating]);
 
   const setPreferredPrimaryChain = useCallback(
-    async (chain: "ethereum" | "stellar") => {
-      setPreferredPrimaryChainState(chain);
-      // @TODO: Hit API to update Primary Wallet
-      await setItem(preferredChainStorageKey, chain);
+    async (token: MerchantDefaultTokenID) => {
+      setPreferredPrimaryChainState(token);
+      await setItem(preferredChainStorageKey, token);
+    },
+    [preferredChainStorageKey]
+  );
+
+  const createWalletByToken = useCallback(
+    async (token: MerchantDefaultTokenID) => {
+      const chain: "ethereum" | "stellar" =
+        token === "USDC_BASE" ? "ethereum" : "stellar";
+      await handleCreateWallet(chain);
     },
     []
   );
 
   const handleSwitchWallet = useCallback(async () => {
     try {
-      if (!user) return;
+      console.log({ user, merchant });
 
+      if (!user || !merchant) return;
+      setIsSwitching(true);
       const preferredBeforeChanged =
-        preferredPrimaryChain === "ethereum" ? "stellar" : "ethereum";
+        preferredPrimaryChain === "USDC_BASE" ? "stellar" : "ethereum";
       const isPreferredExist =
         user.linked_accounts.filter(
           (account) =>
@@ -246,24 +266,34 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
             account.chain_type === preferredBeforeChanged
         ).length > 0;
 
-      console.log("\n\n", { preferredBeforeChanged, isPreferredExist }, "\n\n");
-
       if (!isPreferredExist) {
         await handleCreateWallet(preferredBeforeChanged);
       }
-      // @TODO: Update Merchant Profile Primary Wallet
 
+      const newPrimaryChain =
+        preferredPrimaryChain === "USDC_BASE" ? "USDC_XLM" : "USDC_BASE";
+      await updateProfile({
+        email: merchant.email,
+        display_name: merchant.display_name,
+        logo: merchant.logo_url,
+        default_token_id: newPrimaryChain,
+      });
+      setPreferredPrimaryChain(newPrimaryChain);
+      await refetchMerchant();
       toastSuccess("Wallet switched successfully!");
     } catch (error) {
       console.log("[Switch Wallet]", error);
       toastError("Failed to switch wallet");
+    } finally {
+      setIsSwitching(false);
     }
   }, [user, preferredPrimaryChain]);
 
   const getBalance = useCallback(async () => {
     try {
+      setIsBalanceLoading(true);
       if (primaryWallet && primaryWallet.id) {
-        if (preferredPrimaryChain === "ethereum") {
+        if (preferredPrimaryChain === "USDC_BASE") {
           const headers = {
             "privy-app-id": process.env.EXPO_PUBLIC_PRIVY_APP_ID || "",
             Authorization: generateBasicAuthHeader(
@@ -304,11 +334,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
           setBalances(allBalances);
           return allBalances;
-        } else if (preferredPrimaryChain === "stellar" && stellarConnected) {
-          console.log("[Getting Stellar Wallet Balance]", stellarBalances);
-          await refreshAccount();
-          setBalances(stellarBalances);
-          return stellarBalances;
+        } else if (preferredPrimaryChain === "USDC_XLM" && stellarConnected) {
+          const latestBalances = await refreshAccount();
+          setBalances(latestBalances);
+          return latestBalances;
         }
       }
     } catch (error) {
@@ -325,29 +354,45 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
   }, [primaryWallet]);
 
+  // Auto refresh balances when chain preference or primary wallet changes
+  useEffect(() => {
+    setIsBalanceLoading(true);
+    getBalance().catch(() => setIsBalanceLoading(false));
+  }, [preferredPrimaryChain, primaryWallet?.id]);
+
+  // When switching to Stellar, wait for connection then refresh
+  useEffect(() => {
+    if (preferredPrimaryChain === "USDC_XLM" && stellarConnected) {
+      setIsBalanceLoading(true);
+      getBalance().catch(() => setIsBalanceLoading(false));
+    }
+  }, [stellarConnected, preferredPrimaryChain]);
+
   const contextValue = useMemo(
     () => ({
       isCreating,
       isBalanceLoading,
+      isSwitching,
       balances,
       hasWallet: wallets.length > 0 && !!wallets[0]?.address,
       wallets,
       primaryWallet,
       preferredPrimaryChain,
       setPreferredPrimaryChain,
-      createWallet: handleCreateWallet,
+      createWallet: createWalletByToken,
       switchWallet: handleSwitchWallet,
       getBalance,
     }),
     [
       isCreating,
       isBalanceLoading,
+      isSwitching,
       balances,
       wallets,
       primaryWallet,
       preferredPrimaryChain,
       setPreferredPrimaryChain,
-      handleCreateWallet,
+      createWalletByToken,
       handleSwitchWallet,
       getBalance,
     ]

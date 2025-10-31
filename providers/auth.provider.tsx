@@ -12,6 +12,7 @@ import React, {
 import { useToast } from "@/hooks/use-toast";
 import { TOKEN_KEY } from "@/libs/constants";
 import { storage } from "@/libs/storage";
+import { queryClient } from "./query.provider";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -47,8 +48,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
   const [userState, setUserState] = useState<PrivyUser | null>(user);
 
-  console.log({ user });
-
   // Track initialization to prevent multiple runs
   const hasInitialized = useRef(false);
 
@@ -79,6 +78,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUserState(fetchedUser.user);
     }
   }, [client]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      queryClient.resetQueries();
+    }
+  }, [isAuthenticated]);
 
   // Main authentication effect
   useEffect(() => {

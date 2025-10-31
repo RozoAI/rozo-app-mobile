@@ -1,5 +1,5 @@
 import { Coins, RefreshCw } from "lucide-react-native";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
@@ -12,15 +12,18 @@ import { VStack } from "@/components/ui/vstack";
 import { useToast } from "@/hooks/use-toast";
 import { useWalletBalance } from "@/hooks/use-wallet-balance";
 
+import { TokenBalanceResult } from "@/libs/tokens";
+import { useWallet } from "@/providers";
 import { type DepositDialogRef, TopupSheet } from "./deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "./withdraw-sheet";
 
 export const WalletBalanceCard = () => {
   const { t } = useTranslation();
-  const { balance, isLoading, refetch } = useWalletBalance();
+  const { isLoading, refetch } = useWalletBalance();
   const { success } = useToast();
   const DepositDialogRef = useRef<DepositDialogRef>(null);
   const WithdrawDialogRef = useRef<WithdrawDialogRef>(null);
+  const { balances } = useWallet();
 
   const handleTopUpPress = () => {
     DepositDialogRef.current?.open();
@@ -33,6 +36,21 @@ export const WalletBalanceCard = () => {
   const handleTopUpConfirm = (amount: string) => {
     success(`Top up of ${amount} initiated`);
   };
+
+  const balance = useMemo<TokenBalanceResult>(() => {
+    const exist = (balances || []).find((item) => item.asset === "USDC");
+    if (exist) {
+      return {
+        balance: exist.display_values.usdc || "0",
+        formattedBalance: exist.display_values.usdc || "0",
+      };
+    }
+
+    return {
+      balance: "0",
+      formattedBalance: "0",
+    };
+  }, [balances]);
 
   return (
     <VStack space="sm" className="w-full">
@@ -88,11 +106,7 @@ export const WalletBalanceCard = () => {
       </View>
 
       <TopupSheet ref={DepositDialogRef} onConfirm={handleTopUpConfirm} />
-      <WithdrawSheet
-        ref={WithdrawDialogRef}
-        onSuccess={() => refetch()}
-        balance={balance ?? undefined}
-      />
+      <WithdrawSheet ref={WithdrawDialogRef} onSuccess={() => refetch()} />
     </VStack>
   );
 };

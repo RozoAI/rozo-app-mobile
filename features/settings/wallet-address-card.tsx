@@ -81,7 +81,7 @@ export const WalletAddressCard = () => {
       </HStack>
 
       <View className="flex flex-row items-center gap-3">
-        {preferredPrimaryChain === "stellar" &&
+        {preferredPrimaryChain === "USDC_XLM" &&
           (!account || !hasUsdcTrustline) && (
             <Button
               onPress={activateTrustlineWithPin.initiateActivate}

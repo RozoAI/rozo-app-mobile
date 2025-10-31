@@ -18,7 +18,6 @@ import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/providers";
-import { useApp } from "@/providers/app.provider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SettingItem } from "./setting-item";
 
@@ -26,9 +25,9 @@ export const SwitchPrimaryWallet: React.FC = () => {
   const insets = useSafeAreaInsets();
 
   const { t } = useTranslation();
-  const { preferredPrimaryChain, setPreferredPrimaryChain } = useApp();
   const { error: toastError } = useToast();
-  const { switchWallet, isCreating } = useWallet();
+  const { switchWallet, isCreating, isSwitching, preferredPrimaryChain } =
+    useWallet();
 
   const [showActionsheet, setShowActionsheet] = useState<boolean>(false);
 
@@ -36,7 +35,7 @@ export const SwitchPrimaryWallet: React.FC = () => {
   const handleClose = useCallback(() => setShowActionsheet(false), []);
 
   const isEth = useMemo(
-    () => preferredPrimaryChain === "ethereum",
+    () => preferredPrimaryChain === "USDC_BASE",
     [preferredPrimaryChain]
   );
 
@@ -69,9 +68,6 @@ export const SwitchPrimaryWallet: React.FC = () => {
     try {
       await switchWallet();
       handleClose();
-      setTimeout(() => {
-        setPreferredPrimaryChain(isEth ? "stellar" : "ethereum");
-      }, 300);
     } catch (error) {
       toastError(error instanceof Error ? error.message : (error as string));
     }
@@ -120,14 +116,16 @@ export const SwitchPrimaryWallet: React.FC = () => {
             <View className="relative mt-4 flex-col gap-2">
               <Button
                 size="lg"
-                action="primary"
+                action={isSwitching || isCreating ? "secondary" : "primary"}
                 className="w-full rounded-xl"
                 onPress={handleSwitch}
                 disabled={isCreating}
               >
                 <ButtonText>
                   {isCreating
-                    ? `Creating ${isEth ? "Stellar" : "Ethereum"}`
+                    ? `Creating ${isEth ? "Stellar" : "Base"}`
+                    : isSwitching
+                    ? `Switching ${isEth ? "Stellar" : "Base"}`
                     : t("general.confirmAndProceed")}
                 </ButtonText>
               </Button>

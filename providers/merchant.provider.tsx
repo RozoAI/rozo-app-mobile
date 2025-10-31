@@ -10,14 +10,17 @@ import {
   logMerchantStatusError,
 } from "@/libs/error/merchant-status-error";
 import { privyClient } from "@/libs/privy-client";
-import { getItem, removeItem, setItem } from "@/libs/storage";
+import { getItem, removeItem, setItem, storage } from "@/libs/storage";
 import { defaultToken, tokens, type Token } from "@/libs/tokens";
 import {
   useCreateProfile,
   useGetProfile,
   useUpdateProfile,
 } from "@/modules/api/api";
-import type { MerchantProfile } from "@/modules/api/schema/merchant";
+import type {
+  MerchantDefaultTokenID,
+  MerchantProfile,
+} from "@/modules/api/schema/merchant";
 import { usePrivy } from "@privy-io/expo";
 import type React from "react";
 import {
@@ -34,6 +37,7 @@ import { useAuth } from "./auth.provider";
 interface MerchantContextProps {
   merchant: MerchantProfile | undefined;
   defaultCurrency: CurrencyConfig | undefined;
+  defaultTokenId: MerchantDefaultTokenID | undefined;
   merchantToken: Token | undefined;
   isMerchantLoading: boolean;
   setMerchant: (merchant: MerchantProfile | undefined) => void;
@@ -46,6 +50,7 @@ interface MerchantContextProps {
 const MerchantContext = createContext<MerchantContextProps>({
   merchant: undefined,
   defaultCurrency: undefined,
+  defaultTokenId: undefined,
   merchantToken: undefined,
   isMerchantLoading: false,
   setMerchant: () => {},
@@ -111,7 +116,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           console.log(
             "[MerchantProvider] Clearing profile cache to force fresh fetch"
           );
-          removeItem("profile");
+          removeItem(MERCHANT_KEY);
         }
 
         // Refetch profile (will fetch fresh data since cache is cleared)
@@ -145,8 +150,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
             // Handle the status error with toast and logout
             await handleMerchantStatusError(statusError, async () => {
               await logoutPrivy();
-              removeItem(TOKEN_KEY);
-              removeItem(MERCHANT_KEY);
+              storage.clearAll();
               hasInitialized.current = false;
               setMerchant(undefined);
             });
@@ -164,8 +168,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
           const statusError = error as MerchantStatusError;
           await handleMerchantStatusError(statusError, async () => {
             await logoutPrivy();
-            removeItem(TOKEN_KEY);
-            removeItem(MERCHANT_KEY);
+            storage.clearAll();
             hasInitialized.current = false;
             setMerchant(undefined);
           });
@@ -176,7 +179,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
         setIsMerchantLoading(false);
       }
     },
-    [fetchProfile, handleMerchantStatusError, logoutPrivy, showError, success]
+    []
   );
 
   // Main merchant initialization effect
@@ -455,6 +458,7 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
     () => ({
       merchant,
       defaultCurrency,
+      defaultTokenId: merchant?.default_token_id,
       merchantToken,
       isMerchantLoading,
       setMerchant,

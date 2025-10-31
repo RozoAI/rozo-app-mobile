@@ -96,7 +96,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
     });
 
     try {
-      if (preferredPrimaryChain === "ethereum" && primaryWallet) {
+      if (preferredPrimaryChain === "USDC_BASE" && primaryWallet) {
         if (!walletsPrivy.wallets[0] || !merchantToken) {
           const error = new Error("Wallet or token not available");
           console.error(
@@ -182,7 +182,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
           });
           return { success: false, error };
         }
-      } else if (preferredPrimaryChain === "stellar" && isConnected) {
+      } else if (preferredPrimaryChain === "USDC_XLM" && isConnected) {
         const result = await stellarTransfer({
           bridge: false,
           payload: {
@@ -225,7 +225,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
 
   const isAbleToTransfer = useMemo(() => {
     return !!(
-      (preferredPrimaryChain === "ethereum"
+      (preferredPrimaryChain === "USDC_BASE"
         ? (walletsPrivy.wallets || []).length > 0
         : isConnected) && merchantToken
     );

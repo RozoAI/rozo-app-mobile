@@ -222,7 +222,8 @@
       "toStellar": "Switch to Stellar",
       "confirmMessageToBase": "You are about to set Base as your primary wallet. This will change your default network for payments and deposits.",
       "confirmMessageToStellar": "You are about to set Stellar as your primary wallet. This will change your default network for payments and deposits."
-    }
+    },
+    "clearCache": "Clear Cache"
   },
   "toast": {
     "danger": "Error",
