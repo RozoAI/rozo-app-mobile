@@ -38,7 +38,9 @@ export const WalletBalanceCard = () => {
   };
 
   const balance = useMemo<TokenBalanceResult>(() => {
-    const exist = (balances || []).find((item) => item.asset === "USDC");
+    const exist = (balances || []).find(
+      (item) => (item.asset || "").toUpperCase() === "USDC"
+    );
     if (exist) {
       return {
         balance: exist.display_values.usdc || "0",

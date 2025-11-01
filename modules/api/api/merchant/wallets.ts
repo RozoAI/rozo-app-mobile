@@ -4,6 +4,15 @@ import { createMutation } from "react-query-kit";
 import { client } from "@/modules/axios/client";
 import { UseMutationOptions } from "@tanstack/react-query";
 
+// Shared error types
+type WalletPinError = {
+  success: false;
+  error: string;
+  code?: "PIN_REQUIRED" | "PIN_BLOCKED" | "INACTIVE" | "INVALID_PIN";
+  attempts_remaining?: number;
+  is_blocked?: boolean;
+};
+
 type WalletTransferPayload = {
   walletId: string;
   recipientAddress: string;
@@ -25,13 +34,7 @@ type WalletTransferResponse = {
   message?: string;
 };
 
-type WalletTransferError = {
-  success: false;
-  error: string;
-  code?: "PIN_REQUIRED" | "PIN_BLOCKED" | "INACTIVE" | "INVALID_PIN";
-  attempts_remaining?: number;
-  is_blocked?: boolean;
-};
+type WalletTransferError = WalletPinError;
 
 // Wallet Transfer (POST /wallets/:walletId)
 // Uses x-pin-code header for PIN authorization if provided
@@ -85,21 +88,9 @@ export type WalletEnableUSDCResponse =
       result: SubmitTrustlineResult;
       already_exists?: boolean;
     }
-  | {
-      success: false;
-      error: string;
-      code?: "PIN_BLOCKED" | "INACTIVE" | "PIN_REQUIRED";
-      attempts_remaining?: number;
-      is_blocked?: boolean;
-    };
+  | WalletPinError;
 
-type WalletEnableUSDCErrors = {
-  success: false;
-  error: string;
-  code?: "PIN_REQUIRED" | "PIN_BLOCKED" | "INACTIVE" | "INVALID_PIN";
-  attempts_remaining?: number;
-  is_blocked?: boolean;
-};
+type WalletEnableUSDCErrors = WalletPinError;
 
 // Wallet Enable USDC Trustline (POST /wallets/:walletId/enable-usdc)
 export const useWalletEnableUSDC = createMutation<
@@ -124,3 +115,51 @@ export const useWalletEnableUSDC = createMutation<
     }).then((response) => response.data);
   },
 } as UseMutationOptions<WalletEnableUSDCResponse, AxiosError<WalletEnableUSDCErrors>, WalletEnableUSDCPayload>);
+
+type WalletStellarTransferPayload = {
+  walletId: string;
+  destinationAddress: string;
+  amount: string | number;
+  pinCode?: string;
+};
+
+type WalletStellarTransferResponse =
+  | {
+      success: true;
+      result: {
+        successful: boolean;
+        hash: string;
+        ledger: number;
+      };
+    }
+  | WalletPinError;
+
+type WalletStellarTransferErrors = WalletPinError;
+
+// Wallet Stellar Transfer (POST /wallets/:walletId/stellar-transfer)
+export const useWalletStellarTransfer = createMutation<
+  WalletStellarTransferResponse,
+  WalletStellarTransferPayload,
+  AxiosError<WalletStellarTransferErrors>
+>({
+  mutationFn: async (payload: WalletStellarTransferPayload) => {
+    const { walletId, destinationAddress, amount, pinCode } = payload;
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (pinCode) {
+      headers["x-pin-code"] = pinCode;
+    }
+
+    return client({
+      url: `functions/v1/wallets/${walletId}/stellar-transfer`,
+      method: "POST",
+      headers,
+      data: {
+        destinationAddress,
+        amount,
+      },
+    }).then((response) => response.data);
+  },
+} as UseMutationOptions<WalletStellarTransferResponse, AxiosError<WalletStellarTransferErrors>, WalletStellarTransferPayload>);

@@ -172,7 +172,7 @@ function WalletHandler({ children }: { children: React.ReactNode }) {
     if (!user) {
       refreshUser();
     }
-  }, [merchant, user]);
+  }, [merchant, user, refreshUser, refetchMerchant]);
 
   if (!merchant || !user) {
     return <LoadingScreen />;

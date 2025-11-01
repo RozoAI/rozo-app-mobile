@@ -34,9 +34,7 @@ export function SettingScreen() {
   const { success: toastSucces } = useToast();
 
   const handleClearCache = () => {
-    console.log(storage.toJSON());
     storage.clearAll();
-    console.log(storage.toJSON());
     toastSucces("Cache Cleared");
   };
 

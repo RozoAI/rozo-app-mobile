@@ -93,6 +93,8 @@ export const MerchantProvider: React.FC<MerchantProviderProps> = ({
     }
     return defaultToken;
   }, [merchant]);
+  console.log("[MerchantProvider] merchant:", merchant);
+  console.log("[MerchantProvider] merchantToken:", merchantToken);
 
   const defaultCurrency = useMemo(() => {
     const currency = merchant?.default_currency ?? "USD";

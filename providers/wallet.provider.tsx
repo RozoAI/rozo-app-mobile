@@ -155,6 +155,14 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     return match ?? wallets[0] ?? null;
   }, [wallets, preferredPrimaryChain]);
 
+  useEffect(() => {
+    if (merchant) {
+      setPreferredPrimaryChain(merchant.default_token_id);
+    } else {
+      refetchMerchant();
+    }
+  }, [merchant, refetchMerchant]);
+
   // Load preferred chain once wallets are known
   useEffect(() => {
     const stored = getItem<MerchantDefaultTokenID>(preferredChainStorageKey);
@@ -169,7 +177,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
   const handleCreateWallet = useCallback(
     async (chain: "ethereum" | "stellar") => {
-      if (!user) {
+      if (!user || !merchant) {
         return;
       }
 
@@ -191,14 +199,22 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
               createAdditional: true,
             });
           } else {
-            await createOtherChainWallet({
+            const { wallet } = await createOtherChainWallet({
               chainType: chain,
+            });
+
+            await updateProfile({
+              email: merchant.email,
+              display_name: merchant.display_name,
+              logo: merchant.logo_url,
+              stellar_address: wallet.address,
             });
           }
 
           console.log(`[WALLET CREATED] for chain ${chain}`);
 
           await refreshUser();
+          await refetchMerchant();
         }
       } catch (error) {
         throw error;
@@ -206,7 +222,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         setIsCreating(false);
       }
     },
-    [user]
+    [user, merchant]
   );
 
   // Auto-create Ethereum wallet for fresh users
@@ -236,6 +252,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
   const setPreferredPrimaryChain = useCallback(
     async (token: MerchantDefaultTokenID) => {
+      console.log("[setPreferredPrimaryChain] token:", token);
       setPreferredPrimaryChainState(token);
       await setItem(preferredChainStorageKey, token);
     },
@@ -253,8 +270,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
   const handleSwitchWallet = useCallback(async () => {
     try {
-      console.log({ user, merchant });
-
+      console.log("[handleSwitchWallet] user:", user);
+      console.log("[handleSwitchWallet] merchant:", merchant);
       if (!user || !merchant) return;
       setIsSwitching(true);
       const preferredBeforeChanged =
@@ -268,10 +285,17 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
       if (!isPreferredExist) {
         await handleCreateWallet(preferredBeforeChanged);
+        // Refresh user again to ensure we have the latest wallet data
+        // before proceeding with the switch
+        await refreshUser();
+        // Small delay to ensure React processes the state update
+        // This ensures wallets memo recomputes with the new user data
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       const newPrimaryChain =
         preferredPrimaryChain === "USDC_BASE" ? "USDC_XLM" : "USDC_BASE";
+      console.log("[handleSwitchWallet] newPrimaryChain:", newPrimaryChain);
       await updateProfile({
         email: merchant.email,
         display_name: merchant.display_name,
@@ -287,7 +311,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     } finally {
       setIsSwitching(false);
     }
-  }, [user, preferredPrimaryChain]);
+  }, [user, merchant, preferredPrimaryChain, refreshUser]);
 
   const getBalance = useCallback(async () => {
     try {

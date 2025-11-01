@@ -6,8 +6,7 @@ import React from "react";
 export const StellarWalletStatusInformation: React.FC = () => {
   const { account, hasUsdcTrustline } = useStellar();
 
-  // Show when account doesn't exist (null) OR when account exists but no USDC trustline
-  if (account === undefined || hasUsdcTrustline) return null;
+  if (account && hasUsdcTrustline) return null;
 
   return (
     <Alert action="error" variant="solid" className="rounded-xl">

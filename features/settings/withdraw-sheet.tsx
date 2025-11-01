@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { StrKey } from "@stellar/stellar-sdk";
 import { InfoIcon } from "lucide-react-native";
 import React, {
   forwardRef,
@@ -65,12 +66,14 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
     const { t } = useTranslation();
     const { transfer } = useTokenTransfer();
     const { success, error: showError } = useToast();
-    const { balances } = useWallet();
+    const { balances, preferredPrimaryChain } = useWallet();
     const insets = useSafeAreaInsets();
     const bottomInset = useKeyboardBottomInset();
 
     const balance = useMemo<TokenBalanceResult>(() => {
-      const exist = (balances || []).find((item) => item.asset === "USDC");
+      const exist = (balances || []).find(
+        (item) => (item.asset || "").toUpperCase() === "USDC"
+      );
       if (exist) {
         return {
           balance: exist.display_values.usdc || "0",
@@ -112,7 +115,26 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
     // Create Zod schema for form validation - memoized to prevent recreation
     const formSchema = useMemo(() => {
       return z.object({
-        withdrawAddress: z.string().trim().min(1, t("validation.required")),
+        withdrawAddress: z
+          .string()
+          .trim()
+          .min(1, t("validation.required"))
+          .refine(
+            (val) => {
+              if (preferredPrimaryChain === "USDC_XLM") {
+                // Validate Stellar address (must be valid Ed25519 public key)
+                return StrKey.isValidEd25519PublicKey(val);
+              }
+              // For Base network, validate as Ethereum address
+              return /^0x[a-fA-F0-9]{40}$/.test(val);
+            },
+            {
+              message:
+                preferredPrimaryChain === "USDC_XLM"
+                  ? "Invalid Stellar address"
+                  : "Invalid wallet address",
+            }
+          ),
         amount: z
           .string()
           .trim()
@@ -127,7 +149,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
             message: t("validation.maxAmount", { max: maxAmount }),
           }),
       });
-    }, [t, maxAmount]);
+    }, [t, maxAmount, preferredPrimaryChain]);
 
     const {
       control,
@@ -255,42 +277,81 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
                 </Box>
 
                 <VStack space="md" className="w-full">
-                  <Alert
-                    action="info"
-                    className="flex w-full flex-row items-start gap-4"
-                    style={{ paddingVertical: 16 }}
-                  >
-                    <AlertIcon as={InfoIcon} className="mt-1" />
-                    <VStack className="flex-1">
-                      <Text
-                        className="font-semibold text-typography-900"
-                        size="xs"
-                      >
-                        Information
-                      </Text>
-                      <AlertText
-                        className="font-light text-typography-900"
-                        size="xs"
-                      >
-                        Currently, withdrawals are only supported for{" "}
+                  {preferredPrimaryChain === "USDC_BASE" && (
+                    <Alert
+                      action="info"
+                      className="flex w-full flex-row items-start gap-4"
+                      style={{ paddingVertical: 16 }}
+                    >
+                      <AlertIcon as={InfoIcon} className="mt-1" />
+                      <VStack className="flex-1">
                         <Text
                           className="font-semibold text-typography-900"
                           size="xs"
                         >
-                          USDC on Base network.
-                        </Text>{" "}
-                        Please ensure the receiving wallet address is compatible
-                        with{" "}
+                          Information
+                        </Text>
+                        <AlertText
+                          className="font-light text-typography-900"
+                          size="xs"
+                        >
+                          Currently, withdrawals are only supported for{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            USDC on Base network.
+                          </Text>{" "}
+                          Please ensure the receiving wallet address is
+                          compatible with{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            Base network
+                          </Text>{" "}
+                          to avoid loss of funds.
+                        </AlertText>
+                      </VStack>
+                    </Alert>
+                  )}
+                  {preferredPrimaryChain === "USDC_XLM" && (
+                    <Alert
+                      action="info"
+                      className="flex w-full flex-row items-start gap-4"
+                      style={{ paddingVertical: 16 }}
+                    >
+                      <AlertIcon as={InfoIcon} className="mt-1" />
+                      <VStack className="flex-1">
                         <Text
                           className="font-semibold text-typography-900"
                           size="xs"
                         >
-                          Base network
-                        </Text>{" "}
-                        to avoid loss of funds.
-                      </AlertText>
-                    </VStack>
-                  </Alert>
+                          Information
+                        </Text>
+                        <AlertText
+                          className="font-light text-typography-900"
+                          size="xs"
+                        >
+                          Currently, withdrawals are only supported for{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            USDC on Stellar network.
+                          </Text>{" "}
+                          Please ensure the receiving wallet address is a valid{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            Stellar address
+                          </Text>{" "}
+                          to avoid loss of funds.
+                        </AlertText>
+                      </VStack>
+                    </Alert>
+                  )}
                   <Controller
                     control={control}
                     name="withdrawAddress"

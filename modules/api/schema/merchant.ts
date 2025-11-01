@@ -15,6 +15,7 @@ export const MerchantProfileSchema = z.object({
   logo_url: z.string().url().nullable(),
   merchant_id: z.string().uuid(),
   wallet_address: z.string(),
+  stellar_address: z.string().nullable(),
   // PIN-related fields
   status: z.enum(["ACTIVE", "INACTIVE", "PIN_BLOCKED"]),
   has_pin: z.boolean(),
@@ -26,6 +27,8 @@ export const UpdateMerchantProfileSchema = z.object({
     .min(2, { message: "Display name must be at least 2 characters" })
     .max(50, { message: "Display name must be less than 50 characters" }),
   email: z.string().email(),
+  logo: z.string().url().nullable(),
+  stellar_address: z.string().nullable(),
 });
 
 export type MerchantProfile = z.infer<typeof MerchantProfileSchema>;

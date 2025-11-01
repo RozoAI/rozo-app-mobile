@@ -56,12 +56,15 @@ export const useStellarUSDCTransactions = createInfiniteQuery<
         const hash: string = op.transaction_hash || op.id;
         const timestamp: string = new Date(op.created_at).toLocaleString();
         const url = `https://stellar.expert/explorer/public/tx/${hash}`;
-
+        console.log("[useStellarUSDCTransactions] amount:", amount);
         return {
           hash,
           from,
           to,
-          value: (Number(amount) / (10 * 7)).toFixed(2),
+          value: (amount.includes(".")
+            ? parseFloat(amount)
+            : Number(amount) / 1e7
+          ).toFixed(2),
           tokenDecimal: "7",
           timestamp,
           url,
@@ -69,7 +72,7 @@ export const useStellarUSDCTransactions = createInfiniteQuery<
           direction,
         } as Transaction;
       });
-
+    console.log("[useStellarUSDCTransactions] transactions:", transactions);
     await setItem(cacheKey, transactions, CACHE_DURATION);
     return transactions;
   },

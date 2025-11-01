@@ -11,11 +11,12 @@ import { type Address } from "viem";
 
 import { type TokenTransferResult } from "@/libs/tokens";
 import { getShortId } from "@/libs/utils";
-import { useWalletTransfer } from "@/modules/api/api/merchant/wallets";
-import { useApp } from "@/providers/app.provider";
+import {
+  useWalletStellarTransfer,
+  useWalletTransfer,
+} from "@/modules/api/api/merchant/wallets";
 
-import { useStellarTransfer } from "@/libs/stellar/transfer";
-import { useWallet } from "@/providers";
+import { useMerchant, useWallet } from "@/providers";
 import { useStellar } from "@/providers/stellar.provider";
 
 type TransferStatus = {
@@ -44,11 +45,11 @@ type UseTokenTransferResult = {
 };
 
 export function useTokenTransfer(): UseTokenTransferResult {
-  const { merchantToken } = useApp();
+  const { merchantToken } = useMerchant();
   const { mutateAsync: walletTransfer } = useWalletTransfer();
+  const { mutateAsync: walletStellarTransfer } = useWalletStellarTransfer();
   const { primaryWallet, preferredPrimaryChain } = useWallet();
 
-  const { transfer: stellarTransfer } = useStellarTransfer();
   const { isConnected } = useStellar();
 
   const walletsPrivy = useEmbeddedEthereumWallet();
@@ -118,7 +119,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
           method: "eth_requestAccounts",
         });
         console.log("[useTokenTransfer] Accounts:", accounts);
-
+        console.log("[useTokenTransfer] Merchant Token:", merchantToken);
         const signature = await provider.request({
           method: "personal_sign",
           params: [
@@ -183,26 +184,75 @@ export function useTokenTransfer(): UseTokenTransferResult {
           return { success: false, error };
         }
       } else if (preferredPrimaryChain === "USDC_XLM" && isConnected) {
-        const result = await stellarTransfer({
-          bridge: false,
-          payload: {
-            address: toAddress,
-            amount: amount,
-          },
+        if (!primaryWallet) {
+          const error = new Error("Wallet not available");
+          console.error(
+            "[useTokenTransfer] Error: Wallet not available for Stellar transfer"
+          );
+          setStatus({
+            isLoading: false,
+            error: error.message,
+            transactionHash: null,
+            signature: null,
+            success: false,
+          });
+          return { success: false, error };
+        }
+
+        console.log("[useTokenTransfer] Stellar transfer payload:", {
+          walletId: primaryWallet.id,
+          destinationAddress: toAddress,
+          amount: amount,
         });
 
-        if (result) {
+        const response = await walletStellarTransfer({
+          walletId: primaryWallet.id,
+          destinationAddress: toAddress,
+          amount: amount,
+          pinCode: options.pinCode, // Pass PIN code if provided
+        });
+
+        console.log(
+          "[useTokenTransfer] walletStellarTransfer response:",
+          response
+        );
+
+        if (response.success && response.result?.successful) {
+          setStatus({
+            isLoading: false,
+            error: null,
+            transactionHash: response.result.hash,
+            signature: null,
+            success: true,
+          });
+
+          console.log(
+            "[useTokenTransfer] Stellar transfer successful. Tx hash:",
+            response.result.hash
+          );
+
           return {
             success: true,
             error: undefined,
             signature: undefined,
-            transactionHash: result.hash,
+            transactionHash: response.result.hash,
           };
         } else {
-          return {
+          const errorMessage =
+            "error" in response ? response.error : "Transfer failed";
+          const error = new Error(errorMessage);
+          console.error(
+            "[useTokenTransfer] Stellar transfer failed:",
+            errorMessage
+          );
+          setStatus({
+            isLoading: false,
+            error: errorMessage,
+            transactionHash: null,
+            signature: null,
             success: false,
-            error: "Failed to transfer with Stellar",
-          };
+          });
+          return { success: false, error };
         }
       }
     } catch (err) {

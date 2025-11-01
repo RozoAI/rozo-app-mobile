@@ -20,7 +20,7 @@ export type Network = {
   readonly key: string;
   readonly label: string;
   readonly description: string;
-  readonly chain: ReturnType<typeof defineChain>;
+  readonly chain: ReturnType<typeof defineChain> | null;
   readonly networkId: string;
   readonly feeSymbol: string;
   readonly feeDecimal: number;
@@ -75,6 +75,26 @@ const networksData: readonly Network[] = [
         networkKey: "base",
         address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
         decimal: 6,
+        maxDecimals: 2,
+      },
+    ],
+  },
+  {
+    key: "stellar",
+    label: "Stellar",
+    description: "Stellar is a decentralized network for token transfers.",
+    networkId: "0x900",
+    feeSymbol: "Stellar",
+    feeDecimal: 18,
+    transactionUrl: "https://stellar.expert/explorer/public/tx",
+    chain: null,
+    tokens: [
+      {
+        key: "USDC_XLM",
+        label: "USDC",
+        networkKey: "stellar",
+        address: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+        decimal: 7,
         maxDecimals: 2,
       },
     ],

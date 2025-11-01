@@ -30,6 +30,7 @@ type UpdateProfilePayload = {
   display_name?: string;
   logo?: string | null;
   default_token_id?: MerchantDefaultTokenID;
+  stellar_address?: string;
 };
 
 export const useCreateProfile = createMutation<Response, Payload, AxiosError>({
