@@ -44,7 +44,7 @@ module.exports = {
         ITSAppUsesNonExemptEncryption: false,
         UIBackgroundModes: ["remote-notification"],
       },
-      googleServicesFile: "./GoogleService-Info.plist",
+      googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
     },
     android: {
       adaptiveIcon: {
@@ -57,7 +57,7 @@ module.exports = {
       predictiveBackGestureEnabled: false,
       package: packageId,
       playStoreUrl: `https://play.google.com/store/apps/details?id=${packageId}`,
-      googleServicesFile: "./google-services.json",
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
       intentFilters: [
         {
           action: "VIEW",
@@ -103,10 +103,10 @@ module.exports = {
         "@react-native-firebase/app",
         {
           android: {
-            googleServicesFile: "./google-services.json",
+            googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
           },
           ios: {
-            googleServicesFile: "./GoogleService-Info.plist",
+            googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
           },
         },
       ],
