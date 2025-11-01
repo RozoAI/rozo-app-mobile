@@ -12,7 +12,7 @@
     "web": "expo start --web",
     "prebuild": "expo prebuild",
     "prebuild:clean": "expo prebuild --clean",
-    "sync:types": "bunx expo customize tsconfig.json",
+    "sync:types": "bun x expo customize tsconfig.json",
     "lint": "expo lint",
     "build:dev:android": "eas build --profile development --platform android",
     "build:dev:ios": "eas build --profile development --platform ios",
@@ -28,7 +28,7 @@
     "submit:all": "eas submit --platform all",
     "update:preview": "eas update --branch preview --message",
     "update:prod": "eas update --branch production --message",
-    "postinstall": "bunx rn-nodeify --install process,url,events,https,http,util,stream,crypto,vm,buffer --hack"
+    "postinstall": "bun x rn-nodeify --install process,url,events,https,http,util,stream,crypto,vm,buffer --hack"
   },
   "dependencies": {
     "@dev-plugins/react-query": "^0.3.1",
