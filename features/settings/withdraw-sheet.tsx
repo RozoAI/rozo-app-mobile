@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { StrKey } from "@stellar/stellar-sdk";
 import { InfoIcon } from "lucide-react-native";
 import React, {
   forwardRef,
@@ -122,9 +121,10 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
           .refine(
             (val) => {
               if (preferredPrimaryChain === "USDC_XLM") {
-                // Validate Stellar address (must be valid Ed25519 public key)
-                return StrKey.isValidEd25519PublicKey(val);
+                // Validate Stellar address using regex (G followed by 55 base32 chars)
+                return /^G[0-9A-Z]{55}$/.test(val);
               }
+
               // For Base network, validate as Ethereum address
               return /^0x[a-fA-F0-9]{40}$/.test(val);
             },

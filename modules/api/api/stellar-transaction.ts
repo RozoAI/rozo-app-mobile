@@ -1,12 +1,19 @@
-import { type AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 import { createInfiniteQuery } from "react-query-kit";
 
 import { getItem, setItem } from "@/libs/storage";
 
-import { Asset, Horizon } from "@stellar/stellar-sdk";
 import { type Transaction } from "../schema/transaction";
 
 const PAGE_SIZE = 5;
+const HORIZON_API = "https://horizon.stellar.org";
+const USDC_CODE = "USDC";
+const USDC_ISSUER = "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN";
+
+const horizonClient = axios.create({
+  baseURL: HORIZON_API,
+  timeout: 20 * 1000,
+});
 
 export const useStellarUSDCTransactions = createInfiniteQuery<
   Transaction[],
@@ -26,28 +33,26 @@ export const useStellarUSDCTransactions = createInfiniteQuery<
       if (cached) return cached;
     }
 
-    const server = new Horizon.Server("https://horizon.stellar.org");
-    const USDC = new Asset(
-      "USDC",
-      "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN"
+    const response = await horizonClient.get(
+      `/accounts/${variables.address}/payments`,
+      {
+        signal: context.signal,
+        params: {
+          limit: PAGE_SIZE,
+          order: "desc",
+        },
+      }
     );
 
-    const payments = await server
-      .payments()
-      .forAccount(variables.address)
-      .limit(PAGE_SIZE)
-      .order("desc")
-      .call();
-
-    const transactions: Transaction[] = (payments.records as any[])
+    const transactions: Transaction[] = (response.data._embedded?.records || [])
       .filter(
-        (op) =>
+        (op: any) =>
           op.asset_type !== "native" &&
-          op.asset_code === USDC.code &&
-          op.asset_issuer === USDC.issuer &&
+          op.asset_code === USDC_CODE &&
+          op.asset_issuer === USDC_ISSUER &&
           op.type === "payment"
       )
-      .map((op) => {
+      .map((op: any) => {
         const from: string = op.from || "";
         const to: string = op.to || "";
         const amount: string = op.amount || "0";

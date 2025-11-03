@@ -1,5 +1,3 @@
-import { Asset } from "@stellar/stellar-sdk";
-
 /**
  * Configuration interface for Stellar assets
  */
@@ -7,7 +5,6 @@ export interface StellarAssetConfig {
   readonly code: string;
   readonly decimals: number;
   readonly issuer?: string;
-  readonly asset: Asset;
 }
 
 /**
@@ -27,16 +24,7 @@ export class StellarConfig {
    */
   static readonly NETWORK: StellarNetworkConfig = {
     rpcUrl: "https://horizon.stellar.org",
-    networkPassphrase: "Public Global Stellar Network ; September 2015"
-  } as const;
-
-  /**
-   * Native XLM asset configuration
-   */
-  static readonly NATIVE_ASSET: StellarAssetConfig = {
-    code: "XLM",
-    decimals: 7,
-    asset: Asset.native()
+    networkPassphrase: "Public Global Stellar Network ; September 2015",
   } as const;
 
   /**
@@ -46,9 +34,6 @@ export class StellarConfig {
     code: "USDC",
     decimals: 7,
     issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
-    get asset() {
-      return new Asset(this.code, this.issuer!);
-    }
   } as const;
 
   /**
@@ -56,8 +41,6 @@ export class StellarConfig {
    */
   static getAssetByCode(code: string): StellarAssetConfig | undefined {
     switch (code.toUpperCase()) {
-      case "XLM":
-        return this.NATIVE_ASSET;
       case "USDC":
         return this.USDC_ASSET;
       default:
@@ -69,6 +52,6 @@ export class StellarConfig {
    * Get all available assets
    */
   static getAllAssets(): readonly StellarAssetConfig[] {
-    return [this.NATIVE_ASSET, this.USDC_ASSET] as const;
+    return [this.USDC_ASSET] as const;
   }
 }

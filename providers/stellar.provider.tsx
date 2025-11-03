@@ -7,28 +7,32 @@ import {
   formatStellarBalancesAsWalletInfo,
   StellarBalance,
 } from "@/libs/stellar/utils";
-import { Asset, Horizon } from "@stellar/stellar-sdk";
+import axios from "axios";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { WalletBalanceInfo } from "./wallet.provider";
 
 type StellarContextProvider = { children: ReactNode; stellarRpcUrl?: string };
 
+type StellarAccountResponse = {
+  id: string;
+  account_id: string;
+  balances: StellarBalance[];
+  [key: string]: any;
+};
+
 type StellarContextProviderValue = {
-  server: Horizon.Server | undefined;
   publicKey: string | undefined;
   setPublicKey: (publicKey: string) => void;
   hasUsdcTrustline: boolean;
-  account: Horizon.AccountResponse | undefined | null;
+  account: StellarAccountResponse | undefined | null;
   balances: WalletBalanceInfo[];
   isConnected: boolean;
   disconnect: () => void;
-  convertXlmToUsdc: (amount: string) => Promise<string>;
   refreshAccount: () => Promise<WalletBalanceInfo[]>;
 };
 
 const initialContext = {
-  server: undefined,
   publicKey: undefined,
   setPublicKey: () => {},
   hasUsdcTrustline: false,
@@ -36,7 +40,6 @@ const initialContext = {
   balances: [],
   isConnected: false,
   disconnect: () => {},
-  convertXlmToUsdc: () => Promise.resolve(""),
   refreshAccount: () => Promise.resolve([] as WalletBalanceInfo[]),
 };
 
@@ -47,8 +50,15 @@ export const StellarProvider = ({
   children,
   stellarRpcUrl,
 }: StellarContextProvider) => {
-  const server = new Horizon.Server(
-    stellarRpcUrl ?? StellarConfig.NETWORK.rpcUrl
+  const horizonUrl = stellarRpcUrl ?? StellarConfig.NETWORK.rpcUrl;
+
+  const horizonClient = useMemo(
+    () =>
+      axios.create({
+        baseURL: horizonUrl,
+        timeout: 20 * 1000,
+      }),
+    [horizonUrl]
   );
 
   // Auto-initialize Stellar wallet for authenticated users
@@ -56,7 +66,7 @@ export const StellarProvider = ({
 
   const [publicKey, setPublicKey] = useState<string | undefined>(undefined);
   const [accountInfo, setAccountInfo] = useState<
-    Horizon.AccountResponse | undefined
+    StellarAccountResponse | undefined
   >(undefined);
 
   const formattedBalances = useMemo(() => {
@@ -75,27 +85,22 @@ export const StellarProvider = ({
     );
   }, [accountInfo]);
 
-  // removed separate getAccountInfo; logic is in refreshAccount to return latest balances
-
-  const convertXlmToUsdc = async (amount: string) => {
+  const fetchAccountData = async (accountPublicKey: string) => {
     try {
-      const destAsset = StellarConfig.USDC_ASSET.asset;
-      const pathResults = await server
-        .strictSendPaths(Asset.native(), amount, [destAsset])
-        .call();
-
-      if (!pathResults?.records?.length) {
-        throw new Error("No exchange rate found for XLM swap");
-      }
-
-      // Apply 5% slippage tolerance
-      const bestPath = pathResults.records[0];
-      const estimatedDestMinAmount = (
-        parseFloat(bestPath.destination_amount) * 0.94
-      ).toFixed(2);
-
-      return estimatedDestMinAmount;
+      const response = await horizonClient.get(`/accounts/${accountPublicKey}`);
+      const data = response.data as StellarAccountResponse;
+      setAccountInfo(data);
+      return data;
     } catch (error: any) {
+      if (isAccountNotFound(error)) {
+        console.log(
+          `Account ${accountPublicKey} not found - needs activation/funding`
+        );
+        setAccountInfo(undefined);
+        return null;
+      }
+      toastError(error.message || "Failed to get account info");
+      console.error("Error loading account:", error);
       throw error;
     }
   };
@@ -104,22 +109,14 @@ export const StellarProvider = ({
     if (!publicKey) return [] as WalletBalanceInfo[];
 
     try {
-      const data = await server.loadAccount(publicKey);
-      setAccountInfo(data);
+      const data = await fetchAccountData(publicKey);
+      if (!data) return [] as WalletBalanceInfo[];
+
       const latest = formatStellarBalancesAsWalletInfo(
         (data.balances as StellarBalance[]) ?? []
       );
       return latest;
-    } catch (error: any) {
-      if (isAccountNotFound(error)) {
-        console.log(
-          `Account ${publicKey} not found - needs activation/funding`
-        );
-        setAccountInfo(undefined);
-        return [] as WalletBalanceInfo[];
-      }
-      toastError(error.message || "Failed to get account info");
-      console.error("Error loading account:", error);
+    } catch {
       return [] as WalletBalanceInfo[];
     }
   };
@@ -135,8 +132,9 @@ export const StellarProvider = ({
 
   useEffect(() => {
     if (publicKey && !accountInfo) {
-      refreshAccount();
+      fetchAccountData(publicKey);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, accountInfo]);
 
   return (
@@ -144,13 +142,11 @@ export const StellarProvider = ({
       value={{
         publicKey,
         setPublicKey,
-        server,
         hasUsdcTrustline,
         account: accountInfo,
         balances: formattedBalances,
         isConnected: !!publicKey,
         disconnect,
-        convertXlmToUsdc,
         refreshAccount,
       }}
     >

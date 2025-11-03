@@ -59,10 +59,6 @@ export function formatStellarAmount(amount: string, decimals: number): string {
  * Get asset configuration for a given balance
  */
 export function getAssetConfigForBalance(balance: StellarBalance) {
-  if (balance.asset_type === "native") {
-    return StellarConfig.NATIVE_ASSET;
-  }
-
   if (balance.asset_code) {
     return StellarConfig.getAssetByCode(balance.asset_code);
   }
