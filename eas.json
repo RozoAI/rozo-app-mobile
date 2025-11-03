@@ -16,6 +16,7 @@
       "distribution": "internal",
       "channel": "preview",
       "android": {
+        "resourceClass": "large",
         "buildType": "apk"
       },
       "ios": {

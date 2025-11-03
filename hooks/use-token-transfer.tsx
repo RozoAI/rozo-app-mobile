@@ -11,10 +11,13 @@ import { type Address } from "viem";
 
 import { type TokenTransferResult } from "@/libs/tokens";
 import { getShortId } from "@/libs/utils";
-import { useWalletTransfer } from "@/modules/api/api/merchant/wallets";
-import { useApp } from "@/providers/app.provider";
+import {
+  useWalletStellarTransfer,
+  useWalletTransfer,
+} from "@/modules/api/api/merchant/wallets";
 
-import { useEVMWallet } from "./use-evm-wallet";
+import { useMerchant, useWallet } from "@/providers";
+import { useStellar } from "@/providers/stellar.provider";
 
 type TransferStatus = {
   isLoading: boolean;
@@ -42,9 +45,13 @@ type UseTokenTransferResult = {
 };
 
 export function useTokenTransfer(): UseTokenTransferResult {
-  const { merchantToken } = useApp();
+  const { merchantToken } = useMerchant();
   const { mutateAsync: walletTransfer } = useWalletTransfer();
-  const { primaryWallet: evmWallet } = useEVMWallet();
+  const { mutateAsync: walletStellarTransfer } = useWalletStellarTransfer();
+  const { primaryWallet, preferredPrimaryChain } = useWallet();
+
+  const { isConnected } = useStellar();
+
   const walletsPrivy = useEmbeddedEthereumWallet();
 
   const [status, setStatus] = useState<TransferStatus>({
@@ -90,7 +97,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
     });
 
     try {
-      if (evmWallet) {
+      if (preferredPrimaryChain === "USDC_BASE" && primaryWallet) {
         if (!walletsPrivy.wallets[0] || !merchantToken) {
           const error = new Error("Wallet or token not available");
           console.error(
@@ -112,7 +119,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
           method: "eth_requestAccounts",
         });
         console.log("[useTokenTransfer] Accounts:", accounts);
-
+        console.log("[useTokenTransfer] Merchant Token:", merchantToken);
         const signature = await provider.request({
           method: "personal_sign",
           params: [
@@ -127,7 +134,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
         console.log("[useTokenTransfer] Signature:", signature);
 
         console.log("[useTokenTransfer] Payload:", {
-          walletId: evmWallet.id,
+          walletId: primaryWallet.id,
           recipientAddress: toAddress,
           amount: parseFloat(amount),
           signature,
@@ -135,7 +142,7 @@ export function useTokenTransfer(): UseTokenTransferResult {
 
         // Use the wallet transfer API for Privy mode
         const response = await walletTransfer({
-          walletId: evmWallet.id,
+          walletId: primaryWallet.id,
           recipientAddress: toAddress,
           amount: parseFloat(amount),
           signature,
@@ -176,6 +183,77 @@ export function useTokenTransfer(): UseTokenTransferResult {
           });
           return { success: false, error };
         }
+      } else if (preferredPrimaryChain === "USDC_XLM" && isConnected) {
+        if (!primaryWallet) {
+          const error = new Error("Wallet not available");
+          console.error(
+            "[useTokenTransfer] Error: Wallet not available for Stellar transfer"
+          );
+          setStatus({
+            isLoading: false,
+            error: error.message,
+            transactionHash: null,
+            signature: null,
+            success: false,
+          });
+          return { success: false, error };
+        }
+
+        console.log("[useTokenTransfer] Stellar transfer payload:", {
+          walletId: primaryWallet.id,
+          destinationAddress: toAddress,
+          amount: amount,
+        });
+
+        const response = await walletStellarTransfer({
+          walletId: primaryWallet.id,
+          destinationAddress: toAddress,
+          amount: amount,
+          pinCode: options.pinCode, // Pass PIN code if provided
+        });
+
+        console.log(
+          "[useTokenTransfer] walletStellarTransfer response:",
+          response
+        );
+
+        if (response.success && response.result?.successful) {
+          setStatus({
+            isLoading: false,
+            error: null,
+            transactionHash: response.result.hash,
+            signature: null,
+            success: true,
+          });
+
+          console.log(
+            "[useTokenTransfer] Stellar transfer successful. Tx hash:",
+            response.result.hash
+          );
+
+          return {
+            success: true,
+            error: undefined,
+            signature: undefined,
+            transactionHash: response.result.hash,
+          };
+        } else {
+          const errorMessage =
+            "error" in response ? response.error : "Transfer failed";
+          const error = new Error(errorMessage);
+          console.error(
+            "[useTokenTransfer] Stellar transfer failed:",
+            errorMessage
+          );
+          setStatus({
+            isLoading: false,
+            error: errorMessage,
+            transactionHash: null,
+            signature: null,
+            success: false,
+          });
+          return { success: false, error };
+        }
       }
     } catch (err) {
       const errorMessage =
@@ -197,15 +275,17 @@ export function useTokenTransfer(): UseTokenTransferResult {
 
   const isAbleToTransfer = useMemo(() => {
     return !!(
-      walletsPrivy &&
-      (walletsPrivy.wallets || []).length > 0 &&
-      merchantToken
+      (preferredPrimaryChain === "USDC_BASE"
+        ? (walletsPrivy.wallets || []).length > 0
+        : isConnected) && merchantToken
     );
-  }, [walletsPrivy, merchantToken]);
+  }, [walletsPrivy, merchantToken, preferredPrimaryChain, isConnected]);
 
   return {
     isAbleToTransfer,
-    transfer,
+    transfer: transfer as (
+      options: TransferOptions
+    ) => Promise<TokenTransferResult | undefined>,
     status,
     resetStatus,
   };

@@ -4,15 +4,15 @@ import { LoadingScreen } from "@/components/loading-screen";
 import { ToastProvider } from "@/components/toast/toast-provider";
 import { type GenericWallet } from "@/contexts/auth.context";
 import { useToast } from "@/hooks/use-toast";
-import { MERCHANT_KEY, TOKEN_KEY } from "@/libs/constants";
 import { type CurrencyConfig } from "@/libs/currencies";
-import { removeItem } from "@/libs/storage";
+import { storage } from "@/libs/storage";
 import { type Token } from "@/libs/tokens";
 import { type MerchantProfile } from "@/modules/api/schema/merchant";
 import { usePrivy } from "@privy-io/expo";
 import { AuthProvider, useAuth } from "./auth.provider";
 import { MerchantProvider, useMerchant } from "./merchant.provider";
 import { PreferencesProvider, usePreferences } from "./preferences.provider";
+import { StellarProvider } from "./stellar.provider";
 import { WalletProvider, useWallet } from "./wallet.provider";
 
 // Re-export GenericWallet type for backward compatibility
@@ -58,10 +58,10 @@ export const AppContext = createContext<IContextProps>({
   wallets: [],
   primaryWallet: null,
   showPOS: false,
-  setToken: () => { },
-  setMerchant: () => { },
-  logout: async () => { },
-  togglePOS: async () => { },
+  setToken: () => {},
+  setMerchant: () => {},
+  logout: async () => {},
+  togglePOS: async () => {},
   getAccessToken: undefined,
 });
 
@@ -85,9 +85,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
         await logoutPrivy();
 
         // Clear storage
-        await removeItem(TOKEN_KEY);
-        await removeItem(MERCHANT_KEY);
-        await preferences.deleteTogglePOS();
+        storage.clearAll();
 
         // Reset merchant state
         merchant.setMerchant(undefined);
@@ -125,7 +123,7 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       showPOS: preferences.showPOS,
 
       // Actions
-      setToken: () => { }, // Not used in this simplified approach
+      setToken: () => {}, // Not used in this simplified approach
       setMerchant: merchant.setMerchant,
       logout,
       togglePOS: preferences.togglePOS,
@@ -145,8 +143,10 @@ const AppProviderInternal: React.FC<IProviderProps> = ({ children }) => {
       merchant.setMerchant,
       wallet.wallets,
       wallet.primaryWallet,
+      wallet.preferredPrimaryChain,
       preferences.showPOS,
       preferences.togglePOS,
+      wallet.setPreferredPrimaryChain,
       logout,
     ]
   );
@@ -164,11 +164,13 @@ export const AppProvider: React.FC<IProviderProps> = ({ children }) => {
     <ToastProvider>
       <AuthProvider>
         <MerchantProvider>
-          <WalletProvider>
-            <PreferencesProvider>
-              <AppProviderInternal>{children}</AppProviderInternal>
-            </PreferencesProvider>
-          </WalletProvider>
+          <StellarProvider>
+            <WalletProvider>
+              <PreferencesProvider>
+                <AppProviderInternal>{children}</AppProviderInternal>
+              </PreferencesProvider>
+            </WalletProvider>
+          </StellarProvider>
         </MerchantProvider>
       </AuthProvider>
     </ToastProvider>

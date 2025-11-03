@@ -31,7 +31,7 @@ export type EVMWallet = {
 };
 
 export function useEVMWallet() {
-  const { user: privyUser, getAccessToken } = usePrivy();
+  const { user: privyUser } = usePrivy();
   const { create: createWallet } = useEmbeddedEthereumWallet();
 
   const client = usePrivyClient();

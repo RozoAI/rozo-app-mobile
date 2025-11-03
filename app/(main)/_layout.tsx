@@ -1,10 +1,10 @@
 import { LoadingScreen } from "@/components/loading-screen";
 import { ThemedText } from "@/components/themed-text";
 import { Icon } from "@/components/ui/icon";
-import { useEVMWallet } from "@/hooks/use-evm-wallet";
 import { cn } from "@/libs/utils";
+import { useAuth, useMerchant, useWallet } from "@/providers";
 import { usePOSToggle } from "@/providers/preferences.provider";
-import { AuthBoundary, usePrivy } from "@privy-io/expo";
+import { AuthBoundary } from "@privy-io/expo";
 import { Redirect, Tabs } from "expo-router";
 import {
   Coins,
@@ -70,7 +70,7 @@ export default function TabLayout() {
                 <ThemedText
                   className={cn(
                     "text-sm font-medium",
-                    focused && `font-semibold`,
+                    focused && `font-semibold`
                   )}
                   style={{ color, fontSize: 12 }}
                 >
@@ -104,15 +104,15 @@ export default function TabLayout() {
               options={
                 showPOS
                   ? {
-                    title: t("pos.title"),
-                    tabBarIcon: ({ color }: any) => (
-                      <Icon as={ShoppingCartIcon} size="md" color={color} />
-                    ),
-                    tabBarButtonTestID: "pos-tab",
-                  }
+                      title: t("pos.title"),
+                      tabBarIcon: ({ color }: any) => (
+                        <Icon as={ShoppingCartIcon} size="md" color={color} />
+                      ),
+                      tabBarButtonTestID: "pos-tab",
+                    }
                   : {
-                    href: null,
-                  }
+                      href: null,
+                    }
               }
             />
 
@@ -153,15 +153,30 @@ export default function TabLayout() {
 }
 
 function WalletHandler({ children }: { children: React.ReactNode }) {
-  const { handleCreateWallet, hasEvmWallet } = useEVMWallet();
-  const { user } = usePrivy();
+  const { createWallet, hasWallet } = useWallet();
+  const { user, refreshUser } = useAuth();
+  const { merchant, refetchMerchant } = useMerchant();
 
   useEffect(() => {
-    if (user && !hasEvmWallet) {
-      handleCreateWallet();
+    if (user && !hasWallet) {
+      createWallet("USDC_BASE");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, hasEvmWallet]);
+  }, [user, hasWallet]);
+
+  useEffect(() => {
+    if (!merchant) {
+      refetchMerchant({ force: true, showToast: false });
+    }
+
+    if (!user) {
+      refreshUser();
+    }
+  }, [merchant, user, refreshUser, refetchMerchant]);
+
+  if (!merchant || !user) {
+    return <LoadingScreen />;
+  }
 
   return children;
 }

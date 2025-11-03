@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { type TokenBalanceResult } from "@/libs/tokens";
 import { useApp } from "@/providers/app.provider";
 
-import { useEVMWallet } from "./use-evm-wallet";
+import { useWallet } from "@/providers";
 
 type UseWalletBalanceResult = {
   balance: TokenBalanceResult | null;
@@ -19,9 +19,9 @@ export function useWalletBalance(): UseWalletBalanceResult {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { getBalance } = useEVMWallet();
+  const { getBalance, preferredPrimaryChain } = useWallet();
 
-  const fetchBalance = async () => {
+  const fetchBalance = useCallback(async () => {
     if (!primaryWallet) {
       return;
     }
@@ -29,35 +29,28 @@ export function useWalletBalance(): UseWalletBalanceResult {
     setIsLoading(true);
     setError(null);
     try {
-      if (primaryWallet) {
-        const balances = await getBalance();
+      const balances = await getBalance();
 
-        const usdcBalance = balances?.find(
-          (balance) => balance.asset === "usdc"
-        );
+      const usdcBalance = balances?.find((balance) => balance.asset === "usdc");
 
-        if (usdcBalance) {
-          setBalance({
-            balance: usdcBalance.display_values.usdc ?? "0",
-            formattedBalance: usdcBalance.display_values.usdc ?? "0",
-            token: merchantToken,
-            balanceRaw: BigInt(usdcBalance.raw_value),
-          });
-        }
-      }
+      setBalance({
+        balance: usdcBalance?.display_values.usdc ?? "0",
+        formattedBalance: usdcBalance?.display_values.usdc ?? "0",
+        token: merchantToken,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch balance");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [primaryWallet, preferredPrimaryChain, merchantToken]);
 
   // Fetch balance on component mount and when dependencies change
   useEffect(() => {
-    if (primaryWallet) {
+    if (primaryWallet && preferredPrimaryChain) {
       fetchBalance();
     }
-  }, [primaryWallet]); // More specific dependencies
+  }, [primaryWallet, preferredPrimaryChain, fetchBalance]); // More specific dependencies
 
   return useMemo(
     () => ({

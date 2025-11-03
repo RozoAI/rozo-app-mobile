@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useImperativeHandle } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Linking } from "react-native";
 
@@ -6,10 +6,12 @@ import { ThemedText } from "@/components/themed-text";
 import { Spinner } from "@/components/ui/spinner";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
-import { useBaseUSDCTransactions } from "@/modules/api/api/transactions";
+import { useBaseUSDCTransactions } from "@/modules/api/api/base-transaction";
 import { useApp } from "@/providers/app.provider";
 
 import { HStack } from "@/components/ui/hstack";
+import { useStellarUSDCTransactions } from "@/modules/api/api/stellar-transaction";
+import { useWallet } from "@/providers";
 import EmptyTransactionsState from "../transactions/empty-transactions";
 import { TransactionCard } from "../transactions/transaction-card";
 
@@ -23,20 +25,47 @@ export const BalanceTransactions = forwardRef<
 >(({ onRefresh }, ref) => {
   const { t } = useTranslation();
   const { primaryWallet } = useApp();
+  const { preferredPrimaryChain } = useWallet();
+
+  const isETH = useMemo(() => {
+    return preferredPrimaryChain === "USDC_BASE";
+  }, [preferredPrimaryChain]);
 
   const {
-    data: transactionData,
-    isLoading: isTransactionLoading,
-    refetch: refetchTransactions,
+    data: baseData,
+    isLoading: isBaseLoading,
+    refetch: refetchBase,
   } = useBaseUSDCTransactions({
     variables: { address: primaryWallet?.address || "", force: true },
+    enabled: isETH,
   });
+
+  const {
+    data: stellarData,
+    isLoading: isStellarLoading,
+    refetch: refetchStellar,
+  } = useStellarUSDCTransactions({
+    variables: { address: primaryWallet?.address || "", force: true },
+    enabled: !isETH,
+  });
+
+  const transactionData = useMemo(() => {
+    return isETH ? baseData : stellarData;
+  }, [baseData, stellarData, isETH]);
 
   const transactions = transactionData?.pages.flat() ?? [];
 
+  const isTransactionLoading = useMemo(() => {
+    return isETH ? isBaseLoading : isStellarLoading;
+  }, [isBaseLoading, isStellarLoading, isETH]);
+
   const handleRefresh = useCallback(() => {
-    refetchTransactions();
-  }, [refetchTransactions]);
+    if (isETH) {
+      refetchBase();
+    } else {
+      refetchStellar();
+    }
+  }, [isETH]);
 
   useImperativeHandle(ref, () => ({
     refresh: handleRefresh,

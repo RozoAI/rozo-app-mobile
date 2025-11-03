@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { RefreshControl, ScrollView } from "react-native";
 
 import { VStack } from "@/components/ui/vstack";
-import { useWalletBalance } from "@/hooks/use-wallet-balance";
 import { useToast } from "@/hooks/use-toast";
+import { useWalletBalance } from "@/hooks/use-wallet-balance";
 
 import { DepositDialogRef, TopupSheet } from "../settings/deposit-sheet";
 import { WithdrawDialogRef, WithdrawSheet } from "../settings/withdraw-sheet";
@@ -15,7 +15,7 @@ import { BalanceTransactions } from "./balance-transactions";
 
 export function BalanceScreen() {
   const { t } = useTranslation();
-  const { balance, refetch, isLoading } = useWalletBalance();
+  const { refetch, isLoading } = useWalletBalance();
   const { success } = useToast();
 
   const depositDialogRef = useRef<DepositDialogRef>(null);
@@ -73,7 +73,6 @@ export function BalanceScreen() {
               space="lg"
             >
               <BalanceInfo
-                balance={balance ?? undefined}
                 isLoading={isLoading}
                 refetch={handleBalanceRefresh}
               />
@@ -99,11 +98,7 @@ export function BalanceScreen() {
       />
 
       {/* Withdraw Sheet */}
-      <WithdrawSheet
-        ref={withdrawDialogRef}
-        onSuccess={() => refetch()}
-        balance={balance ?? undefined}
-      />
+      <WithdrawSheet ref={withdrawDialogRef} onSuccess={() => refetch()} />
     </>
   );
 }

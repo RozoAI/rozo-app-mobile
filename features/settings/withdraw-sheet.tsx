@@ -41,6 +41,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTokenTransfer } from "@/hooks/use-token-transfer";
 import { type TokenBalanceResult } from "@/libs/tokens";
 
+import { useWallet } from "@/providers";
 import { WithdrawManualConfirmation } from "./withdraw-manual-confirmation";
 
 export type WithdrawDialogRef = {
@@ -51,7 +52,6 @@ export type WithdrawDialogRef = {
 type WithdrawDialogProps = {
   onClose?: () => void;
   onSuccess?: () => void;
-  balance?: TokenBalanceResult;
 };
 
 type FormValues = {
@@ -61,12 +61,30 @@ type FormValues = {
 
 // Withdraw Sheet Component
 export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
-  ({ onClose, onSuccess, balance }, ref) => {
+  ({ onClose, onSuccess }, ref) => {
     const { t } = useTranslation();
     const { transfer } = useTokenTransfer();
     const { success, error: showError } = useToast();
+    const { balances, preferredPrimaryChain } = useWallet();
     const insets = useSafeAreaInsets();
     const bottomInset = useKeyboardBottomInset();
+
+    const balance = useMemo<TokenBalanceResult>(() => {
+      const exist = (balances || []).find(
+        (item) => (item.asset || "").toUpperCase() === "USDC"
+      );
+      if (exist) {
+        return {
+          balance: exist.display_values.usdc || "0",
+          formattedBalance: exist.display_values.usdc || "0",
+        };
+      }
+
+      return {
+        balance: "0",
+        formattedBalance: "0",
+      };
+    }, [balances]);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,7 +114,27 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
     // Create Zod schema for form validation - memoized to prevent recreation
     const formSchema = useMemo(() => {
       return z.object({
-        withdrawAddress: z.string().trim().min(1, t("validation.required")),
+        withdrawAddress: z
+          .string()
+          .trim()
+          .min(1, t("validation.required"))
+          .refine(
+            (val) => {
+              if (preferredPrimaryChain === "USDC_XLM") {
+                // Validate Stellar address using regex (G followed by 55 base32 chars)
+                return /^G[0-9A-Z]{55}$/.test(val);
+              }
+
+              // For Base network, validate as Ethereum address
+              return /^0x[a-fA-F0-9]{40}$/.test(val);
+            },
+            {
+              message:
+                preferredPrimaryChain === "USDC_XLM"
+                  ? "Invalid Stellar address"
+                  : "Invalid wallet address",
+            }
+          ),
         amount: z
           .string()
           .trim()
@@ -111,7 +149,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
             message: t("validation.maxAmount", { max: maxAmount }),
           }),
       });
-    }, [t, maxAmount]);
+    }, [t, maxAmount, preferredPrimaryChain]);
 
     const {
       control,
@@ -149,7 +187,7 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
       } catch (error) {
         // Error handling is done inside the hook
         // Only show generic errors that aren't PIN-related
-        if (error instanceof Error && !error.message.includes('PIN')) {
+        if (error instanceof Error && !error.message.includes("PIN")) {
           showError(`${t("withdraw.error")} - ${error.message}`);
         }
       } finally {
@@ -231,193 +269,235 @@ export const WithdrawSheet = forwardRef<WithdrawDialogRef, WithdrawDialogProps>(
               keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
               style={{ width: "100%" }}
             >
-            <VStack space="lg" className="w-full">
-              <Box className="items-center">
-                <Heading size="lg" className="text-typography-950">
-                  {t("general.withdraw")}
-                </Heading>
-              </Box>
+              <VStack space="lg" className="w-full">
+                <Box className="items-center">
+                  <Heading size="lg" className="text-typography-950">
+                    {t("general.withdraw")}
+                  </Heading>
+                </Box>
 
-              <VStack space="md" className="w-full">
-                <Alert
-                  action="info"
-                  className="flex w-full flex-row items-start gap-4"
-                  style={{ paddingVertical: 16 }}
-                >
-                  <AlertIcon as={InfoIcon} className="mt-1" />
-                  <VStack className="flex-1">
-                    <Text
-                      className="font-semibold text-typography-900"
-                      size="xs"
+                <VStack space="md" className="w-full">
+                  {preferredPrimaryChain === "USDC_BASE" && (
+                    <Alert
+                      action="info"
+                      className="flex w-full flex-row items-start gap-4"
+                      style={{ paddingVertical: 16 }}
                     >
-                      Information
-                    </Text>
-                    <AlertText
-                      className="font-light text-typography-900"
-                      size="xs"
-                    >
-                      Currently, withdrawals are only supported for{" "}
-                      <Text
-                        className="font-semibold text-typography-900"
-                        size="xs"
-                      >
-                        USDC on Base network.
-                      </Text>{" "}
-                      Please ensure the receiving wallet address is compatible
-                      with{" "}
-                      <Text
-                        className="font-semibold text-typography-900"
-                        size="xs"
-                      >
-                        Base network
-                      </Text>{" "}
-                      to avoid loss of funds.
-                    </AlertText>
-                  </VStack>
-                </Alert>
-                <Controller
-                  control={control}
-                  name="withdrawAddress"
-                  render={({ field: { onChange, value } }) => (
-                    <FormControl
-                      isInvalid={!!errors.withdrawAddress}
-                      className="w-full"
-                    >
-                      <FormControlLabel>
-                        <FormControlLabelText size="sm">
-                          {t("general.walletAddress")}
-                        </FormControlLabelText>
-                      </FormControlLabel>
-                      <Input
-                        className="w-full rounded-xl"
-                        isInvalid={!!errors.withdrawAddress}
-                      >
-                        <InputField
-                          placeholder={t("withdraw.walletAddressPlaceholder")}
-                          value={value}
-                          onChangeText={onChange}
-                          autoCapitalize="none"
-                          autoCorrect={false}
-                          returnKeyType="next"
-                          onSubmitEditing={() => Keyboard.dismiss()}
-                        />
-                      </Input>
-                      {errors.withdrawAddress && (
-                        <FormControlError>
-                          <FormControlErrorText>
-                            {errors.withdrawAddress.message}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      )}
-                    </FormControl>
+                      <AlertIcon as={InfoIcon} className="mt-1" />
+                      <VStack className="flex-1">
+                        <Text
+                          className="font-semibold text-typography-900"
+                          size="xs"
+                        >
+                          Information
+                        </Text>
+                        <AlertText
+                          className="font-light text-typography-900"
+                          size="xs"
+                        >
+                          Currently, withdrawals are only supported for{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            USDC on Base network.
+                          </Text>{" "}
+                          Please ensure the receiving wallet address is
+                          compatible with{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            Base network
+                          </Text>{" "}
+                          to avoid loss of funds.
+                        </AlertText>
+                      </VStack>
+                    </Alert>
                   )}
-                />
-
-                <Controller
-                  control={control}
-                  name="amount"
-                  render={({ field: { onChange, value } }) => (
-                    <FormControl isInvalid={!!errors.amount} className="w-full">
-                      <FormControlLabel>
-                        <FormControlLabelText size="sm">
-                          {t("general.amount")}
-                        </FormControlLabelText>
-                      </FormControlLabel>
-                      <VStack space="xs" className="w-full">
+                  {preferredPrimaryChain === "USDC_XLM" && (
+                    <Alert
+                      action="info"
+                      className="flex w-full flex-row items-start gap-4"
+                      style={{ paddingVertical: 16 }}
+                    >
+                      <AlertIcon as={InfoIcon} className="mt-1" />
+                      <VStack className="flex-1">
+                        <Text
+                          className="font-semibold text-typography-900"
+                          size="xs"
+                        >
+                          Information
+                        </Text>
+                        <AlertText
+                          className="font-light text-typography-900"
+                          size="xs"
+                        >
+                          Currently, withdrawals are only supported for{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            USDC on Stellar network.
+                          </Text>{" "}
+                          Please ensure the receiving wallet address is a valid{" "}
+                          <Text
+                            className="font-semibold text-typography-900"
+                            size="xs"
+                          >
+                            Stellar address
+                          </Text>{" "}
+                          to avoid loss of funds.
+                        </AlertText>
+                      </VStack>
+                    </Alert>
+                  )}
+                  <Controller
+                    control={control}
+                    name="withdrawAddress"
+                    render={({ field: { onChange, value } }) => (
+                      <FormControl
+                        isInvalid={!!errors.withdrawAddress}
+                        className="w-full"
+                      >
+                        <FormControlLabel>
+                          <FormControlLabelText size="sm">
+                            {t("general.walletAddress")}
+                          </FormControlLabelText>
+                        </FormControlLabel>
                         <Input
                           className="w-full rounded-xl"
-                          isInvalid={!!errors.amount}
+                          isInvalid={!!errors.withdrawAddress}
                         >
                           <InputField
-                            placeholder="0.00"
+                            placeholder={t("withdraw.walletAddressPlaceholder")}
                             value={value}
-                            onChangeText={(text) => {
-                              // Only allow numbers, dots, and commas
-                              const filteredText = text.replace(
-                                /[^0-9.,]/g,
-                                ""
-                              );
-
-                              // Replace commas with dots to standardize the value for conversion
-                              const standardFormat = filteredText.replace(
-                                /,/g,
-                                "."
-                              );
-                              onChange(standardFormat);
-                            }}
-                            keyboardType="decimal-pad"
-                            returnKeyType="done"
+                            onChangeText={onChange}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            returnKeyType="next"
                             onSubmitEditing={() => Keyboard.dismiss()}
                           />
                         </Input>
-                        <HStack className="w-full items-center justify-between">
-                          <Button
-                            size="xs"
-                            variant="link"
-                            className="underline"
-                            onPress={setMaxAmount}
-                            disabled={maxAmount === 0}
+                        {errors.withdrawAddress && (
+                          <FormControlError>
+                            <FormControlErrorText>
+                              {errors.withdrawAddress.message}
+                            </FormControlErrorText>
+                          </FormControlError>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name="amount"
+                    render={({ field: { onChange, value } }) => (
+                      <FormControl
+                        isInvalid={!!errors.amount}
+                        className="w-full"
+                      >
+                        <FormControlLabel>
+                          <FormControlLabelText size="sm">
+                            {t("general.amount")}
+                          </FormControlLabelText>
+                        </FormControlLabel>
+                        <VStack space="xs" className="w-full">
+                          <Input
+                            className="w-full rounded-xl"
+                            isInvalid={!!errors.amount}
                           >
-                            <ButtonText>
-                              {t("general.max")}: {maxAmount.toFixed(2)}
-                            </ButtonText>
-                          </Button>
-                        </HStack>
-                      </VStack>
-                      {errors.amount && (
-                        <FormControlError>
-                          <FormControlErrorText>
-                            {errors.amount.message}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      )}
-                    </FormControl>
-                  )}
-                />
+                            <InputField
+                              placeholder="0.00"
+                              value={value}
+                              onChangeText={(text) => {
+                                // Only allow numbers, dots, and commas
+                                const filteredText = text.replace(
+                                  /[^0-9.,]/g,
+                                  ""
+                                );
+
+                                // Replace commas with dots to standardize the value for conversion
+                                const standardFormat = filteredText.replace(
+                                  /,/g,
+                                  "."
+                                );
+                                onChange(standardFormat);
+                              }}
+                              keyboardType="decimal-pad"
+                              returnKeyType="done"
+                              onSubmitEditing={() => Keyboard.dismiss()}
+                            />
+                          </Input>
+                          <HStack className="w-full items-center justify-between">
+                            <Button
+                              size="xs"
+                              variant="link"
+                              className="underline"
+                              onPress={setMaxAmount}
+                              disabled={maxAmount === 0}
+                            >
+                              <ButtonText>
+                                {t("general.max")}: {maxAmount.toFixed(2)}
+                              </ButtonText>
+                            </Button>
+                          </HStack>
+                        </VStack>
+                        {errors.amount && (
+                          <FormControlError>
+                            <FormControlErrorText>
+                              {errors.amount.message}
+                            </FormControlErrorText>
+                          </FormControlError>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                </VStack>
+
+                <VStack space="md" className="mt-4 w-full">
+                  <Button
+                    size="lg"
+                    variant="solid"
+                    onPress={hookFormSubmit(onSubmit)}
+                    isDisabled={isLoading || !isValid}
+                    className="w-full rounded-xl"
+                  >
+                    {isLoading && <ButtonSpinner />}
+                    <ButtonText>
+                      {isLoading
+                        ? t("general.processing")
+                        : t("general.submit")}
+                    </ButtonText>
+                  </Button>
+
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onPress={handleClose}
+                    isDisabled={isLoading}
+                    className="w-full rounded-xl"
+                  >
+                    <ButtonText>{t("general.cancel")}</ButtonText>
+                  </Button>
+
+                  <WithdrawManualConfirmation
+                    balance={maxAmount.toString()}
+                    isOpen={isManualConfirmDialogOpen}
+                    onClose={handleCancelManualWithdraw}
+                    onConfirm={handleConfirmManualWithdraw}
+                    isLoading={isManualSubmiting}
+                  />
+                </VStack>
               </VStack>
+            </KeyboardAvoidingView>
+          </ActionsheetContent>
+        </Actionsheet>
 
-              <VStack space="md" className="mt-4 w-full">
-                <Button
-                  size="lg"
-                  variant="solid"
-                  onPress={hookFormSubmit(onSubmit)}
-                  isDisabled={isLoading || !isValid}
-                  className="w-full rounded-xl"
-                >
-                  {isLoading && <ButtonSpinner />}
-                  <ButtonText>
-                    {isLoading
-                      ? t("general.processing")
-                      : t("general.submit")}
-                  </ButtonText>
-                </Button>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onPress={handleClose}
-                  isDisabled={isLoading}
-                  className="w-full rounded-xl"
-                >
-                  <ButtonText>{t("general.cancel")}</ButtonText>
-                </Button>
-
-                <WithdrawManualConfirmation
-                  balance={maxAmount.toString()}
-                  isOpen={isManualConfirmDialogOpen}
-                  onClose={handleCancelManualWithdraw}
-                  onConfirm={handleConfirmManualWithdraw}
-                  isLoading={isManualSubmiting}
-                />
-              </VStack>
-            </VStack>
-          </KeyboardAvoidingView>
-        </ActionsheetContent>
-      </Actionsheet>
-
-      {/* PIN Validation for Withdrawal */}
-      {withdrawWithPin.renderPinValidationInput()}
-    </>
+        {/* PIN Validation for Withdrawal */}
+        {withdrawWithPin.renderPinValidationInput()}
+      </>
     );
   }
 );

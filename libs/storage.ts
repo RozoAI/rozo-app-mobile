@@ -76,3 +76,10 @@ export function isExpired(key: string): boolean {
     return true;
   }
 }
+
+export function clearAllCache() {
+  const keys = storage.getAllKeys();
+  keys.forEach((key) => {
+    storage.delete(key);
+  });
+}

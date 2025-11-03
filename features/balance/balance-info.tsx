@@ -8,22 +8,27 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { VStack } from "@/components/ui/vstack";
-import { type TokenBalanceResult } from "@/libs/tokens";
 import { getShortId } from "@/libs/utils";
+import { useWallet } from "@/providers";
 import { useApp } from "@/providers/app.provider";
+import { useMemo } from "react";
 
 export function BalanceInfo({
-  balance,
   isLoading,
   refetch,
 }: {
-  balance: TokenBalanceResult | undefined;
   isLoading: boolean;
-
   refetch: () => void;
 }) {
   const { t } = useTranslation();
   const { primaryWallet } = useApp();
+  const { balances } = useWallet();
+
+  const usdcBalance = useMemo(() => {
+    return (balances || []).find(
+      (item) => (item.asset || "").toUpperCase() === "USDC"
+    );
+  }, [balances]);
 
   return (
     <VStack className="items-start" space="sm">
@@ -47,11 +52,12 @@ export function BalanceInfo({
         ) : (
           <HStack space="sm" className="items-end">
             <Heading size="4xl" className={`font-bold text-primary-600`}>
-              {Number(balance?.formattedBalance).toFixed(2) ?? "0.00"}
+              {Number(usdcBalance?.display_values?.usdc || 0).toFixed(2) ??
+                "0.00"}
             </Heading>
 
             <Text style={{ fontSize: 16, color: "#6B7280", marginTop: "auto" }}>
-              {balance?.token?.label ?? "USD"}
+              {(usdcBalance?.asset ?? "USD").toUpperCase()}
             </Text>
           </HStack>
         )}

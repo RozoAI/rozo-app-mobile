@@ -45,7 +45,9 @@
     "updating": "Mise à jour en cours",
     "walletAddress": "Adresse du portefeuille",
     "walletBalance": "Solde du portefeuille",
-    "withdraw": "Retirer"
+    "withdraw": "Retirer",
+    "address": "Adresse",
+    "confirmAndProceed": "Confirmer"
   },
   "home": {
     "title": "Accueil"
@@ -159,7 +161,7 @@
     },
     "description": "Gérez vos préférences de compte et vos paramètres d'applications",
     "english": "Anglais",
-    "gaslessInfo": "Vous pouvez envoyer des jetons sans frais de réseau en utilisant le privé. \nLes transferts sans gaz sont pris en charge!",
+    "gaslessInfo": "Envoyez des jetons instantanément sans frais de réseau en utilisant Privy — profitez de transferts sans gaz, exclusivement sur Base !",
     "general": "Général",
     "github": "GitHub",
     "indonesia": "Indonésien",
@@ -189,7 +191,15 @@
     },
     "title": "Paramètres",
     "version": "Version",
-    "website": "Site web"
+    "website": "Site web",
+    "switchWallet": {
+      "baseDescription": "Profitez du transfert sans gaz avec Base",
+      "confirmMessageToStellar": "Vous êtes sur le point de définir Stellar comme votre portefeuille principal. \nCela modifiera votre réseau par défaut pour les paiements et les dépôts.",
+      "confirmMessageToBase": "Vous êtes sur le point de définir Base comme portefeuille principal. \nCela modifiera votre réseau par défaut pour les paiements et les dépôts.",
+      "stellarDescription": "Paiement rapide et sécurisé avec des frais réduits",
+      "toStellar": "Passer à Stellar",
+      "toBase": "Passer à la base"
+    }
   },
   "toast": {
     "danger": "Erreur",

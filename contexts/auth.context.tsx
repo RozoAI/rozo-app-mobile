@@ -1,9 +1,10 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext } from "react";
 
 // Define a generic wallet type that can work with both Dynamic and Privy
 export interface GenericWallet {
+  id: string;
   address: string;
-  chain?: string;
+  chain?: "ethereum" | "stellar";
   isConnected: boolean;
 }
 
@@ -37,7 +38,7 @@ export const AuthContext = createContext<AuthContextValue | null>(null);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
