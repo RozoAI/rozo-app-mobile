@@ -128,7 +128,7 @@ export const remoteMessageToNotification = (
 export const getNotificationTitle = (type: NotificationType): string => {
   const titles: Record<NotificationType, string> = {
     ORDER_UPDATE: 'Order Update',
-    DEPOSIT_COMPLETE: 'Deposit Complete',
+    PAYMENT_RECEIVED: 'Payment Received',
     WITHDRAWAL_COMPLETE: 'Withdrawal Complete',
     PAYMENT_REMINDER: 'Payment Reminder',
     MERCHANT_MESSAGE: 'New Message',
@@ -148,8 +148,8 @@ export const formatNotificationBody = (
   switch (type) {
     case 'ORDER_UPDATE':
       return `Order #${data.orderId?.slice(-6)} has been ${data.status}`;
-    case 'DEPOSIT_COMPLETE':
-      return `Your deposit of ${data.amount} ${data.currency} is complete`;
+    case 'PAYMENT_RECEIVED':
+      return `Payment of ${data.amount} ${data.currency} received`;
     case 'WITHDRAWAL_COMPLETE':
       return `Your withdrawal of ${data.amount} ${data.currency} has been processed`;
     case 'PAYMENT_REMINDER':
@@ -179,7 +179,7 @@ export const shouldPlaySound = (type: NotificationType): boolean => {
   const soundNotifications: NotificationType[] = [
     'ORDER_UPDATE',
     'PAYMENT_REMINDER',
-    'DEPOSIT_COMPLETE',
+    'PAYMENT_RECEIVED',
     'WITHDRAWAL_COMPLETE',
   ];
 

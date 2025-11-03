@@ -45,6 +45,18 @@ EAS (Expo Application Services) build setup with Firebase.
 
 ---
 
+### 📦 [PAYLOAD.md](./PAYLOAD.md)
+Complete notification payload specification.
+- Base FCM payload structure
+- 6 notification types with examples
+- 5 notification actions
+- Backend implementation guide
+- Testing payloads
+
+**Perfect for:** Backend developers, integrating with notification system
+
+---
+
 ### ❓ [FAQ.md](./FAQ.md)
 Frequently asked questions and troubleshooting.
 - Setup & configuration questions
@@ -69,6 +81,9 @@ Frequently asked questions and troubleshooting.
 
 **Setting up backend?**
 → Read [BACKEND.md](./BACKEND.md)
+
+**Integrating notification payloads?**
+→ Read [PAYLOAD.md](./PAYLOAD.md)
 
 **Having issues?**
 → Check [FAQ.md](./FAQ.md)

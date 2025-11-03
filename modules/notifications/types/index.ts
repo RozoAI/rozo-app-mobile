@@ -20,7 +20,7 @@ export type PlatformType = 'ios' | 'android';
  */
 export type NotificationType =
   | 'ORDER_UPDATE'
-  | 'DEPOSIT_COMPLETE'
+  | 'PAYMENT_RECEIVED'
   | 'WITHDRAWAL_COMPLETE'
   | 'PAYMENT_REMINDER'
   | 'MERCHANT_MESSAGE'

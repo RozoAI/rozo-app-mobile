@@ -209,7 +209,7 @@ const handleNotificationByType = (notification: ReceivedNotification): void => {
       router.push(`/(main)/orders`);
       break;
 
-    case 'DEPOSIT_COMPLETE':
+    case 'PAYMENT_RECEIVED':
     case 'WITHDRAWAL_COMPLETE':
       router.push(`/(main)/transactions`);
       break;
