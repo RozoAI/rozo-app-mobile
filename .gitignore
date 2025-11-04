@@ -39,14 +39,23 @@ yarn-error.*
 app-example
 
 # generated native folders
-/ios
-/android
-
-# But keep important configuration files
+/android/*
+# But keep important Android configuration files
+!/android/app
+/android/app/*
+!/android/app/src
+/android/app/src/*
+!/android/app/src/main
+/android/app/src/main/*
 !/android/app/src/main/AndroidManifest.xml
+!/android/app/src/debug
+/android/app/src/debug/*
 !/android/app/src/debug/AndroidManifest.xml
-!/ios/Podfile
-!/ios/Rozo/Info.plist
+
+# iOS - ignore everything except specific files
+/ios/*
+!/ios/Podfile                          # Keep Podfile for use_modular_headers customization
+!/ios/Podfile.properties.json          # Keep Podfile properties
 
 .env
 credentials.json

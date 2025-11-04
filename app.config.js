@@ -43,6 +43,14 @@ module.exports = {
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         UIBackgroundModes: ["remote-notification"],
+        // Firebase notifications configuration
+        FirebaseAppDelegateProxyEnabled: false, // Disable proxy to handle notifications manually
+        // User notifications capabilities
+        UIUserNotificationSettings: {
+          UNAuthorizationOptionAlert: true,
+          UNAuthorizationOptionBadge: true,
+          UNAuthorizationOptionSound: true,
+        },
       },
       googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
     },
@@ -58,6 +66,12 @@ module.exports = {
       package: packageId,
       playStoreUrl: `https://play.google.com/store/apps/details?id=${packageId}`,
       googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+      permissions: [
+        "POST_NOTIFICATIONS", // Android 13+ (API 33+) - required for push notifications
+        "RECEIVE_BOOT_COMPLETED", // Restart notification listeners after device reboot
+        "VIBRATE", // Allow notification vibrations
+        "WAKE_LOCK", // Keep device awake for FCM
+      ],
       intentFilters: [
         {
           action: "VIEW",

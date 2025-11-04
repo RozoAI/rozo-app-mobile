@@ -57,6 +57,42 @@ Complete notification payload specification.
 
 ---
 
+### 🤖 [ANDROID_PERMISSIONS.md](./ANDROID_PERMISSIONS.md)
+Android notification permissions setup and troubleshooting.
+- Required permissions explained
+- POST_NOTIFICATIONS (Android 13+)
+- Permission flow and handling
+- Testing and verification
+- Troubleshooting guide
+
+**Perfect for:** Understanding Android permissions, debugging permission issues
+
+---
+
+### 🍎 [IOS_SETUP.md](./IOS_SETUP.md)
+iOS notification configuration and setup.
+- Info.plist configuration via app.config.js
+- Podfile setup (use_modular_headers)
+- APNs authentication key setup
+- Capabilities and permissions
+- Testing and troubleshooting
+
+**Perfect for:** iOS-specific setup, understanding Info.plist, fixing iOS issues
+
+---
+
+### 📝 [GIT_SETUP.md](./GIT_SETUP.md)
+Managing native files in git for Expo projects.
+- What files to commit (Podfile, AndroidManifest)
+- .gitignore configuration explained
+- Initial setup with git add -f
+- Team collaboration workflow
+- Troubleshooting git issues
+
+**Perfect for:** Understanding git setup, onboarding new developers, fixing "file not tracked" issues
+
+---
+
 ### ❓ [FAQ.md](./FAQ.md)
 Frequently asked questions and troubleshooting.
 - Setup & configuration questions
