@@ -33,7 +33,7 @@ module.exports = {
     version: packageJson.version,
     orientation: "portrait",
     icon: "./assets/images/icon.png",
-    scheme: "rozoappmobile",
+    scheme: "rozo",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
@@ -42,7 +42,18 @@ module.exports = {
       buildNumber: getBuildNumber(packageJson.version),
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
+        UIBackgroundModes: ["remote-notification"],
+        // Firebase notifications configuration
+        FirebaseAppDelegateProxyEnabled: false, // Disable proxy to handle notifications manually
+        // User notifications capabilities
+        UIUserNotificationSettings: {
+          UNAuthorizationOptionAlert: true,
+          UNAuthorizationOptionBadge: true,
+          UNAuthorizationOptionSound: true,
+        },
       },
+      googleServicesFile:
+        process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
     },
     android: {
       adaptiveIcon: {
@@ -55,6 +66,26 @@ module.exports = {
       predictiveBackGestureEnabled: false,
       package: packageId,
       playStoreUrl: `https://play.google.com/store/apps/details?id=${packageId}`,
+      googleServicesFile:
+        process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+      permissions: [
+        "POST_NOTIFICATIONS", // Android 13+ (API 33+) - required for push notifications
+        "RECEIVE_BOOT_COMPLETED", // Restart notification listeners after device reboot
+        "VIBRATE", // Allow notification vibrations
+        "WAKE_LOCK", // Keep device awake for FCM
+      ],
+      intentFilters: [
+        {
+          action: "VIEW",
+          autoVerify: true,
+          data: [
+            {
+              scheme: "rozo",
+            },
+          ],
+          category: ["BROWSABLE", "DEFAULT"],
+        },
+      ],
     },
     web: {
       output: "static",
@@ -84,6 +115,31 @@ module.exports = {
             "The app needs access to your camera to allow you to upload merchant logo.",
         },
       ],
+      [
+        "@react-native-firebase/app",
+        {
+          android: {
+            googleServicesFile:
+              process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+          },
+          ios: {
+            googleServicesFile:
+              process.env.GOOGLE_SERVICE_INFO_PLIST ??
+              "./GoogleService-Info.plist",
+          },
+        },
+      ],
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/images/playstore-icon.png",
+          color: "#ffffff",
+          defaultChannel: "rozo-notifications",
+          sounds: [],
+          enableBackgroundRemoteNotifications: true,
+        },
+      ],
+      ["./plugins/with-fcm-meta-fix", { channelId: "rozo-notifications" }],
       "expo-secure-store",
       "expo-web-browser",
       "expo-font",

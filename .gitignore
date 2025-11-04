@@ -38,12 +38,16 @@ yarn-error.*
 
 app-example
 
-# generated native folders
-/ios
+# generated native folders - ignored completely for CNG (Continuous Native Generation)
 /android
+/ios
 
 .env
 credentials.json
+
+# Firebase config files (contain API keys - do not commit)
+google-services.json
+GoogleService-Info.plist
 
 *.apk
 *.aab
