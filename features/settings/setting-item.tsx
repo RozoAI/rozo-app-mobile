@@ -6,6 +6,7 @@ import { View } from "@/components/ui/view";
 import { cn } from "@/libs/utils";
 import { ChevronRightIcon } from "lucide-react-native";
 import type React from "react";
+import { useMemo } from "react";
 
 interface SettingItemProps {
   icon?: React.ComponentType<any>;
@@ -34,6 +35,9 @@ export function SettingItem({
   disabled = false,
   className,
 }: SettingItemProps) {
+  const val = useMemo(() => {
+    return value;
+  }, [value]);
   const content = (
     <View className="w-full flex-row items-center justify-between gap-4 px-4 py-3">
       <View className="flex-row items-center gap-3 flex-1 min-w-0">
@@ -57,9 +61,9 @@ export function SettingItem({
               {description}
             </Text>
           )}
-          {value && (
+          {val && (
             <Text size="sm" className="text-gray-500 dark:text-gray-400">
-              {typeof value === "string" ? value : value}
+              {val}
             </Text>
           )}
         </View>

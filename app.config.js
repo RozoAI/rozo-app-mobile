@@ -140,10 +140,7 @@ module.exports = {
         },
       ],
       ["./plugins/with-fcm-meta-fix", { channelId: "rozo-notifications" }],
-      [
-        "./plugins/with-podfile-mods",
-        { linkage: "static", modularHeaders: true },
-      ],
+      ["./plugins/with-podfile-mods"],
       "expo-secure-store",
       "expo-web-browser",
       "expo-font",

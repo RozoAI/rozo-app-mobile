@@ -35,7 +35,7 @@ export const useChangePinFlow = (
   config: UseChangePinFlowConfig = {}
 ): UseChangePinFlowReturn => {
   const { onSuccess } = config;
-  
+
   const { validatePin, updatePin } = usePinOperations();
   const { refetchMerchant } = useMerchant();
   const { success, error: showError } = useToast();
@@ -43,19 +43,19 @@ export const useChangePinFlow = (
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [isCurrentPinInputOpen, setIsCurrentPinInputOpen] = useState(false);
   const [isNewPinInputOpen, setIsNewPinInputOpen] = useState(false);
-  
+
   const [currentPinValidationState, setCurrentPinValidationState] = useState<ValidationState>(
     ValidationState.IDLE
   );
   const [newPinValidationState, setNewPinValidationState] = useState<ValidationState>(
     ValidationState.IDLE
   );
-  
+
   const [currentPinError, setCurrentPinError] = useState<string | null>(null);
   const [newPinError, setNewPinError] = useState<string | null>(null);
   const [attemptsRemaining, setAttemptsRemaining] = useState(3);
   const [isBlocked, setIsBlocked] = useState(false);
-  
+
   // Store the current PIN temporarily after validation
   const [validatedCurrentPin, setValidatedCurrentPin] = useState<string | null>(null);
 
@@ -95,10 +95,10 @@ export const useChangePinFlow = (
 
         if (result.success) {
           setCurrentPinValidationState(ValidationState.SUCCESS);
-          
+
           // Store the validated current PIN
           setValidatedCurrentPin(pin);
-          
+
           // Close current PIN input and open new PIN input
           setIsCurrentPinInputOpen(false);
           setTimeout(() => {
@@ -121,35 +121,35 @@ export const useChangePinFlow = (
         }
       } catch (err: any) {
         console.error('Current PIN validation error:', err);
-        
+
         // Handle axios errors with response data
         const responseData = err.response?.data;
         const statusCode = err.response?.status;
-        
+
         // Check if error object itself contains validation data
         const validationData = err.attempts_remaining !== undefined ? err : responseData;
-        
+
         // Handle PIN validation errors (401 or direct error object with attempts_remaining)
         if ((statusCode === 401 && responseData) || err.attempts_remaining !== undefined) {
           const data = validationData || responseData;
           setCurrentPinValidationState(ValidationState.ERROR);
           setCurrentPinError(data.error || data.message || err.message || 'Invalid PIN');
-          
+
           if (data.attempts_remaining !== undefined) {
             setAttemptsRemaining(data.attempts_remaining);
           }
-          
+
           if (data.is_blocked) {
             setIsBlocked(true);
             setCurrentPinValidationState(ValidationState.BLOCKED);
           }
-        } 
+        }
         // Check for specific error codes (403 - PIN_BLOCKED)
         else if (responseData?.code === 'PIN_BLOCKED' || statusCode === 403) {
           setIsBlocked(true);
           setCurrentPinValidationState(ValidationState.BLOCKED);
           setCurrentPinError(responseData?.error || err.message || 'Account blocked due to security violations');
-        } 
+        }
         // Generic error handling
         else {
           setCurrentPinValidationState(ValidationState.ERROR);
@@ -181,25 +181,25 @@ export const useChangePinFlow = (
         });
 
         setNewPinValidationState(ValidationState.SUCCESS);
-        
+
         // Refresh merchant profile
-        await refetchMerchant();
-        
+        await refetchMerchant({ force: true, showToast: false });
+
         // Show success message
         success('PIN has been changed successfully');
-        
+
         // Close all modals
         closeAll();
-        
+
         // Call onSuccess callback if provided
         if (onSuccess) {
           onSuccess();
         }
       } catch (err: any) {
         console.error('Update PIN error:', err);
-        
+
         setNewPinValidationState(ValidationState.ERROR);
-        
+
         // Handle specific error messages
         const errorMessage = err.response?.data?.error || err.message || 'Failed to change PIN';
         setNewPinError(errorMessage);

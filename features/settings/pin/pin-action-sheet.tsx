@@ -55,7 +55,7 @@ export const PINActionSheet: React.FC<PINActionSheetProps> = ({
       // Execute revoke PIN API with validated PIN
       await revokePin({ pin_code: pin });
       // Refresh merchant profile to update has_pin status
-      await refetchMerchant();
+      await refetchMerchant({ force: true, showToast: false });
     },
   });
 
@@ -86,7 +86,7 @@ export const PINActionSheet: React.FC<PINActionSheetProps> = ({
       setPinError("");
       await setPin({ pin_code: newPin });
       // Refresh merchant profile to update has_pin status
-      await refetchMerchant();
+      await refetchMerchant({ force: true, showToast: false });
       success(t("pin.setup.success"));
       handleClose();
     } catch (err: any) {

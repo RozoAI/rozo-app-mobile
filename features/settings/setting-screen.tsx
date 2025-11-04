@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 
 import { useToast } from "@/hooks/use-toast";
 import { storage } from "@/libs/storage";
-import { useWallet } from "@/providers";
+import { useMerchant, useWallet } from "@/providers";
 import { ScrollView } from "react-native";
 import { PINSettings } from "./pin";
 import { POSToggleSetting } from "./pos-toggle-setting";
@@ -29,12 +29,14 @@ import { WalletAddressCard } from "./wallet-address-card";
 export function SettingScreen() {
   const { logout } = useApp();
   const { preferredPrimaryChain } = useWallet();
+  const { refetchMerchant } = useMerchant();
   const { t } = useTranslation();
   const { language } = useSelectedLanguage();
   const { success: toastSucces } = useToast();
 
   const handleClearCache = () => {
     storage.clearAll();
+    refetchMerchant({ force: true, showToast: false });
     toastSucces("Cache Cleared");
   };
 
