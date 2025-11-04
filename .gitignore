@@ -38,24 +38,9 @@ yarn-error.*
 
 app-example
 
-# generated native folders
-/android/*
-# But keep important Android configuration files
-!/android/app
-/android/app/*
-!/android/app/src
-/android/app/src/*
-!/android/app/src/main
-/android/app/src/main/*
-!/android/app/src/main/AndroidManifest.xml
-!/android/app/src/debug
-/android/app/src/debug/*
-!/android/app/src/debug/AndroidManifest.xml
-
-# iOS - ignore everything except specific files
-/ios/*
-!/ios/Podfile                          # Keep Podfile for use_modular_headers customization
-!/ios/Podfile.properties.json          # Keep Podfile properties
+# generated native folders - ignored completely for CNG (Continuous Native Generation)
+/android
+/ios
 
 .env
 credentials.json
