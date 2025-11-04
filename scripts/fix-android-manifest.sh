@@ -2,6 +2,20 @@
 
 # EAS Build Hook: Fix Android Manifest merger conflicts
 # This script adds tools:replace attributes to Firebase notification meta-data tags
+# Note: EAS appends "--platform <platform>" to prebuildCommand, so we accept and ignore those args
+
+# Parse arguments (accept but ignore --platform flag from EAS)
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --platform)
+      shift # Skip --platform flag
+      shift # Skip platform value
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
 
 MANIFEST_FILE="android/app/src/main/AndroidManifest.xml"
 
