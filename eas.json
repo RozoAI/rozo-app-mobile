@@ -8,7 +8,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "channel": "development",
-      "prebuildCommand": "npx expo prebuild --clean",
+      "prebuildCommand": "npx expo prebuild --clean && bash scripts/fix-android-manifest.sh",
       "env": {
         "APP_ENV": "development"
       }
@@ -16,7 +16,7 @@
     "preview": {
       "distribution": "internal",
       "channel": "preview",
-      "prebuildCommand": "npx expo prebuild --clean",
+      "prebuildCommand": "npx expo prebuild --clean && bash scripts/fix-android-manifest.sh",
       "android": {
         "resourceClass": "large",
         "buildType": "apk"
@@ -31,7 +31,7 @@
     "production": {
       "channel": "production",
       "autoIncrement": true,
-      "prebuildCommand": "npx expo prebuild --clean",
+      "prebuildCommand": "npx expo prebuild --clean && bash scripts/fix-android-manifest.sh",
       "env": {
         "APP_ENV": "production"
       }
