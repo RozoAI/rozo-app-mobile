@@ -52,7 +52,8 @@ module.exports = {
           UNAuthorizationOptionSound: true,
         },
       },
-      googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
+      googleServicesFile:
+        process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
     },
     android: {
       adaptiveIcon: {
@@ -65,7 +66,8 @@ module.exports = {
       predictiveBackGestureEnabled: false,
       package: packageId,
       playStoreUrl: `https://play.google.com/store/apps/details?id=${packageId}`,
-      googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+      googleServicesFile:
+        process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
       permissions: [
         "POST_NOTIFICATIONS", // Android 13+ (API 33+) - required for push notifications
         "RECEIVE_BOOT_COMPLETED", // Restart notification listeners after device reboot
@@ -117,22 +119,27 @@ module.exports = {
         "@react-native-firebase/app",
         {
           android: {
-            googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+            googleServicesFile:
+              process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
           },
           ios: {
-            googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? "./GoogleService-Info.plist",
+            googleServicesFile:
+              process.env.GOOGLE_SERVICE_INFO_PLIST ??
+              "./GoogleService-Info.plist",
           },
         },
       ],
       [
         "expo-notifications",
         {
-          icon: "./assets/images/notification-icon.png",
-          color: "#FF6C44",
+          icon: "./assets/images/playstore-icon.png",
+          color: "#ffffff",
           defaultChannel: "rozo-notifications",
           sounds: [],
+          enableBackgroundRemoteNotifications: true,
         },
       ],
+      ["./plugins/with-fcm-meta-fix", { channelId: "rozo-notifications" }],
       "expo-secure-store",
       "expo-web-browser",
       "expo-font",

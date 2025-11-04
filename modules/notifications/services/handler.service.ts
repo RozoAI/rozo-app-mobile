@@ -3,21 +3,18 @@
  * Manages notification event handlers and routing
  */
 
-import * as Notifications from 'expo-notifications';
-import { Linking } from 'react-native';
-import { router } from 'expo-router';
-import messaging from '@react-native-firebase/messaging';
+import messaging from "@react-native-firebase/messaging";
+import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
+import { Linking } from "react-native";
 import {
-  ReceivedNotification,
+  NotificationAction,
   NotificationHandler,
   NotificationTapHandler,
-  NotificationAction,
+  ReceivedNotification,
   RemoteMessage,
-} from '../types';
-import {
-  remoteMessageToNotification,
-  generateNotificationId,
-} from '../utils/notification-helpers';
+} from "../types";
+import { remoteMessageToNotification } from "../utils/notification-helpers";
 
 /**
  * Handler registry for notification events
@@ -58,7 +55,7 @@ class NotificationHandlerRegistry {
       try {
         handler(notification);
       } catch (error) {
-        console.error('Error in notification received handler:', error);
+        console.error("Error in notification received handler:", error);
       }
     });
   }
@@ -71,7 +68,7 @@ class NotificationHandlerRegistry {
       try {
         handler(notification);
       } catch (error) {
-        console.error('Error in notification tapped handler:', error);
+        console.error("Error in notification tapped handler:", error);
       }
     });
   }
@@ -91,22 +88,24 @@ export const handlerRegistry = new NotificationHandlerRegistry();
 /**
  * Handle received notification (foreground or background)
  */
-export const handleReceivedNotification = (remoteMessage: RemoteMessage): void => {
+export const handleReceivedNotification = (
+  remoteMessage: RemoteMessage
+): void => {
   try {
-    console.log('Handling received notification:', remoteMessage);
+    console.log("Handling received notification:", remoteMessage);
 
     // Convert to app notification format
     const notification = remoteMessageToNotification(remoteMessage);
 
     if (!notification) {
-      console.warn('Failed to parse notification');
+      console.warn("Failed to parse notification");
       return;
     }
 
     // Trigger registered handlers
     handlerRegistry.triggerReceived(notification);
   } catch (error) {
-    console.error('Error handling received notification:', error);
+    console.error("Error handling received notification:", error);
   }
 };
 
@@ -117,7 +116,7 @@ export const handleNotificationTap = (
   notification: ReceivedNotification
 ): void => {
   try {
-    console.log('Handling notification tap:', notification);
+    console.log("Handling notification tap:", notification);
 
     // Trigger registered handlers first
     handlerRegistry.triggerTapped(notification);
@@ -125,7 +124,7 @@ export const handleNotificationTap = (
     // Handle default navigation
     handleNotificationNavigation(notification);
   } catch (error) {
-    console.error('Error handling notification tap:', error);
+    console.error("Error handling notification tap:", error);
   }
 };
 
@@ -140,7 +139,7 @@ export const handleNotificationNavigation = (
 
     // Handle deep link if provided
     if (data.deepLink) {
-      console.log('Opening deep link:', data.deepLink);
+      console.log("Opening deep link:", data.deepLink);
       Linking.openURL(data.deepLink);
       return;
     }
@@ -154,7 +153,7 @@ export const handleNotificationNavigation = (
     // Handle by notification type
     handleNotificationByType(notification);
   } catch (error) {
-    console.error('Error handling notification navigation:', error);
+    console.error("Error handling notification navigation:", error);
   }
 };
 
@@ -168,32 +167,32 @@ const handleNotificationAction = (
   const { data } = notification;
 
   switch (action) {
-    case 'OPEN_ORDER':
+    case "OPEN_ORDER":
       if (data.orderId) {
         router.push(`/(main)/orders`);
       }
       break;
 
-    case 'OPEN_TRANSACTION':
+    case "OPEN_TRANSACTION":
       if (data.transactionId) {
         router.push(`/(main)/transactions`);
       }
       break;
 
-    case 'OPEN_BALANCE':
+    case "OPEN_BALANCE":
       router.push(`/(main)/balance`);
       break;
 
-    case 'OPEN_POS':
+    case "OPEN_POS":
       router.push(`/(main)/pos`);
       break;
 
-    case 'OPEN_SETTINGS':
+    case "OPEN_SETTINGS":
       router.push(`/(main)/settings`);
       break;
 
     default:
-      console.warn('Unknown notification action:', action);
+      console.warn("Unknown notification action:", action);
   }
 };
 
@@ -204,26 +203,26 @@ const handleNotificationByType = (notification: ReceivedNotification): void => {
   const { type } = notification.data;
 
   switch (type) {
-    case 'ORDER_UPDATE':
-    case 'PAYMENT_REMINDER':
+    case "ORDER_UPDATE":
+    case "PAYMENT_REMINDER":
       router.push(`/(main)/orders`);
       break;
 
-    case 'PAYMENT_RECEIVED':
-    case 'WITHDRAWAL_COMPLETE':
-      router.push(`/(main)/transactions`);
+    case "PAYMENT_RECEIVED":
+    case "WITHDRAWAL_COMPLETE":
+      router.push(`/(main)/balance`);
       break;
 
-    case 'MERCHANT_MESSAGE':
+    case "MERCHANT_MESSAGE":
       router.push(`/(main)/settings`);
       break;
 
-    case 'SYSTEM_ALERT':
+    case "SYSTEM_ALERT":
       // Don't navigate for system alerts
       break;
 
     default:
-      console.warn('Unknown notification type:', type);
+      console.warn("Unknown notification type:", type);
   }
 };
 
@@ -237,8 +236,8 @@ export const presentLocalNotification = async (
   try {
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: notification.title || 'Notification',
-        body: notification.body || '',
+        title: notification.title || "Notification",
+        body: notification.body || "",
         data: notification.data,
         sound: true,
         badge: 1,
@@ -246,7 +245,7 @@ export const presentLocalNotification = async (
       trigger: null, // Show immediately
     });
   } catch (error) {
-    console.error('Error presenting local notification:', error);
+    console.error("Error presenting local notification:", error);
   }
 };
 
@@ -261,16 +260,16 @@ let currentCleanup: (() => void) | null = null;
 export const setupNotificationListeners = (): (() => void) => {
   // Prevent duplicate listener registration
   if (listenersSetup) {
-    console.log('⚠️ Notification listeners already setup, skipping...');
+    console.log("⚠️ Notification listeners already setup, skipping...");
     return currentCleanup || (() => {});
   }
 
-  console.log('Setting up notification listeners...');
+  console.log("Setting up notification listeners...");
   listenersSetup = true;
 
   // Firebase: Handle messages when app is in FOREGROUND
   const unsubscribeOnMessage = messaging().onMessage(async (remoteMessage) => {
-    console.log('📱 FCM message received (foreground):', remoteMessage);
+    console.log("📱 FCM message received (foreground):", remoteMessage);
 
     // Convert Firebase message to app notification
     const notification = remoteMessageToNotification(remoteMessage);
@@ -286,7 +285,7 @@ export const setupNotificationListeners = (): (() => void) => {
 
   // Firebase: Handle notification open when app is in BACKGROUND/QUIT
   messaging().onNotificationOpenedApp((remoteMessage) => {
-    console.log('📱 Notification opened app from background:', remoteMessage);
+    console.log("📱 Notification opened app from background:", remoteMessage);
 
     const notification = remoteMessageToNotification(remoteMessage);
     if (notification) {
@@ -299,7 +298,10 @@ export const setupNotificationListeners = (): (() => void) => {
     .getInitialNotification()
     .then((remoteMessage) => {
       if (remoteMessage) {
-        console.log('📱 App opened from quit state via notification:', remoteMessage);
+        console.log(
+          "📱 App opened from quit state via notification:",
+          remoteMessage
+        );
 
         const notification = remoteMessageToNotification(remoteMessage);
         if (notification) {
@@ -311,9 +313,9 @@ export const setupNotificationListeners = (): (() => void) => {
   // Expo: Listener for notification tap (user interaction)
   // NOTE: We don't use addNotificationReceivedListener because Firebase's onMessage
   // already handles foreground notifications. Using both would cause duplicates.
-  const responseListener = Notifications.addNotificationResponseReceivedListener(
-    (response) => {
-      console.log('📧 Expo notification tapped:', response);
+  const responseListener =
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log("📧 Expo notification tapped:", response);
 
       const notification: ReceivedNotification = {
         id: response.notification.request.identifier,
@@ -325,14 +327,13 @@ export const setupNotificationListeners = (): (() => void) => {
       };
 
       handleNotificationTap(notification);
-    }
-  );
+    });
 
-  console.log('✅ Notification listeners setup complete');
+  console.log("✅ Notification listeners setup complete");
 
   // Store cleanup function
   const cleanup = () => {
-    console.log('Cleaning up notification listeners');
+    console.log("Cleaning up notification listeners");
     listenersSetup = false;
     currentCleanup = null;
     unsubscribeOnMessage();
@@ -356,21 +357,23 @@ export const clearAllHandlers = (): void => {
 export const dismissAllNotifications = async (): Promise<void> => {
   try {
     await Notifications.dismissAllNotificationsAsync();
-    console.log('All notifications dismissed');
+    console.log("All notifications dismissed");
   } catch (error) {
-    console.error('Error dismissing notifications:', error);
+    console.error("Error dismissing notifications:", error);
   }
 };
 
 /**
  * Dismiss specific notification
  */
-export const dismissNotification = async (notificationId: string): Promise<void> => {
+export const dismissNotification = async (
+  notificationId: string
+): Promise<void> => {
   try {
     await Notifications.dismissNotificationAsync(notificationId);
-    console.log('Notification dismissed:', notificationId);
+    console.log("Notification dismissed:", notificationId);
   } catch (error) {
-    console.error('Error dismissing notification:', error);
+    console.error("Error dismissing notification:", error);
   }
 };
 
@@ -383,7 +386,7 @@ export const getDeliveredNotifications = async (): Promise<
   try {
     return await Notifications.getPresentedNotificationsAsync();
   } catch (error) {
-    console.error('Error getting delivered notifications:', error);
+    console.error("Error getting delivered notifications:", error);
     return [];
   }
 };
