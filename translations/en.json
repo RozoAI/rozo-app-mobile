@@ -60,6 +60,17 @@
   "home": {
     "title": "Home"
   },
+  "invitation": {
+    "title": "Welcome To Rozo",
+    "subtitle": "Join exclusive beta program",
+    "placeholder": "Enter invitation code",
+    "continue": "Continue",
+    "joinWaitlist": "Join Waitlist",
+    "invalidCode": "Invalid invitation code",
+    "validCode": "Valid code! Redirecting...",
+    "codeRequired": "Please enter an invitation code",
+    "or": "or"
+  },
   "login": {
     "description": "Simple and efficient point of sale system",
     "loading": "Loading",

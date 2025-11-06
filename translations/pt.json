@@ -52,6 +52,17 @@
   "home": {
     "title": "Início"
   },
+  "invitation": {
+    "title": "Bem-vindo ao Rozo",
+    "subtitle": "Junte-se ao programa beta exclusivo",
+    "placeholder": "Digite o código de convite",
+    "continue": "Continuar",
+    "joinWaitlist": "Entrar na Lista de Espera",
+    "invalidCode": "Código de convite inválido",
+    "validCode": "Código válido! Redirecionando...",
+    "codeRequired": "Por favor, digite um código de convite",
+    "or": "ou"
+  },
   "login": {
     "description": "Sistema de ponto de venda simples e eficiente",
     "loading": "Carregando",

@@ -52,6 +52,17 @@
   "home": {
     "title": "Beranda"
   },
+  "invitation": {
+    "title": "Selamat Datang di Rozo",
+    "subtitle": "Bergabunglah dengan program beta eksklusif",
+    "placeholder": "Masukkan kode undangan",
+    "continue": "Lanjutkan",
+    "joinWaitlist": "Bergabung dengan Daftar Tunggu",
+    "invalidCode": "Kode undangan tidak valid",
+    "validCode": "Kode valid! Mengarahkan ulang...",
+    "codeRequired": "Silakan masukkan kode undangan",
+    "or": "atau"
+  },
   "login": {
     "description": "Sistem point of sale yang sederhana dan efisien",
     "loading": "Memuat",

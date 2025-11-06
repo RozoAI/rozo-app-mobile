@@ -52,6 +52,17 @@
   "home": {
     "title": "首页"
   },
+  "invitation": {
+    "title": "欢迎来到 Rozo",
+    "subtitle": "加入独家测试计划",
+    "placeholder": "输入邀请码",
+    "continue": "继续",
+    "joinWaitlist": "加入等候名单",
+    "invalidCode": "无效的邀请码",
+    "validCode": "有效代码！正在重定向...",
+    "codeRequired": "请输入邀请码",
+    "or": "或"
+  },
   "login": {
     "description": "简单高效的销售点系统",
     "loading": "加载中",
