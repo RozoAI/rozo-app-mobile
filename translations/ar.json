@@ -52,6 +52,17 @@
   "home": {
     "title": "بيت"
   },
+  "invitation": {
+    "title": "مرحبًا بك في Rozo",
+    "subtitle": "انضم إلى البرنامج التجريبي الحصري",
+    "placeholder": "أدخل رمز الدعوة",
+    "continue": "متابعة",
+    "joinWaitlist": "انضم إلى قائمة الانتظار",
+    "invalidCode": "رمز دعوة غير صالح",
+    "validCode": "رمز صالح! جاري إعادة التوجيه...",
+    "codeRequired": "يرجى إدخال رمز الدعوة",
+    "or": "أو"
+  },
   "login": {
     "description": "نظام نقاط البيع بسيط وفعال",
     "loading": "تحميل",

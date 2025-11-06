@@ -52,6 +52,17 @@
   "home": {
     "title": "Accueil"
   },
+  "invitation": {
+    "title": "Bienvenue chez Rozo",
+    "subtitle": "Rejoignez le programme bêta exclusif",
+    "placeholder": "Entrez le code d'invitation",
+    "continue": "Continuer",
+    "joinWaitlist": "Rejoindre la liste d'attente",
+    "invalidCode": "Code d'invitation invalide",
+    "validCode": "Code valide! Redirection...",
+    "codeRequired": "Veuillez entrer un code d'invitation",
+    "or": "ou"
+  },
   "login": {
     "description": "Système de point de vente simple et efficace",
     "loading": "Chargement",

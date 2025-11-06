@@ -24,10 +24,10 @@ import { PrivyReady } from "@/components/privy-ready";
 import { ThemedText } from "@/components/themed-text";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
+import { NotificationProvider } from "@/modules/notifications";
 import { AppProvider } from "@/providers/app.provider";
 import { usePOSToggle } from "@/providers/preferences.provider";
 import { QueryProvider } from "@/providers/query.provider";
-import { NotificationProvider } from "@/modules/notifications";
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -110,34 +110,34 @@ export default function RootLayout() {
                       <KeyboardProvider>
                         <RouteProtectionWrapper>
                           <Stack>
-                          <Stack.Screen
-                            name="(main)"
-                            options={{ headerShown: false }}
-                          />
-                          <Stack.Screen
-                            name="login"
-                            options={{ headerShown: false }}
-                          />
-                          <Stack.Screen
-                            name="pos"
-                            options={{ headerShown: false }}
-                          />
-                          <Stack.Screen
-                            name="balance"
-                            options={{ headerShown: false }}
-                          />
-                          <Stack.Screen
-                            name="orders"
-                            options={{ headerShown: false }}
-                          />
-                          <Stack.Screen
-                            name="transactions"
-                            options={{ headerShown: false }}
-                          />
-                          <Stack.Screen
-                            name="settings"
-                            options={{ headerShown: false }}
-                          />
+                            <Stack.Screen
+                              name="(main)"
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name="login"
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name="pos"
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name="balance"
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name="orders"
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name="transactions"
+                              options={{ headerShown: false }}
+                            />
+                            <Stack.Screen
+                              name="settings"
+                              options={{ headerShown: false }}
+                            />
                           </Stack>
                         </RouteProtectionWrapper>
                       </KeyboardProvider>
