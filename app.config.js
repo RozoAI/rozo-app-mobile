@@ -132,7 +132,7 @@ module.exports = {
       [
         "expo-notifications",
         {
-          icon: "./assets/images/playstore-icon.png",
+          icon: "./assets/images/notification-icon.png",
           color: "#ffffff",
           defaultChannel: "rozo-notifications",
           sounds: [],
