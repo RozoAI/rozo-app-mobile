@@ -29,7 +29,7 @@ import { CheckCircle, XCircle } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Linking } from "react-native";
+import { Linking, Platform } from "react-native";
 
 const VALID_INVITATION_CODE = "ROZO";
 const INVITATION_VALIDATED_KEY = "invitation.validated";
@@ -48,7 +48,7 @@ export default function LoginScreen() {
   const { language, setLanguage } = useSelectedLanguage();
   const { t } = useTranslation();
 
-  const { error: toastError, success: toastSuccess } = useToast();
+  const { error: toastError } = useToast();
 
   const [isAuthLoading, setIsAuthLoading] = useState(false);
 
@@ -63,6 +63,7 @@ export default function LoginScreen() {
   // Check if invitation was already validated
   React.useEffect(() => {
     const isValidated = storage.getBoolean(INVITATION_VALIDATED_KEY);
+    const isIOS = Platform.OS === "ios";
 
     // If user is already authenticated, they've passed the gate
     if (user) {
@@ -70,6 +71,12 @@ export default function LoginScreen() {
         storage.set(INVITATION_VALIDATED_KEY, true);
       }
       router.replace("/balance");
+      return;
+    }
+
+    // Skip invitation modal for iOS
+    if (isIOS) {
+      storage.set(INVITATION_VALIDATED_KEY, true);
       return;
     }
 
