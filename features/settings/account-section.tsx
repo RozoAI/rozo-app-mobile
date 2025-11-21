@@ -27,7 +27,7 @@ export function AccountSection() {
     <VStack space="sm" className="w-full">
       <Pressable
         onPress={() => profileSheetRef.current?.open()}
-        className="flex flex-row items-center justify-between p-8"
+        className="flex flex-row items-center justify-between"
       >
         <HStack space="sm" className="items-center">
           <Avatar className="mr-2" size="sm">

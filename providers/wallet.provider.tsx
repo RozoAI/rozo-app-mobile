@@ -268,50 +268,119 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     []
   );
 
-  const handleSwitchWallet = useCallback(async () => {
-    try {
-      console.log("[handleSwitchWallet] user:", user);
-      console.log("[handleSwitchWallet] merchant:", merchant);
-      if (!user || !merchant) return;
-      setIsSwitching(true);
-      const preferredBeforeChanged =
-        preferredPrimaryChain === "USDC_BASE" ? "stellar" : "ethereum";
-      const isPreferredExist =
-        user.linked_accounts.filter(
-          (account) =>
-            account.type === "wallet" &&
-            account.chain_type === preferredBeforeChanged
-        ).length > 0;
+  // Helper: Get chain type from token ID
+  const getChainTypeFromToken = useCallback(
+    (tokenId: MerchantDefaultTokenID): "ethereum" | "stellar" => {
+      return tokenId === "USDC_BASE" ? "ethereum" : "stellar";
+    },
+    []
+  );
 
-      if (!isPreferredExist) {
-        await handleCreateWallet(preferredBeforeChanged);
-        // Refresh user again to ensure we have the latest wallet data
-        // before proceeding with the switch
-        await refreshUser();
-        // Small delay to ensure React processes the state update
-        // This ensures wallets memo recomputes with the new user data
-        await new Promise((resolve) => setTimeout(resolve, 100));
+  // Helper: Get opposite token ID
+  const getOppositeTokenId = useCallback(
+    (tokenId: MerchantDefaultTokenID): MerchantDefaultTokenID => {
+      return tokenId === "USDC_BASE" ? "USDC_XLM" : "USDC_BASE";
+    },
+    []
+  );
+
+  // Helper: Check if wallet exists for chain type
+  const hasWalletForChain = useCallback(
+    (chainType: "ethereum" | "stellar"): boolean => {
+      if (!user?.linked_accounts) return false;
+      return user.linked_accounts.some(
+        (account) =>
+          account.type === "wallet" && account.chain_type === chainType
+      );
+    },
+    [user]
+  );
+
+  // Helper: Ensure wallet exists for target chain, create if needed
+  const ensureWalletExists = useCallback(
+    async (chainType: "ethereum" | "stellar"): Promise<void> => {
+      if (hasWalletForChain(chainType)) {
+        console.log(`[Switch Wallet] Wallet exists for ${chainType}`);
+        return;
       }
 
-      const newPrimaryChain =
-        preferredPrimaryChain === "USDC_BASE" ? "USDC_XLM" : "USDC_BASE";
-      console.log("[handleSwitchWallet] newPrimaryChain:", newPrimaryChain);
+      console.log(`[Switch Wallet] Creating wallet for ${chainType}`);
+      await handleCreateWallet(chainType);
+      await refreshUser();
+    },
+    [hasWalletForChain, handleCreateWallet, refreshUser]
+  );
+
+  // Helper: Update merchant token preference
+  const updateMerchantTokenPreference = useCallback(
+    async (tokenId: MerchantDefaultTokenID): Promise<void> => {
+      if (!merchant) {
+        throw new Error("Merchant data not available");
+      }
+
+      console.log(`[Switch Wallet] Updating merchant preference to ${tokenId}`);
       await updateProfile({
         email: merchant.email,
         display_name: merchant.display_name,
         logo: merchant.logo_url,
-        default_token_id: newPrimaryChain,
+        default_token_id: tokenId,
       });
-      setPreferredPrimaryChain(newPrimaryChain);
+      await setPreferredPrimaryChain(tokenId);
       await refetchMerchant();
+    },
+    [merchant, updateProfile, setPreferredPrimaryChain, refetchMerchant]
+  );
+
+  const handleSwitchWallet = useCallback(async () => {
+    if (!user || !merchant) {
+      console.warn("[Switch Wallet] Missing user or merchant data");
+      return;
+    }
+
+    if (!preferredPrimaryChain) {
+      console.warn("[Switch Wallet] No preferred primary chain set");
+      return;
+    }
+
+    setIsSwitching(true);
+
+    try {
+      const targetTokenId = getOppositeTokenId(preferredPrimaryChain);
+      const targetChainType = getChainTypeFromToken(targetTokenId);
+
+      console.log("[Switch Wallet] Starting switch", {
+        from: preferredPrimaryChain,
+        to: targetTokenId,
+        chainType: targetChainType,
+      });
+
+      // Step 1: Ensure target wallet exists
+      await ensureWalletExists(targetChainType);
+
+      // Step 2: Update merchant preference
+      await updateMerchantTokenPreference(targetTokenId);
+
       toastSuccess("Wallet switched successfully!");
+      console.log("[Switch Wallet] Switch completed successfully");
     } catch (error) {
-      console.log("[Switch Wallet]", error);
-      toastError("Failed to switch wallet");
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error("[Switch Wallet] Failed:", errorMessage, error);
+      toastError(`Failed to switch wallet: ${errorMessage}`);
     } finally {
       setIsSwitching(false);
     }
-  }, [user, merchant, preferredPrimaryChain, refreshUser]);
+  }, [
+    user,
+    merchant,
+    preferredPrimaryChain,
+    getOppositeTokenId,
+    getChainTypeFromToken,
+    ensureWalletExists,
+    updateMerchantTokenPreference,
+    toastSuccess,
+    toastError,
+  ]);
 
   const getBalance = useCallback(async () => {
     try {
