@@ -57,7 +57,6 @@ export function OrdersScreen() {
   }, [refetch]);
 
   return (
-    
     <ScrollView className="py-6 flex-1">
       {/* Header */}
       <VStack className="flex flex-row items-start justify-between">
@@ -110,6 +109,5 @@ export function OrdersScreen() {
 
       <OrderDetailActionSheet ref={orderDetailRef} />
     </ScrollView>
-    
   );
 }

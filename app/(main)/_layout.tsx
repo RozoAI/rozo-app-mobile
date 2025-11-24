@@ -8,6 +8,7 @@ import { AuthBoundary } from "@privy-io/expo";
 import { Redirect, Tabs } from "expo-router";
 import {
   Coins,
+  Compass,
   Settings2Icon,
   ShoppingBagIcon,
   ShoppingCartIcon,
@@ -132,6 +133,24 @@ export default function TabLayout() {
               name="transactions"
               options={{
                 href: null,
+              }}
+            />
+
+            <Tabs.Screen
+              name="discovery"
+              options={{
+                title: t("discovery.title"),
+                tabBarIcon: ({ color }: any) => (
+                  <Icon as={Compass} size="md" color={color} />
+                ),
+                tabBarButtonTestID: "discovery-tab",
+                sceneStyle: {
+                  paddingTop: 0,
+                  paddingLeft: 0,
+                  paddingRight: 0,
+                  backgroundColor:
+                    theme?.colorScheme === "dark" ? "#141419" : "#f8f8ff",
+                },
               }}
             />
 

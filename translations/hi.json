@@ -242,5 +242,8 @@
     "success": "सफलतापूर्वक निकासी",
     "supportedOnly": "केवल {{currency}} समर्थित",
     "walletAddressPlaceholder": "अपने वॉलेट का पता दर्ज करें"
+  },
+  "discovery": {
+    "title": "खोज"
   }
 }

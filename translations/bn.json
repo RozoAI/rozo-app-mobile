@@ -242,5 +242,8 @@
     "success": "সফলভাবে প্রত্যাহার",
     "supportedOnly": "কেবল {{currency}} সমর্থিত",
     "walletAddressPlaceholder": "আপনার ওয়ালেট ঠিকানা ইনপুট"
+  },
+  "discovery": {
+    "title": "আবিষ্কার"
   }
 }

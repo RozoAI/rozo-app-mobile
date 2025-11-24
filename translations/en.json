@@ -6,6 +6,9 @@
   "deposit": {
     "topUpInitiated": "Top up of {{amount}} initiated"
   },
+  "discovery": {
+    "title": "Discovery"
+  },
   "general": {
     "addNote": "Add note",
     "amount": "Amount",

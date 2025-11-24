@@ -242,5 +242,8 @@
     "success": "Penarikan berhasil",
     "supportedOnly": "Hanya mendukung {{currency}}",
     "walletAddressPlaceholder": "Masukkan alamat dompet Anda"
+  },
+  "discovery": {
+    "title": "Penemuan"
   }
 }

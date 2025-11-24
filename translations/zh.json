@@ -242,5 +242,8 @@
     "success": "提现成功",
     "supportedOnly": "仅支持{{currency}}",
     "walletAddressPlaceholder": "输入您的钱包地址"
+  },
+  "discovery": {
+    "title": "发现"
   }
 }

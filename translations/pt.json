@@ -242,5 +242,8 @@
     "success": "Retirada realizada com sucesso",
     "supportedOnly": "Somente suportado {{currency}}",
     "walletAddressPlaceholder": "Insira o endereço da sua carteira"
+  },
+  "discovery": {
+    "title": "Descoberta"
   }
 }

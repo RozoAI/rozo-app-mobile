@@ -242,5 +242,8 @@
     "success": "Retrait effectué avec succès",
     "supportedOnly": "Pris en charge uniquement {{currency}}",
     "walletAddressPlaceholder": "Entrez votre adresse de portefeuille"
+  },
+  "discovery": {
+    "title": "Découverte"
   }
 }

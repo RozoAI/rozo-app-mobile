@@ -242,5 +242,8 @@
     "success": "Retirada exitosa",
     "supportedOnly": "Solo compatible {{currency}}",
     "walletAddressPlaceholder": "Ingrese su dirección de billetera"
+  },
+  "discovery": {
+    "title": "Descubrimiento"
   }
 }
