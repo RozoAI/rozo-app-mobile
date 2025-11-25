@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "Top up {{amount}} dimulai"
   },
+  "scanner": {
+    "description": "Pindai kode QR blockchain",
+    "title": "Pemindai"
+  },
   "general": {
     "addNote": "Tambahkan catatan",
     "amount": "Jumlah",

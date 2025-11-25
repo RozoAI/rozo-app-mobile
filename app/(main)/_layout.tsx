@@ -8,6 +8,7 @@ import { AuthBoundary } from "@privy-io/expo";
 import { Redirect, Tabs } from "expo-router";
 import {
   Coins,
+  QrCode,
   Settings2Icon,
   ShoppingBagIcon,
   ShoppingCartIcon,
@@ -114,6 +115,18 @@ export default function TabLayout() {
                       href: null,
                     }
               }
+            />
+
+            {/* QR Scanner Tab */}
+            <Tabs.Screen
+              name="scanner"
+              options={{
+                title: t("scanner.title"),
+                tabBarIcon: ({ color }: any) => (
+                  <Icon as={QrCode} size="md" color={color} />
+                ),
+                tabBarButtonTestID: "scanner-tab",
+              }}
             />
 
             <Tabs.Screen

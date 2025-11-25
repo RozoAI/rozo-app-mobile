@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "Gérer {{amount}} initié"
   },
+  "scanner": {
+    "description": "Scanner les codes QR blockchain",
+    "title": "Scanner"
+  },
   "general": {
     "addNote": "Ajouter une note",
     "amount": "Montant",

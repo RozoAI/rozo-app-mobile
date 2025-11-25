@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "{{amount}} এর টপ আপ শুরু হয়েছে"
   },
+  "scanner": {
+    "description": "ব্লকচেইন QR কোড স্ক্যান করুন",
+    "title": "স্ক্যানার"
+  },
   "general": {
     "addNote": "নোট যোগ করুন",
     "amount": "পরিমাণ",

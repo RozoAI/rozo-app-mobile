@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "Пополнение {{amount}} инициировано"
   },
+  "scanner": {
+    "description": "Сканировать QR-коды блокчейна",
+    "title": "Сканер"
+  },
   "general": {
     "addNote": "Добавить примечание",
     "amount": "Сумма",

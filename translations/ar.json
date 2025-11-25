@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "تسبق {{{amount}}"
   },
+  "scanner": {
+    "description": "مسح رموز QR للبلوكتشين",
+    "title": "الماسح الضوئي"
+  },
   "general": {
     "addNote": "إضافة ملاحظة",
     "amount": "المبلغ",

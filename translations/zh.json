@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "启动{{amount}}"
   },
+  "scanner": {
+    "description": "扫描区块链二维码",
+    "title": "扫描仪"
+  },
   "general": {
     "addNote": "添加备注",
     "amount": "金额",

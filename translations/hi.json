@@ -6,6 +6,10 @@
   "deposit": {
     "topUpInitiated": "ऊपर {{amount}} शुरू किया गया"
   },
+  "scanner": {
+    "description": "ब्लॉकचेन QR कोड स्कैन करें",
+    "title": "स्कैनर"
+  },
   "general": {
     "addNote": "नोट जोड़ें",
     "amount": "राशि",
